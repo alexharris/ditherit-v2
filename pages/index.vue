@@ -1,13 +1,14 @@
 <template>
   <div class="container">
     <h1 class="title">
-      ditherit
+      Dither it!
     </h1>  
 
     <div class="flex">
       <div class="flex-1">
+        <div @click="ditherImage" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Dither Image</div>
         <ImageUpload />  
-        <div @click="ditherImage">Dither Image</div>
+        
       </div>
       <div class="flex-1">
         <canvas id="ditheredImageCanvas" class="border border-red-500" :width="500" :height="500"></canvas>
@@ -19,50 +20,26 @@
 <script>
 import RgbQuant from 'rgbquant'
 import ImageUpload from '~/components/ImageUpload.vue'
-import ImageCanvas from '~/components/ImageCanvas.vue'
 
 export default {
   components: {
-    ImageUpload,
-    ImageCanvas
+    ImageUpload
   },
   data() {
     return {
-      originalFileUrl: '', // The "url" of the image sent from the ImageUpload module
-      originalImage: '', // The original image in the DOM 
-      canvasWidth: 500, // The original width of the canvas
-      canvasHeight: 500, // The original height of the canvas
-      imgData: ''
+
     }
   },
   methods: {
-
-    createCanvas() {
-      console.log('createCanvas called')
-      
-      var canvas = document.getElementById('ditheredImageCanvas'); // get the canvas created to hold the new image
-      var ctx = canvas.getContext("2d");
-      var img = document.getElementById('imageCanvas')
-      // var ditheredImg = this.ditherImage(img)
-
-      ctx.clearRect(0,0,500,500);
-      ctx.drawImage(img,0,0,500,500);
-      var imgData = ctx.getImageData( 0,0,500,500 ); // get the underlying pixel data from the canvas
-      // console.log(imgData)
-      // imgData.data.set(img);
-      ctx.putImageData( imgData, 0,0 );
-    },
     ditherImage(img) {
       console.log('ditherImage called')
-      var imageCanvas = document.getElementById('imageCanvas')
-      var ditheredImageCanvas = document.getElementById('ditheredImageCanvas')
-      var ctx = ditheredImageCanvas.getContext("2d");    
+      var imageCanvas = document.getElementById('imageCanvas') // the canas that holds the original image
+      var ditheredImageCanvas = document.getElementById('ditheredImageCanvas') // the canvas that holds the dithered image
+      var ctx = ditheredImageCanvas.getContext("2d"); // canvas context
      
-
-
       // options with defaults (not required)
       var opts = {
-          colors: 4,             // desired palette size
+          colors: 20,             // desired palette size
           method: 1,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
           boxSize: [8,8],        // subregion dims (if method = 2)
           boxPxls: 2,              // min-population threshold (if method = 2)
@@ -78,6 +55,7 @@ export default {
           colorDist: "euclidean",  // method used to determine color distance, can also be "manhattan"
       };
       
+      // create new RgbQuant instance
       var q = new RgbQuant(opts);  
 
       // analyze histograms
@@ -86,27 +64,18 @@ export default {
       // build palette
       var pal = q.palette();
       
-      // reduce images
-      var out = q.reduce(imageCanvas)  
+      // reduce image
+      var ditheredImageData = q.reduce(imageCanvas)  
 
-      ctx.drawImage(imageCanvas,0,0)
-      // ctx.clearRect(0, 0, 500, 500);
+      // get the image data for the new canvas
+      var imageData = ctx.getImageData( 0,0, imageCanvas.width, imageCanvas.height ); // get the underlying pixel data from the canvas  
 
-      var imageData = ctx.getImageData( 0,0,500,500 ); // get the underlying pixel data from the canvas  
+      // reset the new canvas data with the dithered data
+      imageData.data.set(ditheredImageData)
 
-      imageData.data.set(out)
-
+      // put the new image data on the canvas
       ctx.putImageData( imageData, 0,0 ); // paint the canvas with the new imageData
 
-
-      // var newImage = new Image();
-      // newImage.onload = function() {
-      //   ctx.drawImage(newImage,0,0)
-      // }
-      // img.src=out;
-
-
-      // return out
     }
     
   },

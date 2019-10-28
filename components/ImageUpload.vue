@@ -5,7 +5,7 @@
             Submit
         </button> -->
       <label>Image File:</label><br/>
-      <input type="file" id="imageLoader" name="imageLoader" @change="imageUploaded"/>
+      <input type="file" id="imageLoader" name="imageLoader" @change="imageUploaded"  />
       <canvas id="imageCanvas"></canvas>        
     </div>
 </template>
@@ -25,6 +25,7 @@ export default {
       var canvas = document.getElementById('imageCanvas');
       var ctx = canvas.getContext('2d');   
 
+
       var reader = new FileReader();
       reader.onload = function(event){
           var img = new Image();
@@ -35,7 +36,9 @@ export default {
           }
           img.src = event.target.result;
       }
-      reader.readAsDataURL(e.target.files[0]);     
+      reader.readAsDataURL(e.target.files[0]);  
+      
+     
     }       
   }
 }
