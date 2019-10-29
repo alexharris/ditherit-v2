@@ -1,12 +1,8 @@
 <template>
     <div>
-        <!-- <input type="file" @change="onFileSelect" /> -->
-        <!-- <button v-on:click="$emit('uploadFile', originalFileUrl)">
-            Submit
-        </button> -->
       <label>Image File:</label><br/>
       <input type="file" id="imageLoader" name="imageLoader" @change="imageUploaded"  />
-      <canvas id="imageCanvas"></canvas>        
+      <canvas id="imageCanvas"></canvas>   
     </div>
 </template>
 
@@ -16,7 +12,6 @@
 export default {
   data() {
     return {
-      originalFileUrl: ''
     }
   },
   methods: {
@@ -25,18 +20,23 @@ export default {
       var canvas = document.getElementById('imageCanvas');
       var ctx = canvas.getContext('2d');   
 
-
       var reader = new FileReader();
-      reader.onload = function(event){
+
+      reader.onload = (event) => {
           var img = new Image();
-          img.onload = function(){
+          img.onload = () => {
               canvas.width = img.width;
               canvas.height = img.height;
               ctx.drawImage(img,0,0);
+              this.$emit('image-upload', canvas.width, canvas.height) // This tells the main page what size to make the dithered canvas
           }
           img.src = event.target.result;
+          
       }
+
       reader.readAsDataURL(e.target.files[0]);  
+
+      
       
      
     }       

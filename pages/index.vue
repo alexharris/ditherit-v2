@@ -6,12 +6,16 @@
 
     <div class="flex">
       <div class="flex-1">
+        
+        <ImageUpload v-on:image-upload="onImageUpload" />  
+        {{palette}}
         <div @click="ditherImage" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Dither Image</div>
-        <ImageUpload />  
+  <br />
+        <ColorPicker v-on:update-colors="onUpdateColors" />  
         
       </div>
       <div class="flex-1">
-        <canvas id="ditheredImageCanvas" class="border border-red-500" :width="500" :height="500"></canvas>
+        <canvas id="ditheredImageCanvas" class="border border-red-500" :width="ditheredCanvasWidth" :height="ditheredCanvasHeight"></canvas>
       </div>
     </div>
   </div>
@@ -20,26 +24,46 @@
 <script>
 import RgbQuant from 'rgbquant'
 import ImageUpload from '~/components/ImageUpload.vue'
+import ColorPicker from '~/components/ColorPicker.vue'
 
 export default {
   components: {
-    ImageUpload
+    ImageUpload,
+    ColorPicker
   },
   data() {
     return {
-
+      ditheredCanvasWidth: 500, // Width of the dithered canvas
+      ditheredCanvasHeight: 500, // Height of the dithered canvas
+      palette: []
     }
   },
   methods: {
+    
+    onUpdateColors(colors) {
+      this.palette = []
+      colors.forEach((v,i) => {
+        this.palette.push(v)
+      })
+    },
+    onImageUpload(width,height) {
+      this.ditheredCanvasWidth = imageCanvas.width
+      this.ditheredCanvasHeight = imageCanvas.height      
+
+    },
     ditherImage(img) {
       console.log('ditherImage called')
-      var imageCanvas = document.getElementById('imageCanvas') // the canas that holds the original image
+      var imageCanvas = document.getElementById('imageCanvas') // the canvas that holds the original image
       var ditheredImageCanvas = document.getElementById('ditheredImageCanvas') // the canvas that holds the dithered image
       var ctx = ditheredImageCanvas.getContext("2d"); // canvas context
+
+
+
+      // console.log('dithered canvas height and width: ' + this.ditheredCanvasWidth + ',' + this.ditheredCanvasHeight)
      
       // options with defaults (not required)
       var opts = {
-          colors: 20,             // desired palette size
+          colors: 2,             // desired palette size
           method: 1,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
           boxSize: [8,8],        // subregion dims (if method = 2)
           boxPxls: 2,              // min-population threshold (if method = 2)
@@ -48,7 +72,7 @@ export default {
           dithKern: null,          // dithering kernel name, see available kernels in docs below
           dithDelta: 0,            // dithering threshhold (0-1) e.g: 0.05 will not dither colors with <= 5% difference
           dithSerp: false,         // enable serpentine pattern dithering
-          palette: [],             // a predefined palette to start with in r,g,b tuple format: [[r,g,b],[r,g,b]...]
+          palette: this.palette,             // a predefined palette to start with in r,g,b tuple format: [[r,g,b],[r,g,b]...]
           reIndex: false,          // affects predefined palettes only. if true, allows compacting of sparsed palette once target palette size is reached. also enables palette sorting.
           useCache: true,          // enables caching for perf usually, but can reduce perf in some cases, like pre-def palettes
           cacheFreq: 10,           // min color occurance count needed to qualify for caching
@@ -62,7 +86,13 @@ export default {
       q.sample(imageCanvas); 
       
       // build palette
-      var pal = q.palette();
+      if(this.palette == []) {
+        var pal = q.palette();
+      } else {
+        var pal = this.palette
+      }
+      console.log(pal)
+      
       
       // reduce image
       var ditheredImageData = q.reduce(imageCanvas)  

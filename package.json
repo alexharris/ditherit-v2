@@ -17,7 +17,8 @@
     "eslint-plugin-vue": "^5.2.3",
     "nuxt": "^2.0.0",
     "rgbquant": "^1.1.2",
-    "ts-jest": "^23.10.5"
+    "ts-jest": "^23.10.5",
+    "vue-color": "^2.7.0"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^1.0.0",
