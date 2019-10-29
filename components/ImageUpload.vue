@@ -1,9 +1,9 @@
 <template>
-    <div>
-      <label>Image File:</label><br/>
-      <input type="file" id="imageLoader" name="imageLoader" @change="imageUploaded"  />
-      <canvas id="imageCanvas"></canvas>   
-    </div>
+  <div>
+    <canvas id="imageCanvas" class="max-w-full"></canvas>   
+    <label>Image File:</label><br/>
+    <input type="file" id="imageLoader" name="imageLoader" @change="imageUploaded"  />
+  </div>
 </template>
 
 <script>
