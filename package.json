@@ -21,18 +21,20 @@
     "vue-color": "^2.7.0"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^1.0.0",
     "@nuxtjs/eslint-config": "^1.0.1",
     "@nuxtjs/eslint-module": "^1.0.0",
-    "babel-eslint": "^10.0.1",
-    "eslint": "^6.1.0",
-    "eslint-plugin-nuxt": ">=0.4.2",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.16.4",
+    "@nuxtjs/tailwindcss": "^1.0.0",
     "@vue/test-utils": "^1.0.0-beta.27",
+    "babel-eslint": "^10.0.1",
     "babel-jest": "^24.1.0",
+    "eslint": "^6.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-nuxt": ">=0.4.2",
+    "eslint-plugin-prettier": "^3.0.1",
     "jest": "^24.1.0",
+    "node-sass": "^4.13.0",
+    "prettier": "^1.16.4",
+    "sass-loader": "^8.0.0",
     "vue-jest": "^4.0.0-0"
   }
 }

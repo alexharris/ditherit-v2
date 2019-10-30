@@ -1,3 +1,27 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+
+.btn-red {
+    @apply bg-red-500 text-white font-bold py-2 px-2 rounded;
+}
+.btn-red:hover {
+    @apply bg-red-700;
+}
+
+.btn-blue {
+    @apply bg-blue-500 text-white font-bold py-2 px-2 rounded;
+}
+
+.btn-blue:hover {
+    @apply bg-blue-700;
+}
+
+.btn-grey {
+    @apply border-gray-400 border text-gray-700 font-bold py-2 px-2 rounded;
+}
+.btn-grey:hover {
+    @apply bg-gray-900;
+}
+
