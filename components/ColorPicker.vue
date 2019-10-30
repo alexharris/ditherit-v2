@@ -30,6 +30,21 @@
                 </div>
             </div>            
         </div>
+        <!-- Preset Palette Selector -->
+        <div class="inline-block relative w-64 mt-4">
+            <select v-model="presetPaletteSelection" @change="presetPaletteSelected" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+                <option id="original" name="paletteColor" value="original">Original</option> 
+                <option id="custom" name="paletteColor" value="custom" disabled>Custom</option> 
+                <template v-for="(p,i) in presetPalettes">
+                    <option :id="p.value" name="paletteColor" :value="p.value">{{p.name}}</option> 
+                </template>    
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+            </div>
+        </div>   
+
+	  
     </div>
 </div>
 </template>
@@ -46,11 +61,30 @@ export default {
     data() {
         return {
             // numberOfColors: 4,
+            
             currentColor: '', // for temporary holding swatch value from color-picker
             showModal: false,
             activeSwatch: 0,
             palette: [{hex: '#ff00ff'},{hex: '#ff0000'}], // the colors as they are created by the color pickers
             convertedColorArray: [], // the colors as they are sent to the ditherer ([0,0,0])
+            originalInitialPalette: [], //this holds the first initial palette loaded
+            presetPaletteSelection: 'original', 
+            presetPalettes: [
+                {name: 'Red',
+                value: 'red',
+                colors: [
+                    {hex: '#ffffff'}, {hex:'#f46842'}, {hex:'#aa2f0d'}, {hex:'#000000'}]
+                },
+                {name: 'Red Monochrome',
+                value: 'redmono',
+                colors: [{hex:'#ffe3db'}, {hex:'#4f1403'} ]
+                },
+                {name: 'Green Monochrome',
+                value: 'greenmono',
+                colors: [
+                    {hex:'#eeffdb'}, {hex:'#1d3801'} ]
+                }           
+            ]
         }
     },
     computed: {
@@ -60,9 +94,32 @@ export default {
         initialPalette: function(newVal, oldVal) { // watch it
             // console.log('Prop changed: ', newVal, ' | was: ', oldVal)
             this.rgbToHex(newVal)
+            
         },
     },    
     methods: {
+        // When a custom palette is selected
+        presetPaletteSelected(e) {
+
+            this.palette = []
+
+            if(e.target.value == 'original') {
+                this.originalInitialPalette.forEach((v) => {
+                    this.palette.push(v)
+                })
+            } else {
+                this.presetPalettes.forEach((v) => {
+                    if(e.target.value == v.value) {
+                        v.colors.forEach((c) => {
+                            this.palette.push(c)
+                        })
+                    }
+                })
+            }
+            
+            this.updatePallete()
+            
+        },
         // When the user selects the color from the modal
         selectColor() {
             this.palette[this.activeSwatch] = {'hex': this.currentColor['hex']}
@@ -86,12 +143,15 @@ export default {
         makeActiveSwatch(i) {
             this.activeSwatch = i //tells the picker which swatch is being updated
             this.showModal = true
+
+            this.presetPaletteSelection = 'custom'
         },
         // Add New Swatch
         // This adds a new color to the colors        
         addNewSwatch(){
             this.palette.push({hex: '#ffffff'})
             this.activeSwatch = this.palette.length
+            this.presetPaletteSelection = 'custom'
             this.updatePallete()
 
             
@@ -134,7 +194,11 @@ export default {
                 var g = pal[i][1];
                 var b = pal[i][2];
                 var hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-                this.palette.push({hex});  
+                this.palette.push({hex}); 
+
+                if(this.originalInitialPalette.length < i ) { //if there are less values in originalInitialPalette than colors processed, it means we need to store it
+                    this.originalInitialPalette.push({hex})
+                }
             }
         },       
     
