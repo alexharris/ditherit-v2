@@ -1,6 +1,6 @@
 <template>
-<div class="m-5">
-    <div class="border-solid border shadow-lg rounded p-2 max-w-sm" >        
+<div>
+    <div class="border-solid border shadow-lg rounded p-2" >        
         <ul class="flex flex-wrap" v-if="!showModal">
             <li v-for="(item,i) in palette">
                 
@@ -31,7 +31,7 @@
             </div>            
         </div>
         <!-- Preset Palette Selector -->
-        <div class="inline-block relative w-64 mt-4">
+        <div class="inline-block relative w-64 mt-4" v-if="!showModal">
             <select v-model="presetPaletteSelection" @change="presetPaletteSelected" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
                 <option id="original" name="paletteColor" value="original">Original</option> 
                 <option id="custom" name="paletteColor" value="custom" disabled>Custom</option> 

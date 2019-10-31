@@ -8,15 +8,25 @@
         <ImageUpload v-on:image-upload="onImageUpload"  />  
       </div>
       <div class="w-full md:w-1/2 p-3">
-        <canvas id="ditheredImageCanvas" class="max-w-full" :width="ditheredCanvasWidth" :height="ditheredCanvasHeight"></canvas>
+        <DitheredCanvas :width="canvasWidth" :height="canvasHeight" v-on:recalc-download="ditherImage" />
       </div>
     </div>
-    <div class="flex">
+    <div class="flex justify-between">
       <div class="flex-1">
         <ColorPicker v-on:update-palette="onUpdatePalette" :initial-palette="rgbQuantOptions.palette" />  
       </div>
+      <div class="flex-1 text-center">
+        <button @click="ditherImage" class="btn-red-large text-lg">Dither it!</button>
+      </div>
       <div class="flex-1">
-        <button @click="ditherImage" class="btn-red">Dither Image</button>
+        <div>
+          <div class="border-solid border shadow-lg rounded p-2 text-center" >   
+            Original Filesize: {{originalFileSize}} KB<br />
+            New Filesize: {{downloadFileSize}} KB<br />
+            
+            <a class="btn-red inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" download="hello.jpg">Download</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -26,16 +36,18 @@
 import RgbQuant from 'rgbquant'
 import ImageUpload from '~/components/ImageUpload.vue'
 import ColorPicker from '~/components/ColorPicker.vue'
+import DitheredCanvas from '~/components/DitheredCanvas.vue'
 
 export default {
   components: {
     ImageUpload,
-    ColorPicker
+    ColorPicker,
+    DitheredCanvas
   },
   data() {
     return {
-      ditheredCanvasWidth: 500,       // Width of the dithered canvas
-      ditheredCanvasHeight: 500,      // Height of the dithered canvas
+      canvasWidth: '', //this is what the dithered canvas renders off of
+      canvasHeight: '', //this is what the dithered canvas renders off of
       rgbQuantOptions: {              // ---- Options ------
           colors: 8,                  // desired palette size
           method: 1,                  // histogram method, 2: min-population threshold within subregions; 1: global top-population
@@ -51,10 +63,22 @@ export default {
           useCache: true,             // enables caching for perf usually, but can reduce perf in some cases, like pre-def palettes
           cacheFreq: 10,              // min color occurance count needed to qualify for caching
           colorDist: "euclidean",     // method used to determine color distance, can also be "manhattan"
-      }
+      },
+      downloadUrl: '',
+      downloadFileSize: '',
+      originalFileSize: '',
     }
   },
   methods: {
+
+    downloadImage() {
+      console.log('calc download')
+      var ditheredImageCanvas = document.getElementById('ditheredImageCanvas') // the canvas that holds the dithered image
+      var head = 'data:image/jpeg;base64,';
+      var downloadUrl = ditheredImageCanvas.toDataURL("image/jpeg")
+      this.downloadFileSize = (Math.round((downloadUrl.length - head.length)*3/4))/1000 ;
+      this.downloadUrl = downloadUrl
+    },
     // This receives a palette from ColorPicker in the form of an array of hex values
     onUpdatePalette(palette) {
       this.rgbQuantOptions.palette = []
@@ -63,54 +87,50 @@ export default {
       })
     },
     onImageUpload(width,height) {
-      this.ditheredCanvasWidth = imageCanvas.width
-      this.ditheredCanvasHeight = imageCanvas.height    
-      // console.log(this.imageCanvas)
+      var originalImage = document.getElementById('originalImage') // the canvas that holds the dithered image
+      var head = 'data:image/jpeg;base64,';
+      this.originalFileSize = (Math.round((originalImage.src.length - head.length)*3/4))/1000 ;
+
+      this.canvasWidth = width
+      this.canvasHeight = height        
       this.analyzeImagePalette() 
-      // // create new RgbQuant instance
-      // var q = new RgbQuant(this.rgbQuantOptions);  
-
-      // // analyze histograms
-      // q.sample(imageCanvas);   
-      
-      // var pal = q.palette(true);
-
-      // this.rgbQuantOptions.palette = pal
-
-    
-
     },
     ditherImage(img) {
-      console.log('ditherImage called')
-      var imageCanvas = document.getElementById('imageCanvas') // the canvas that holds the original image
+      console.log('ditherImage called')  
+
+      var originalImage = document.getElementById('originalImage') // the canvas that holds the original image
       var ditheredImageCanvas = document.getElementById('ditheredImageCanvas') // the canvas that holds the dithered image
       var ctx = ditheredImageCanvas.getContext("2d"); // canvas context
-      
+
+      ctx.canvas.width = this.canvasWidth;
+      ctx.canvas.height = this.canvasHeight;
       // create new RgbQuant instance
       var q = new RgbQuant(this.rgbQuantOptions);  
-      console.log(this.rgbQuantOptions.palette)
-      q.sample(imageCanvas);  
 
-      // get the image data for the new canvas
-      var imageData = ctx.getImageData( 0,0, imageCanvas.width, imageCanvas.height ); // get the underlying pixel data from the canvas  
-      // reset the new canvas data with the dithered data
-      imageData.data.set(q.reduce(imageCanvas))
-      // put the new image data on the canvas
-      ctx.putImageData( imageData, 0,0 ); // paint the canvas with the new imageData
+      q.sample(originalImage); // analyze histograms 
+
+      var imageData = ctx.getImageData( 0,0, this.canvasWidth, this.canvasHeight ); // get the underlying pixel data from the canvas, as a base64 source  
+
+      var ditherResult = q.reduce(originalImage) // reset the new canvas data with the dithered data
+
+      imageData.data.set(ditherResult) // replace the imagedata data with the dither result
+   
+      ctx.putImageData(imageData, 0,0 ); // paint the canvas with the new imageData
+
+      this.downloadImage()
 
     },
     analyzeImagePalette() {
-      var imageCanvas = document.getElementById('imageCanvas')
+      var imageCanvas = document.getElementById('originalImage')
+      console.log(imageCanvas)
        // create new RgbQuant instance
       var q = new RgbQuant(this.rgbQuantOptions);  
       // analyze histograms
       q.sample(imageCanvas);  
       // assign the palette
       this.rgbQuantOptions.palette = q.palette(true);
-
     }
-    
   },
-
 }
 </script>
+
