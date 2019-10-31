@@ -100,22 +100,26 @@ export default {
 
       var originalImage = document.getElementById('originalImage') // the canvas that holds the original image
       var ditheredImageCanvas = document.getElementById('ditheredImageCanvas') // the canvas that holds the dithered image
+      var tempImage = originalImage // this holds a copy of the original image which is used to hold the dither data to be drawn onto the canvas
       var ctx = ditheredImageCanvas.getContext("2d"); // canvas context
 
-      ctx.canvas.width = this.canvasWidth;
-      ctx.canvas.height = this.canvasHeight;
+      ctx.canvas.width = 200; // tell the canvas what size to be
+      ctx.canvas.height = 200; // tell the canvas what height to be
+
+      ctx.drawImage(originalImage,0,0,200,200) // put the image on the canvas
+
       // create new RgbQuant instance
       var q = new RgbQuant(this.rgbQuantOptions);  
 
-      q.sample(originalImage); // analyze histograms 
+      q.sample(originalImage); // analyze histograms to get colors
 
-      var imageData = ctx.getImageData( 0,0, this.canvasWidth, this.canvasHeight ); // get the underlying pixel data from the canvas, as a base64 source  
+      var ditherResult = q.reduce(ditheredImageCanvas) // dither what is on the canvas
+ 
+      var imgData = ctx.getImageData(0,0,200,200); // get the image data from the canvas
 
-      var ditherResult = q.reduce(originalImage) // reset the new canvas data with the dithered data
+      imgData.data.set(ditherResult); //set the value of imageData to the dither results
 
-      imageData.data.set(ditherResult) // replace the imagedata data with the dither result
-   
-      ctx.putImageData(imageData, 0,0 ); // paint the canvas with the new imageData
+      ctx.putImageData( imgData, 0,0 ); // put the new dithered image data back on the canvas   
 
       this.downloadImage()
 
@@ -133,4 +137,10 @@ export default {
   },
 }
 </script>
+
+<style>
+  #ditheredImageCanvas {
+    border: 1px solid #f00;
+  }
+</style>
 

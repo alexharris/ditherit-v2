@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <canvas id="ditheredImageCanvas" class="max-w-full" :width="canvasWidth" :height="canvasHeight"></canvas>
+    <canvas id="ditheredImageCanvas" class="max-w-full"></canvas>
 
   </div>
 </template>
