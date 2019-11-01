@@ -1,6 +1,6 @@
 <template>
 <div>
-    <div class="border-solid border shadow-lg rounded p-2">
+    <div class="border-solid border shadow-lg rounded p-3">
         <!-- Palette menu -->
         <div v-if="!showModal">        
             <ul class="flex flex-wrap" v-if="palette.length > 0">

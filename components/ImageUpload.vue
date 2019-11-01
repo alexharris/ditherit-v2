@@ -1,10 +1,8 @@
 <template>
   <div>
     <div class="loader" v-if="loading"></div>
-    <img id="originalImage" class="max-w-full" />
-
-    <label class="btn-red-large inline-block m-4 ">
-        <span class="text-lg">Select a file</span>
+    <label class="btn-red-large-outline inline-block mt-4">
+        <span class="text-lg">Select an image ✨</span>
         <input type="file" id="imageLoader" name="imageLoader" @change="imageUploaded" class="hidden" />
     </label>
    
@@ -19,7 +17,7 @@
   export default {
     data() {
       return {
-        loading: false
+        loading: false,
       }
     },
     methods: {
