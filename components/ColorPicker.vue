@@ -1,52 +1,56 @@
 <template>
-<div>
-    <div class="border-solid border shadow-lg rounded p-2" >        
-        <ul class="flex flex-wrap" v-if="!showModal">
-            <li v-for="(item,i) in palette">
-                
-                <div 
-                    class="w-10 h-10 m-1 border border-gray-700 rounded-full cursor-pointer"
-                    v-bind:class="{'shadow-2xl': isActiveSwatch(i)}"
-                    v-bind:style="{backgroundColor: item['hex']}" 
-                    @click="makeActiveSwatch(i)" 
-                >
-                </div>                
-            </li>
-            <li class="w-10 h-10 m-1 border-dashed border border-red-500 hover:border-gray-900 cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-500 hover:text-gray-900" @click="addNewSwatch()">+</li>
-        </ul>
-        <div v-if="showModal">
-                <!-- <div class="inline-block w-full">
-                    <span class="rounded-full float-right font-bold text-gray-500" @click="showModal = !showModal">X</span>
-                </div> -->
+<div class="mt-4">
+    <div class="border-solid border shadow-lg rounded p-2">
+        <!-- Palette menu -->
+        <div v-if="!showModal">        
+            <ul class="flex flex-wrap" v-if="palette.length > 0">
+                <li v-for="(item,i) in palette">
+                    
+                    <div 
+                        class="w-10 h-10 m-1 border border-gray-700 rounded-full cursor-pointer"
+                        v-bind:class="{'shadow-2xl': isActiveSwatch(i)}"
+                        v-bind:style="{backgroundColor: item['hex']}" 
+                        @click="makeActiveSwatch(i)" 
+                    >
+                    </div>                
+                </li>
+                <li class="w-10 h-10 m-1 border-dashed border border-red-500 hover:border-gray-900 cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-500 hover:text-gray-900" @click="addNewSwatch()">+</li>
+            </ul>
+            <div v-else class="block w-full"> 
+                <span class="loader h-8 w-8 float-left mr-2"></span>Analyzing palette..
+            </div>
+            <!-- Preset Palette Selector -->
+            <div class="mt-4">
+                <label for="presetPalettes" class="mt-4">Preset Palettes</label>
+                <div class="inline-block relative w-full" >
+                    <select id="presetPalettes" v-model="presetPaletteSelection" @change="presetPaletteSelected" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+                        <option id="original" name="paletteColor" value="original">Original</option> 
+                        <option id="custom" name="paletteColor" value="custom" disabled>Custom</option> 
+                        <template v-for="(p,i) in presetPalettes">
+                            <option :id="p.value" name="paletteColor" :value="p.value">{{p.name}}</option> 
+                        </template>    
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                    </div>
+                </div>   
+            </div>        
+        </div>
+        <!-- Colorpicker Modal -->
+        <div v-else>
             <div class="color-modal">
                 <sketch-picker :value="palette[activeSwatch]"  @input="storeCurrentColor" />
             </div>
             <div class="mt-2">
                 <hr />
                 <div class="inline-block w-full mt-2">
-                    <button class="btn-grey float-left" @click="showModal = !showModal">Close</button>                     
+                    <button class="btn-grey float-left" @click="showModal = !showModal">Cancel</button>                     
                     <button class="btn-blue float-right mr-2" @click="selectColor">Select</button>                     
                     <button class="btn-red float-right mr-2" @click="removeSwatch(activeSwatch)">Remove</button>                    
                 </div>
             </div>            
         </div>
-        <!-- Preset Palette Selector -->
-        <div class="mt-4" v-if="!showModal">
-            <label for="presetPalettes" class="mt-4">Preset Palettes</label>
-            <div class="inline-block relative w-full" >
-                
-                <select id="presetPalettes" v-model="presetPaletteSelection" @change="presetPaletteSelected" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
-                    <option id="original" name="paletteColor" value="original">Original</option> 
-                    <option id="custom" name="paletteColor" value="custom" disabled>Custom</option> 
-                    <template v-for="(p,i) in presetPalettes">
-                        <option :id="p.value" name="paletteColor" :value="p.value">{{p.name}}</option> 
-                    </template>    
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                </div>
-            </div>   
-        </div>
+
 	  
     </div>
 </div>
@@ -68,7 +72,7 @@ export default {
             currentColor: '', // for temporary holding swatch value from color-picker
             showModal: false,
             activeSwatch: 0,
-            palette: [{hex: '#ff00ff'},{hex: '#ff0000'}], // the colors as they are created by the color pickers
+            palette: [], // the colors as they are created by the color pickers
             convertedColorArray: [], // the colors as they are sent to the ditherer ([0,0,0])
             originalInitialPalette: [], //this holds the first initial palette loaded
             presetPaletteSelection: 'original', 
@@ -96,6 +100,7 @@ export default {
     watch: { 
         initialPalette: function(newVal, oldVal) { // watch it
             // console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+            
             this.rgbToHex(newVal)
             
         },

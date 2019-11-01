@@ -18,7 +18,7 @@
 }
 
 .btn-blue {
-    @apply bg-blue-500 text-white font-bold py-4 px-4 rounded;
+    @apply bg-blue-500 text-white font-bold py-2 px-2 rounded;
 }
 
 .btn-blue:hover {
@@ -31,4 +31,23 @@
 .btn-grey:hover {
     @apply bg-gray-900;
 }
+
+
+.loader {
+    border: 4px solid #ffffff;
+    border-top: 4px solid #000000;
+    border-right: 4px solid #000000;
+    border-radius: 50%;
+    animation: spin 2s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg); 
+    }
+    100% {
+      transform: rotate(360deg); 
+    } 
+  }
+            
 
