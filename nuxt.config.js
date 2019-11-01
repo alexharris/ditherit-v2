@@ -1,3 +1,9 @@
+const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
+  router: {
+    base: '/ditherit-v2/'
+  }
+} : {}
+
 export default {
   mode: 'spa',
   /*
@@ -49,5 +55,11 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {}
-  }
+  },
+  generate: {
+    dir: 'docs'
+  },
+  routerBase
 }
+
+
