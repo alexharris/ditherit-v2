@@ -1,5 +1,5 @@
 <template>
-<div class="mt-4">
+<div>
     <div class="border-solid border shadow-lg rounded p-2">
         <!-- Palette menu -->
         <div v-if="!showModal">        

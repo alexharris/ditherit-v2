@@ -1,57 +1,75 @@
 <template>
-  <div class="">
-    <h1 class="title">
-      Dither it!
-    </h1>  
-    <div class="p-12 flex flex-row">
-      <div class="w-1/5" v-show="imageUploaded">
-        <div class="flex-1 text-center">
-          <button @click="ditherImage" class="btn-red-large text-lg">Dither it!</button>
-        </div>    
+  <div class="flex flex-col items-center max-w-full">
+    <div class="flex flex-col items-center mt-8" v-show="!imageUploaded">
+      <Logo  /> 
+      <p class="mt-8">An image dithering tool 🏁</p>
+      <img class="mt-8" src="~/assets/earth-dither.gif" />      
+    </div>
+    <div class="p-y12 px-4 flex flex-row mt-8 w-full justify-center">
+      <!-- Begin Main Toolbar -->
+      <div class="w-1/4 min-w-3full" v-show="imageUploaded">
+        <Logo  /> 
         <div class="flex-1" >
           <ColorPicker v-on:update-palette="onUpdatePalette" :initial-palette="rgbQuantOptions.palette" /> 
+          <div class="mt-4 text-center">
+            <button @click="ditherImage" class="btn-red-large-outline text-lg w-full">Dither</button>
+          </div>  
+          <h4 class="text-lg mt-4">Options</h4>           
           <!-- Image Size Selector -->
           <div class="mt-4">
             <div class="border-solid border shadow-lg rounded p-2" >   
               <label for="imageSize" class="mt-4">Image Size</label>
               <div class="inline-block relative w-full" >
-                  <select id="imageSize" v-model="canvasWidth" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
-                      <option id="originalSize" name="originalSize" :value="originalCanvasWidth">{{originalCanvasWidth}} (Original)</option> 
-                      <template v-for="(v,i) in imageWidths">
-                          <option :id="v" name="imageWidth" :value="v">{{v}}</option> 
-                      </template>    
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                  </div>
+                <select id="imageSize" v-model="canvasWidth" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
+                    <option id="originalSize" name="originalSize" :value="originalCanvasWidth">{{originalCanvasWidth}} (Original)</option> 
+                    <template v-for="(v,i) in imageWidths">
+                        <option :id="v" name="imageWidth" :value="v">{{v}}</option> 
+                    </template>    
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                </div>
               </div> 
             </div>  
           </div>
         </div>
       </div>
-    
-      <div class="w-3/5 m-8 flex flex-col items-center">
-        <div class="max-w-5xl text-center">
-          <ImageUpload v-on:image-upload="onImageUpload" />  
-        </div>
-        <div class="max-w-5xl">
-          <div class="flex flex-col justify-center items-center w-full h-full -mt-4" v-show="dithering">
-            <div class="loader h-20 w-20 mb-4"></div>  
-            <div class="">Dithering...</div>
+      <div class="w-3/4 flex flex-col xl:flex-row">
+        <!-- Begin Main Display -->
+        <div class="w-full xl:w-3/4 flex flex-col flex-1 items-center">
+          <div class="max-w-5xl">
+            <div class="flex flex-col justify-center items-center" v-show="dithering">
+              <div class="loader h-20 w-20 mb-4"></div>  
+              <div class="">Dithering...</div>
+            </div>
+            <div class="flex flex-col justify-center items-center w-full h-full px-8">
+              <canvas id="ditheredImageCanvas" class="max-w-full " v-show="!dithering && showDitheredImage"></canvas>
+            </div>
           </div>
-          <div class="flex flex-col justify-center items-center w-full h-full -mt-4">
-            <canvas id="ditheredImageCanvas" class="max-w-full " v-show="!dithering && showDitheredImage"></canvas>
+          <div class="max-w-5xl text-center">
+            <img id="originalImage" class="max-w-full" v-show="!showDitheredImage" />
+            <ImageUpload v-on:image-upload="onImageUpload" />  
+          </div>        
+        </div>
+        <!-- Begin Output -->
+        <div class="w-full xl:w-1/4 flex flex-row xl:flex-col mt-8 items-center justify-center" v-show="imageUploaded">
+          <div class="border-solid border shadow-lg rounded p-2 w-1/2 p-4" >  
+            <h4 class="text-lg">File Details</h4>
+            <h5 class="text-md">Original</h5>
+            <ul>
+              <li><strong>Filename:</strong> {{fileName}} </li>
+              <li><strong>Filesize:</strong> {{originalFileSize}} KB</li>
+            </ul>
+            <h5 class="mt-2 text-md">Dithered</h5>
+            <ul>
+              <li><strong>Filename:</strong> dither_it_{{fileName}} </li>
+              <li><strong>Filesize:</strong> {{downloadFileSize}} KB</li>
+            </ul>                
+          </div>  
+          <div class="w-1/2 text-center">
+            <a class="btn-red inline-block mt-4" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'dither_it_' + fileName">Download</a>
           </div>
         </div>
-      </div>
-      <div class="w-1/5 flex flex-col items-center">
-            <div class="border-solid border shadow-lg rounded p-2 text-center" >  
-              {{fileName}} 
-              Original Filesize: {{originalFileSize}} KB<br />
-              New Filesize: {{downloadFileSize}} KB<br />
-              
-              <a class="btn-red inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'ditherit_' + fileName">Download</a>
-            </div>    
       </div>
     </div>
   </div>
@@ -59,13 +77,15 @@
 
 <script>
 import RgbQuant from 'rgbquant'
+import Logo from '~/components/Logo.vue'
 import ImageUpload from '~/components/ImageUpload.vue'
 import ColorPicker from '~/components/ColorPicker.vue'
 
 export default {
   components: {
     ImageUpload,
-    ColorPicker
+    ColorPicker,
+    Logo
   },
   data() {
     return {

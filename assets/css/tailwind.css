@@ -17,6 +17,13 @@
     @apply bg-red-700;
 }
 
+.btn-red-large-outline {
+    @apply border border-red-500 text-red-500 font-bold py-4 px-4 rounded;
+}
+.btn-red-large-outline:hover {
+    @apply bg-red-500 text-white;
+}
+
 .btn-blue {
     @apply bg-blue-500 text-white font-bold py-2 px-2 rounded;
 }
