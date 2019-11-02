@@ -15,9 +15,7 @@
             <div class="mt-4 text-center xl:w-64">
               <button @click="ditherImage" class="btn-red-outline text-lg w-full">🏁 Dither</button>
             </div>  
-            <div class="w-full text-center mt-2 xl:w-64" v-show="showDitheredImage">
-                <a class="btn-red w-full inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'dither_it_' + fileName">💾 Download</a>
-            </div>  
+
                 
           <h4 class="text-lg mt-4 font-bold">Options</h4>           
           <!-- Image Size Selector -->
@@ -36,7 +34,10 @@
                 </div>
               </div> 
             </div>  
-          </div>          
+          </div>   
+          <div class="w-full text-center mt-2 xl:w-64" v-show="showDitheredImage">
+              <a class="btn-red w-full inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'dither_it_' + fileName">💾 Download</a>
+          </div>                   
           <ImageUpload v-on:image-upload="onImageUpload" v-show="imageUploaded"  />                        
         </div>
       </div>
