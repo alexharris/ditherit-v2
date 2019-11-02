@@ -55,13 +55,41 @@
     animation: spin 2s linear infinite;
   }
   
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg); 
-    }
-    100% {
-      transform: rotate(360deg); 
-    } 
+@keyframes spin {
+  0% {
+    transform: rotate(0deg); 
   }
+  100% {
+    transform: rotate(360deg); 
+  } 
+}
+
+a {
+  @apply text-red-700 border-b border-red-700
+}
+
+a:hover {
+  @apply text-red-900 border-b border-red-900
+}
+
+p {
+  @apply mt-4
+}
+
+h3 {
+  @apply text-2xl mt-4 font-bold
+}
+
+h4 {
+  @apply text-xl mt-4 font-bold
+}
+
+blockquote {
+  @apply p-4 bg-gray-200 mt-4
+}
+
+ul {
+  @apply mt-2
+}
             
 

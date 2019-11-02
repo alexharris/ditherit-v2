@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="loader" v-if="loading"></div>
-    <label class="btn-red xl:w-64 text-center inline-block mt-4">
-        <span class="text-lg">✨ Select an image</span>
+    <label class="btn-red-outline xl:w-64 text-center inline-block mt-4">
+        <span>✨ Select image</span>
         <input type="file" id="imageLoader" name="imageLoader" @change="imageUploaded" class="hidden" />
     </label>
    

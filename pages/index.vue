@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center max-w-full pb-8">
+  <div class="flex flex-col items-center max-w-full pb-8 mx-4">
     <Logo  /> 
     <div class="flex flex-col items-center mt-8" v-show="!imageUploaded">
       <p class="mt-8 text-2xl">An image dithering tool 🏁</p>
@@ -13,7 +13,7 @@
           <ColorPicker v-on:update-palette="onUpdatePalette" :initial-palette="rgbQuantOptions.palette" /> 
           
             <div class="mt-4 text-center xl:w-64">
-              <button @click="ditherImage" class="btn-red-outline text-lg w-full">🏁 Dither</button>
+              <button @click="ditherImage" class="btn-red text-lg w-full">🏁 Dither</button>
             </div>  
 
                 
@@ -34,33 +34,41 @@
                 </div>
               </div> 
             </div>  
-          </div>   
-          <div class="w-full text-center mt-2 xl:w-64" v-show="showDitheredImage">
-              <a class="btn-red w-full inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'dither_it_' + fileName">💾 Download</a>
-          </div>                   
-          <ImageUpload v-on:image-upload="onImageUpload" v-show="imageUploaded"  />                        
+          </div>                  
+                                 
         </div>
       </div>
       <!-- End Toolbar -->
       <div class="w-full md:w-3/4 flex flex-col xl:flex-row order-first md:order-last">
         <!-- Begin Main Display -->
         <div class="px-4 flex flex-col flex-1 items-center">
+          <!-- Dithered Canvas Display -->
           <div class="max-w-5xl">
             <div class="flex flex-col justify-center items-center" v-show="dithering">
               <div class="loader h-20 w-20 mb-4"></div>  
               <div class="">Dithering...</div>
             </div>
-            <div class="flex flex-col justify-center items-center w-full h-full md:px-8" v-show="!dithering && showDitheredImage">
+            <div class="flex flex-col justify-center items-center w-full h-full " v-show="!dithering && showDitheredImage">
               <canvas id="ditheredImageCanvas" class="max-w-full " ></canvas>
             </div>
           </div>
+          <!-- End Dithered Canvas Display -->
+          <!-- Original Image Display -->
           <div class="max-w-5xl text-center">
             <img id="originalImage" class="max-w-full" v-show="!showDitheredImage" />            
-            <ImageUpload v-on:image-upload="onImageUpload" v-show="!imageUploaded" />  
-          </div>        
+          </div>   
+          <!-- End Original Image Display -->
+          <!-- Toolbar Stuff -->
+          <div class="flex flex-row justify-center" v-bind:class="{ 'w-full': imageUploaded, 'text-sm': imageUploaded}">
+            <div class="text-center mt-4 mr-2 justify-center " v-show="showDitheredImage && !dithering">
+              <a class="btn-red-outline w-full inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'dither_it_' + fileName">💾  Download</a>
+            </div>   
+            <ImageUpload v-on:image-upload="onImageUpload" />               
+          </div>
+          <!-- End Toolbar Stuff -->
         </div>
         <!-- Begin Output -->
-        <div class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-16 xl:px-0" v-show="imageUploaded">
+        <div class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-8 xl:px-0" v-show="imageUploaded">
 
             <div class="border-solid border shadow-lg rounded p-3 mt-2 w-full h-0 md:h-auto invisible md:visible" >  
                 <h4 class="text-lg font-bold mb-2">File Details</h4>
@@ -87,6 +95,30 @@
             </div>  
         </div>
       </div>
+    </div>
+    <div class="w-full mt-32 px-4 md:px-32">
+      <h3>About Dither it!</h3>
+      
+      <p>Dither it! was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from a site called Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method they discussed was to reduce full color images to dithered images with very few colors. Ensuing comments clarified that there are other, more modern ways to compress images which achieve small file sizes while maintaining color, but I still think it is a fun technique that looks cool and is interesting to learn about.</p>
+
+
+      <h4>About Dithering</h4>
+      <p> Dithering is essentially a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
+      <blockquote>Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
+
+
+      <h4>Source code</h4>
+      <p>The Dither it! source code is available on the <a href="https://github.com/alexharris/ditherit">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
+      
+      <h4>Thanks to:</h4>
+
+      <ul>
+      <li>Leon Sorokin, for making <a href="https://github.com/leeoniya/RgbQuant.js">RgbQuant.js</a></li>
+      <li>Don, for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a></li>
+      <li><a href="https://lowtechmagazine.com">Low-tech Magazine, for dither inspiration</a>
+      IcoMoon for icon SVGs</li>
+      </ul>
+      <p>Built by <a href="https://alexharris.online/">Alex Harris</a>.</p>
     </div>
   </div>
 </template>
