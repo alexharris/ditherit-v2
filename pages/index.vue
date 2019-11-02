@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center max-w-full">
+  <div class="flex flex-col items-center max-w-full pb-8">
     <Logo  /> 
     <div class="flex flex-col items-center mt-8" v-show="!imageUploaded">
       <p class="mt-8 text-2xl">An image dithering tool 🏁</p>
@@ -11,9 +11,14 @@
       <div class="w-full md:w-1/4 order-last md:order-first" v-show="imageUploaded">                   
         <div class="flex-1" >
           <ColorPicker v-on:update-palette="onUpdatePalette" :initial-palette="rgbQuantOptions.palette" /> 
-          <div class="mt-4 text-center">
-            <button @click="ditherImage" class="btn-red-large-outline text-lg w-full">Dither</button>
-          </div>  
+          
+            <div class="mt-4 text-center xl:w-64">
+              <button @click="ditherImage" class="btn-red-outline text-lg w-full">🏁 Dither</button>
+            </div>  
+            <div class="w-full text-center mt-2 xl:w-64" v-show="showDitheredImage">
+                <a class="btn-red w-full inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'dither_it_' + fileName">💾 Download</a>
+            </div>  
+                
           <h4 class="text-lg mt-4 font-bold">Options</h4>           
           <!-- Image Size Selector -->
           <div class="mt-2">
@@ -32,7 +37,7 @@
               </div> 
             </div>  
           </div>          
-          <ImageUpload v-on:image-upload="onImageUpload" v-show="imageUploaded" />            
+          <ImageUpload v-on:image-upload="onImageUpload" v-show="imageUploaded"  />                        
         </div>
       </div>
       <!-- End Toolbar -->
@@ -44,7 +49,7 @@
               <div class="loader h-20 w-20 mb-4"></div>  
               <div class="">Dithering...</div>
             </div>
-            <div class="flex flex-col justify-center items-center w-full h-full px-8" v-show="!dithering && showDitheredImage">
+            <div class="flex flex-col justify-center items-center w-full h-full md:px-8" v-show="!dithering && showDitheredImage">
               <canvas id="ditheredImageCanvas" class="max-w-full " ></canvas>
             </div>
           </div>
@@ -55,26 +60,28 @@
         </div>
         <!-- Begin Output -->
         <div class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-16 xl:px-0" v-show="imageUploaded">
-            <div class="w-full md:w-1/2 xl:w-full text-center" >
-                <a class="btn-red-large xl:w-full inline-block" target="_blank" @click="downloadImage" :href="downloadUrl" :download="'dither_it_' + fileName">💾 Download</a>
-            </div>   
-            <div class="border-solid border shadow-lg rounded p-3 mt-2 w-1/2 xl:w-full h-0 md:h-auto invisible md:visible" >  
+
+            <div class="border-solid border shadow-lg rounded p-3 mt-2 w-full h-0 md:h-auto invisible md:visible" >  
                 <h4 class="text-lg font-bold mb-2">File Details</h4>
-                <h5 class="text-md font-bold">Original</h5>
-                <ul>
-                    <li>Filename: {{fileName}} </li>
-                    <li>Filesize: {{originalFileSize}} KB</li>
-                    <li>Width: {{originalCanvasWidth}}px</li>
-                    <li>Height: {{originalCanvasHeight}}px</li>
-                </ul>
-                <div v-show="showDitheredImage">
-                    <h5 class="mt-2 text-md font-bold">Dithered</h5>
+                <div class="flex xl:flex-col">
+                  <div class="w-1/2 lg:w-full">
+                    <h5 class="text-md font-bold">Original</h5>
                     <ul>
-                    <li>Filename: dither_it_{{fileName}} </li>
-                    <li>Filesize: {{downloadFileSize}} KB</li>
-                    <li>Width: {{canvasWidth}}px</li>
-                    <li>Height: {{canvasHeight}}px</li>
-                    </ul>                
+                        <li>Filename: {{fileName}} </li>
+                        <li>Filesize: {{originalFileSize}} KB</li>
+                        <li>Width: {{originalCanvasWidth}}px</li>
+                        <li>Height: {{originalCanvasHeight}}px</li>
+                    </ul>
+                  </div>
+                  <div class="w-1/2 lg:w-full" v-show="showDitheredImage">
+                      <h5 class="mt-2 text-md font-bold">Dithered</h5>
+                      <ul>
+                      <li>Filename: dither_it_{{fileName}} </li>
+                      <li>Filesize: {{downloadFileSize}} KB</li>
+                      <li>Width: {{canvasWidth}}px</li>
+                      <li>Height: {{canvasHeight}}px</li>
+                      </ul>                
+                  </div>
                 </div>
             </div>  
         </div>

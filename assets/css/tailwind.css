@@ -4,32 +4,39 @@
 
 
 .btn-red {
-    @apply bg-red-500 text-white font-bold py-2 px-2 rounded;
+    @apply bg-red-700 text-white font-bold py-2 px-2 rounded;
 }
 .btn-red:hover {
-    @apply bg-red-700;
+    @apply bg-red-800;
+}
+
+.btn-red-outline {
+  @apply border border-red-700 text-red-700 font-bold py-2 px-2 rounded;
+}
+.btn-red-outline:hover {
+  @apply bg-red-800 text-white;
 }
 
 .btn-red-large {
-    @apply bg-red-500 text-white font-bold py-4 px-4 rounded;
+    @apply bg-red-700 text-white font-bold py-4 px-4 rounded;
 }
 .btn-red-large:hover {
-    @apply bg-red-700;
+    @apply bg-red-800;
 }
 
 .btn-red-large-outline {
-    @apply border border-red-500 text-red-500 font-bold py-4 px-4 rounded;
+    @apply border border-red-700 text-red-700 font-bold py-4 px-4 rounded;
 }
 .btn-red-large-outline:hover {
-    @apply bg-red-500 text-white;
+    @apply bg-red-800 text-white;
 }
 
 .btn-blue {
-    @apply bg-blue-500 text-white font-bold py-2 px-2 rounded;
+    @apply bg-blue-700 text-white font-bold py-2 px-2 rounded;
 }
 
 .btn-blue:hover {
-    @apply bg-blue-700;
+    @apply bg-blue-800;
 }
 
 .btn-grey {
@@ -42,8 +49,8 @@
 
 .loader {
     border: 4px solid #ffffff;
-    border-top: 4px solid #000000;
-    border-right: 4px solid #000000;
+    border-top: 4px solid #C53030;
+    border-right: 4px solid #C53030;
     border-radius: 50%;
     animation: spin 2s linear infinite;
   }

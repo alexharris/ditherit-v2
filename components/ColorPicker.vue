@@ -3,19 +3,18 @@
     <div class="border-solid border shadow-lg rounded p-3">
         <!-- Palette menu -->
         <div v-if="!showModal">        
-            <ul class="flex flex-wrap" v-if="palette.length > 0">
-                <li v-for="(item,i) in palette">
+            <div class="flex flex-wrap" v-if="palette.length > 0">
+                <template v-for="(item,i) in palette">
                     
                     <div 
                         class="w-10 h-10 m-1 border border-gray-700 rounded-full cursor-pointer"
-                        v-bind:class="{'shadow-2xl': isActiveSwatch(i)}"
                         v-bind:style="{backgroundColor: item['hex']}" 
                         @click="makeActiveSwatch(i)" 
                     >
                     </div>                
-                </li>
-                <li class="w-10 h-10 m-1 border-dashed border border-red-500 hover:border-gray-900 cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-500 hover:text-gray-900" @click="addNewSwatch()">+</li>
-            </ul>
+                </template>
+                <div class="w-10 h-10 m-1  cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-700 hover:text-red-800" @click="addNewSwatch()">+</div>
+            </div>
             <div v-else class="block w-full"> 
                 <span class="loader h-8 w-8 float-left mr-2"></span>Analyzing palette..
             </div>
@@ -90,7 +89,44 @@ export default {
                 value: 'greenmono',
                 colors: [
                     {hex:'#eeffdb'}, {hex:'#1d3801'} ]
-                }           
+                },
+                { name: 'Green', 
+                value: 'green', 
+                colors: [ {hex:'#ffffff'}, {hex: '#c4f441'}, {hex: '#6da90c'}, {hex: '#000000'}
+                ]},
+                { name: 'Blue Monochrome', value: 'bluemono', colors: [
+                    {hex: '#dbf9ff'}, {hex: '#02474f'}
+                ]},
+                { name: 'Blue', value: 'blue', colors: [
+                    {hex: '#ffffff'}, {hex: '#41e2f4'}, {hex: '#0c9fa9'}, {hex: '#000000'}
+                ]},
+                { name: 'Yellow Monochrome', value: 'yellowmono', colors: [
+                    {hex: '#fffedb'}, {hex: '#303001'}
+                ]},
+                { name: 'Yellow', value: 'yellow', colors: [
+                    {hex: '#ffffff'}, {hex: '#f4eb41'}, {hex: '#a9a40c'}, {hex: '#000000'}
+                ]},
+                { name: 'Black & White', value: 'blackwhite', colors: [
+                    {hex: '#ffffff'}, {hex: '#000000'}
+                ]},
+                { name: 'RGBY', value: 'rgby', colors: [
+                    {hex: '#FF0000'}, {hex: '#00FF00'}, {hex: '#0000FF'}, {hex: '#FFFF00'}
+                ]},
+                { name: 'Hamburger', value: 'hamburger', colors: [
+                    {hex: '#ca9a4a'}, {hex: '#502902'}, {hex: '#990000'}, {hex: '#38761d'}
+                ]},
+                { name: 'A Field', value: 'field', colors: [
+                    {hex: '#81b4ed'}, {hex: '#7cb8af'}, {hex: '#c6ba79'}, {hex: '#7f6000'}
+                ]},
+                { name: 'Retrofuturism', value: 'retrofuturism', colors: [
+                    {hex: '#000000'}, {hex: '#c90fff'}, {hex: '#00cece'}, {hex: '#ffb600'}
+                ]},
+                { name: 'Rupaul\'s Drag Race', value: 'rupaul', colors: [
+                    {hex: '#f397d6'}, {hex: '#915741'}, {hex: '#7c0c0e'}, {hex: '#000000'}
+                ]},
+                { name: 'Bonfire of the Vanities', value: 'bonfire', colors: [
+                    {hex: '#FFDE6C'}, {hex: '#000000'}, {hex: '#910c02'}, {hex: '#567196'}
+                ]},                           
             ]
         }
     },

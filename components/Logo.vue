@@ -1,6 +1,7 @@
 <template>
 
-<svg class="windsor-logo max-w-full w-64" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="645.365px" height="124.878px" viewBox="0 0 645.365 124.878" enable-background="new 0 0 645.365 124.878" xml:space="preserve" ><g><path d="M123.007,70.396c0,13.017-4.05,23.182-12.15,30.492c-6.801,6.107-16.35,10.314-28.65,12.619
+<svg class="windsor-logo max-w-full w-64" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="645.365px" height="124.878px" viewBox="0 0 645.365 124.878" enable-background="new 0 0 645.365 124.878" xml:space="preserve" >
+<g fill="#C53030"><path d="M123.007,70.396c0,13.017-4.05,23.182-12.15,30.492c-6.801,6.107-16.35,10.314-28.65,12.619
 					 c-8.602,1.604-19.852,2.402-33.75,2.402h-24.75c-3,0-5.201-0.201-6.6-0.603c-2.602-0.703-3.9-2.208-3.9-4.519
 					 c0-1.807,1.976-3.564,5.932-5.274c2.128-0.902,3.497-2.508,4.106-4.818c0.303-1.406,0.53-3.113,0.682-5.121
 					 c0.152-2.009,0.23-4.219,0.23-6.628v-3.917V58.369v-3.464v-3.466c0-6.928-0.075-12.073-0.225-15.438
