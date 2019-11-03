@@ -1,11 +1,12 @@
-# STATIC
+# About Dither it!
 
-**This directory is not required, you can delete it if you don't want to use it.**
+Dither it! is a web application for dithering images, located at <a href="https://ditherit.com">ditherit.com</a></p>
 
-This directory contains your static files.
-Each file inside this directory is mapped to `/`.
-Thus you'd want to delete this README.md before deploying to production.
+It was inspired by a [blog post](https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/) from a site called Low-tech Magazine about how to reduce the energy usage associated with running websites. One method they discussed was to reduce full color images to dithered images with very few colors. Ensuing comments clarified that there are other, more modern ways to compress images which achieve small file sizes while maintaining color, but we still think it is a fun technique that looks cool and is interesting to learn about.
 
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
+## Thanks
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/guide/assets#static).
+
+- Leon Sorokin, for making [RgbQuant.js](https://github.com/leeoniya/RgbQuant.js)
+- Don, for making [vue-color](https://xiaokaike.github.io/vue-color/)
+- [Low-tech Magazine](https://lowtechmagazine.com)

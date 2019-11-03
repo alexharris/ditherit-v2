@@ -1,0 +1,17 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Alex Harris -- Everything -- @alexharris6
+
+# THANKS
+
+    Leon Sorokin, for making RgbQuant.js
+    Don, for making vue-color (https://xiaokaike.github.io/vue-color/)
+    Low-tech Magazine, for dither inspiration (https://github.com/leeoniya/RgbQuant.js)
+
+# TECHNOLOGY COLOPHON
+
+    CSS3 (Tailwind), HTML5
+    Javascript, Vue.js, Nuxt
