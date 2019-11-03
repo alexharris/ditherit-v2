@@ -96,7 +96,33 @@
         </div>
       </div>
     </div>
-    <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-32 flex-col md:flex-row">
+    <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-16 flex-col text-center">
+      <h4 class="mt-8">Red Monochrome</h4>
+      <div class="flex flex-col md:flex-row text-center justify-center items-center mt-4">
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/cover-the-earth.jpg" /></div>
+        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/dither_cover-the-earth.jpg" /></div>
+      </div>
+      <h4 class="mt-8">Original</h4>
+      <div class="flex flex-col md:flex-row items-center text-center mt-8 ">
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/beauty-spot.jpg" /></div>
+        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/beauty-spot-dither.jpg" /></div>
+      </div>
+      <h4 class="mt-8">RGBY</h4>
+      <div class="flex flex-col md:flex-row text-center mt-8 ">
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/duck.jpg" /></div>
+        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/duck-dither.jpg" /></div>
+      </div>
+      <h4 class="mt-8">Black & White</h4>
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/corolla.jpg" /></div>
+        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/corolla-dither.jpg" /></div>
+      </div>                  
+    </div>
+    <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-16 flex-col md:flex-row">
       <div class="w-full md:w-1/2 p-4">
       <h4>About Dithering</h4>
       <p> Dithering is essentially a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
@@ -119,7 +145,7 @@
       <ul>
       <li>Leon Sorokin, for making <a href="https://github.com/leeoniya/RgbQuant.js">RgbQuant.js</a></li>
       <li>Don, for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a></li>
-      <li><a href="https://lowtechmagazine.com">Low-tech Magazine</a></a></li>
+      <li><a href="https://lowtechmagazine.com">Low-tech Magazine</a></li>
       </ul>
       
       </div>

@@ -91,5 +91,12 @@ blockquote {
 ul {
   @apply mt-2
 }
+
+@media (max-width: 768px) { 
+
+  .example-arrow{
+    transform: rotate(90deg);
+  }
+}
             
 
