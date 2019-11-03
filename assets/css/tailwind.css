@@ -92,6 +92,22 @@ ul {
   @apply mt-2
 }
 
+.starburst path {
+  fill: #FFFF00
+}
+
+.starburst:hover path {
+  fill: #CAC000
+}
+
+.starburst text {
+  fill: #000000
+}
+
+.starburst:hover text {
+  fill: #FF0000
+}
+
 @media (max-width: 768px) { 
 
   .example-arrow{

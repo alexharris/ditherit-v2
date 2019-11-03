@@ -4,6 +4,8 @@
     <div class="flex flex-col items-center mt-8" v-show="!imageUploaded">
       <p class="mt-8 text-2xl">An image dithering tool 🏁</p>
       <img class="mt-8" src="~/assets/earth-dither.gif" />      
+
+      
     </div>
     <div class="p-y12 px-4 flex flex-col md:flex-row mt-8 w-full justify-center">
 
@@ -127,7 +129,8 @@
       <h4>About Dithering</h4>
       <p> Dithering is essentially a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
       <blockquote>Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
-
+      <p>I'm no scientist, but I think basically what that means is: When reducing an image from many colors to fewer colors, you of course can't get every pixel exactly right, you can spread that error around to neighboring pixels which helps it look more like the original. The various wasy to spread that error around are the various dithering algorithms.</p>
+      <p>Is this wrong? <a href="https://twitter.com/alexharris6">Tweet at me</a>.</p>
 
       </div>
       <div class="w-full md:w-1/2 p-4">
@@ -139,7 +142,19 @@
 
       <h4>Source code</h4>
       <p>The Dither it! source code is available on the <a href="https://github.com/alexharris/ditherit-v2">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
-
+      <div class="mt-8 w-full inline-block border-solid border shadow-lg rounded p-3 flex items-center">
+        <a class="border-0" href="https://www.paypal.me/alexharris6">
+          <svg class="w-32 float-left starburst" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100.819 103.278" xml:space="preserve">
+            <path stroke-miterlimit="10" d="M22.426,12.262c3.916,13.892,1.229,19.672-17.174,24.251
+            c12.256,16.732,10.45,22.707-0.797,34.271C17.508,69.64,26.115,70.05,21.196,90.95c14.174-7.54,21.099-5.277,32.574,7.018
+            c5.328-17.213,16.752-15.636,26.442-10.295c-4.098-18.033,0-20.902,15.164-22.951c-13.524-9.017-10.246-15.983,0.409-25
+            c-15.573-3.623-19.671-6.558-16.803-23.771c-17.213,7.787-21.115-1.59-27.262-11.017C45.786,19.23,37.994,17.771,22.426,12.262z"/>
+            <text x="22" y="45" class="text-sm">Support</text>
+            <text x="22" y="65" class="text-sm">Dither it!</text>
+          </svg> 
+        </a>
+        <p class="text-lg p-8">Enjoy Dither it!? <a href="https://www.paypal.me/alexharris6">Make a donation</a> to help us keep the lights on.</p>
+    </div>
       <h4>Thanks</h4>
 
       <ul>
@@ -147,12 +162,14 @@
       <li>Don, for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a></li>
       <li><a href="https://lowtechmagazine.com">Low-tech Magazine</a></li>
       </ul>
-      
-      </div>
-    </div>
+
     <p class="text-xl">Built by <a href="https://alexharris.online/">Alex Harris</a>.</p>
 
   </div>
+          
+      </div>
+    </div>
+
 </template>
 
 <script>
@@ -258,6 +275,8 @@ export default {
     },
     ditherImage(img) {
       console.log('ditherImage called')  
+
+      window.scrollTo(0,0); // go back to the top
 
       this.dithering = true
       this.showDitheredImage = true
