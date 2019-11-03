@@ -71,7 +71,7 @@
         <div class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-8 xl:px-0" v-show="imageUploaded">
 
             <div class="border-solid border shadow-lg rounded p-3 mt-2 w-full h-0 md:h-auto invisible md:visible" >  
-                <h4 class="text-lg font-bold mb-2">File Details</h4>
+                <h4 class="text-lg font-bold mb-2 mt-0">File Details</h4>
                 <div class="flex xl:flex-col">
                   <div class="w-1/2 lg:w-full">
                     <h5 class="text-md font-bold">Original</h5>
@@ -96,30 +96,36 @@
         </div>
       </div>
     </div>
-    <div class="w-full mt-32 px-4 md:px-32">
-      <h3>About Dither it!</h3>
-      
-      <p>Dither it! was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from a site called Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method they discussed was to reduce full color images to dithered images with very few colors. Ensuing comments clarified that there are other, more modern ways to compress images which achieve small file sizes while maintaining color, but I still think it is a fun technique that looks cool and is interesting to learn about.</p>
-
-
+    <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-32 flex-col md:flex-row">
+      <div class="w-full md:w-1/2 p-4">
       <h4>About Dithering</h4>
       <p> Dithering is essentially a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
       <blockquote>Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
 
 
-      <h4>Source code</h4>
-      <p>The Dither it! source code is available on the <a href="https://github.com/alexharris/ditherit">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
+      </div>
+      <div class="w-full md:w-1/2 p-4">
+      <h4>About Dither it!</h4>
       
-      <h4>Thanks to:</h4>
+      <p>Dither it! was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from a site called Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method they discussed was to reduce full color images to dithered images with very few colors. Ensuing comments clarified that there are other, more modern ways to compress images which achieve small file sizes while maintaining color, but I still think it is a fun technique that looks cool and is interesting to learn about.</p>
+
+
+
+      <h4>Source code</h4>
+      <p>The Dither it! source code is available on the <a href="https://github.com/alexharris/ditherit-v2">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
+
+      <h4>Thanks</h4>
 
       <ul>
       <li>Leon Sorokin, for making <a href="https://github.com/leeoniya/RgbQuant.js">RgbQuant.js</a></li>
       <li>Don, for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a></li>
-      <li><a href="https://lowtechmagazine.com">Low-tech Magazine, for dither inspiration</a>
-      IcoMoon for icon SVGs</li>
+      <li><a href="https://lowtechmagazine.com">Low-tech Magazine</a></a></li>
       </ul>
-      <p>Built by <a href="https://alexharris.online/">Alex Harris</a>.</p>
+      
+      </div>
     </div>
+    <p class="text-xl">Built by <a href="https://alexharris.online/">Alex Harris</a>.</p>
+
   </div>
 </template>
 
@@ -218,7 +224,8 @@ export default {
       this.fileName = filename
       this.imageUploaded = true
 
-      // console.log(this.$children[1]._data.presetPaletteSelection = 'original')
+      this.$children[1]._data.presetPaletteSelection = 'original'
+
       setTimeout(() => { 
         this.analyzeImagePalette() 
       }, 100);
