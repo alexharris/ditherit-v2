@@ -1,9 +1,3 @@
-// const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
-//   router: {
-//     base: '/ditherit-v2/'
-//   }
-// } : {}
-
 export default {
   mode: 'spa',
   /*
@@ -59,9 +53,6 @@ export default {
   },
   generate: {
     dir: 'docs'
-  },
-  router: {
-    base: '/ditherit-v2/'
   }
 }
 
