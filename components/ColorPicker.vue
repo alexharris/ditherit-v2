@@ -7,7 +7,7 @@
                 <template v-for="(item,i) in palette">
                     
                     <div 
-                        class="w-10 h-10 m-1 border border-gray-700 rounded-full cursor-pointer"
+                        class="w-10 h-10 m-1 border border-gray-700 rounded-full cursor-pointer swatch"
                         v-bind:style="{backgroundColor: item['hex']}" 
                         @click="makeActiveSwatch(i)" 
                     >

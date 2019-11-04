@@ -114,5 +114,17 @@ ul {
     transform: rotate(90deg);
   }
 }
+
+.swatch:hover {
+  @apply bg-gray-700 border-2 shadow-inner
+  /* animation: throb .5s ease; */
+}
+
+@keyframes throb {
+50% {
+  border: 2px solid black;
+
+}
+}
             
 
