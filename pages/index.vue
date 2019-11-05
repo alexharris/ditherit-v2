@@ -32,7 +32,7 @@
                 </span>                
               </span> 
             </div>
-            <div class="w-full" v-if="!showOptionsModalSize">
+            <div class="w-full relative" v-if="!showOptionsModalSize">
               <select id="imageSize" v-model="canvasWidth" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline">
                   <option id="originalSize" name="originalSize" :value="originalCanvasWidth">{{originalCanvasWidth}} (Original)</option> 
                   <template v-for="(v,i) in imageWidths">
@@ -78,8 +78,10 @@
             </div>              
             <!-- End Algorithm Selector -->              
             <!-- Serpentine Dither -->
-            <div class="flex flex-row items-center justify-between mt-4">
-              <label for="ditherSerp" class="font-bold">Serpentine Dither</label>
+            <div class="flex flex-col items-center justify-between mt-4">
+            <div class="inline-block relative w-full" >
+              <input id="ditherSerp" type="checkbox" class="form-checkbox" v-model="rgbQuantOptions.dithSerp">
+              <span class="ml-2"><strong>Serpentine Dither</strong></span>
               <span class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer" @click="showOptionsModalSerp = !showOptionsModalSerp">
                 <span v-if="!showOptionsModalSerp">
                   ?
@@ -87,18 +89,16 @@
                 <span v-else>
                   X
                 </span>  
-              </span> 
+              </span>               
             </div>
-            <div class="inline-block relative w-full" v-if="!showOptionsModalSerp">
-              <input id="ditherSerp" type="checkbox" class="form-checkbox" v-model="rgbQuantOptions.dithSerp">
-              <span class="ml-2" v-if="rgbQuantOptions.dithSerp">Yes</span>
-              <span v-else>No</span>
-            </div>
-            <div v-else>
+            <div class="inline-block relative w-full" v-if="showOptionsModalSerp">
               <div class="mt-2 bg-red-100 p-2 rounded">
                   This determines if the dithering just goes left to right, top to bottom, or does a snake wiggle.
               </div>            
-            </div>              
+            </div>  
+
+            </div>
+            
             <!-- End Serpentine Dither -->
           </div>           
         </div>                                                   
@@ -133,32 +133,53 @@
           <!-- End Toolbar Stuff -->
         </div>
         <!-- Begin Output -->
-        <div class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-8 xl:px-0" v-show="imageUploaded">
+        <div class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-8 xl:px-0" v-if="imageUploaded">
 
-            <div class="border-solid border shadow-inner rounded p-3 mt-2 w-full h-0 md:h-auto invisible md:visible" >  
-                <h4 class="text-lg font-bold mb-2 mt-0">File Details</h4>
+            <div class="border-solid border shadow-inner rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible" >  
+                <h4 class="text-lg font-bold mt-0">Original File</h4>
                 <div class="flex xl:flex-col">
                   <div class="w-1/2 lg:w-full">
-                    <h5 class="text-md font-bold">Original</h5>
-                    <ul>
-                        <li>Filename: {{fileName}} </li>
-                        <li>Filesize: {{originalFileSize}} KB</li>
-                        <li>Width: {{originalCanvasWidth}}px</li>
-                        <li>Height: {{originalCanvasHeight}}px</li>
+                    <ul class="mt-1">
+                        <li><strong>Size: </strong>{{originalCanvasWidth}}px x {{originalCanvasHeight}}px</li>
+                        <li><strong>Filesize: </strong>{{(originalFileSize).toFixed(2)}}kb</li>
                     </ul>
                   </div>
-                  <div class="w-1/2 lg:w-full" v-show="showDitheredImage">
+                  <!-- <div class="w-1/2 lg:w-full" v-show="showDitheredImage">
                       <h5 class="mt-2 text-md font-bold">Dithered</h5>
                       <ul>
                       <li>Filename: dither_it_{{fileName}} </li>
-                      <li>Filesize: {{downloadFileSize}} KB</li>
                       <li>Width: {{canvasWidth}}px</li>
                       <li>Height: {{canvasHeight}}px</li>
                       </ul>                
+                  </div> -->
+                </div>
+            </div>  
+            <div class="border-solid border shadow-inner rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible" v-if="showDitheredImage">  
+                <h4 class="text-lg font-bold mt-0">Dithered File</h4>
+                <div class="flex xl:flex-col">
+                  <div class="w-1/2 lg:w-full">
+                    <ul class="mt-1">
+                      <li><strong>Size: </strong>{{canvasWidth}}px x {{(canvasHeight).toFixed(2)}}px</li>
+                      <li><strong>Filesize: </strong>{{(downloadFileSize).toFixed(2)}}kb</li>
+      
+                    <!-- {{originalFileSize}}<br />
+                    {{downloadFileSize}} -->
+                    </ul>
                   </div>
                 </div>
             </div>  
-        </div>
+            <div class="border-solid border shadow-inner rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible" v-if="showDitheredImage" v-bind:class="[ratioGood ? 'bg-green-100' : '', 'bg-red-100']">
+              <h4 class="text-lg font-bold mt-0">Filesize Ratio</h4>
+              
+              <div v-if="ratioGood">                
+                <p class="mt-1">The filesize is <strong>{{((downloadFileSize/originalFileSize)*100).toFixed(2)}}%</strong> smaller than the original 👍</p> 
+              </div>    
+              <div v-else>
+                <p class="mt-1">The filesize is <strong>{{((downloadFileSize/originalFileSize)*100).toFixed(2)}}%</strong> larger than the original 🎭</p> 
+              </div>  
+              
+            </div>                       
+        </div>       
       </div>
     </div>
 
@@ -252,6 +273,13 @@ export default {
     canvasHeight() {
       var ratio = this.originalCanvasHeight / this.originalCanvasWidth
       return this.canvasWidth * ratio
+    },
+    ratioGood() {
+      if(this.downloadFileSize/this.originalFileSize < 1) {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -336,6 +364,7 @@ export default {
 
         ctx.putImageData( imgData, 0,0 ); // put the new dithered image data back on the canvas   
         
+        this.downloadImage();
         this.dithering = false
       },100);   
       
