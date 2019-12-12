@@ -172,7 +172,7 @@
               <h4 class="text-lg font-bold mt-0">Filesize Ratio</h4>
               
               <div v-if="ratioGood">                
-                <p class="mt-1">The filesize is <strong>{{((downloadFileSize/originalFileSize)*100).toFixed(2)}}%</strong> smaller than the original 👍</p> 
+                <p class="mt-1">The filesize is <strong>{{100 - (((downloadFileSize/originalFileSize)*100).toFixed(2))}}%</strong> smaller than the original 👍</p> 
               </div>    
               <div v-else>
                 <p class="mt-1">The filesize is <strong>{{((downloadFileSize/originalFileSize)*100).toFixed(2)}}%</strong> larger than the original 🎭</p> 
@@ -210,6 +210,7 @@ import ImageUpload from '~/components/ImageUpload.vue'
 import ColorPicker from '~/components/ColorPicker.vue'
 import InputBlock from '~/components/InputBlock.vue'
 import BottomContent from '~/components/BottomContent.vue'
+
 
 export default {
   components: {
@@ -333,7 +334,8 @@ export default {
     },
     ditherImage(img) {
       console.log('ditherImage called')  
-
+      fathom('trackGoal', 'SFMGAORY', 0);
+      
       window.scrollTo(0,0); // go back to the top
 
       this.dithering = true

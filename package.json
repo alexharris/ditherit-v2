@@ -12,15 +12,17 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "test": "jest",
     "build:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt build",
-    "generate:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt generate"    
+    "generate:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt generate"
   },
   "dependencies": {
     "@nuxtjs/pwa": "^3.0.0-0",
     "eslint-plugin-vue": "^5.2.3",
+    "fs": "0.0.1-security",
     "nuxt": "^2.0.0",
     "rgbquant": "^1.1.2",
     "ts-jest": "^23.10.5",
-    "vue-color": "^2.7.0"
+    "vue-color": "^2.7.0",
+    "vue-palette-builder": "^1.0.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",
