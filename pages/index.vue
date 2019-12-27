@@ -240,6 +240,10 @@
                     <strong>Filesize: </strong
                     >{{ originalFileSize.toFixed(2) }}kb
                   </li>
+                  <li>
+                    <strong>Filetype: </strong
+                    >{{ imageType }}
+                  </li>                  
                 </ul>
               </div>
               <!-- <div class="w-1/2 lg:w-full" v-show="showDitheredImage">
@@ -394,7 +398,8 @@ export default {
       showOptionsModalSerp: false,
       downloadUrl: '', // the url src thing to download the image
       downloadFileSize: '', // the filesize of the download
-      originalFileSize: '' // filesize of the original
+      originalFileSize: '', // filesize of the original
+      imageType: ''
     }
   },
   computed: {
@@ -413,15 +418,10 @@ export default {
   },
   methods: {
     downloadImage() {
-      console.log('calc download')
       const ditheredImageCanvas = document.getElementById('ditheredImageCanvas') // the canvas that holds the dithered image
-      const head = 'data:image/jpeg;base64,'
-      const downloadUrl = ditheredImageCanvas.toDataURL('image/jpeg')
-      console.log(
-        Math.round(((downloadUrl.length - head.length) * 3) / 4) / 1000
-      )
-      this.downloadFileSize =
-        Math.round(((downloadUrl.length - head.length) * 3) / 4) / 1000
+      const downloadUrl = ditheredImageCanvas.toDataURL(this.imageType, 0.72)
+
+      this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
       this.downloadUrl = downloadUrl
     },
 
@@ -434,6 +434,8 @@ export default {
     },
     onImageUpload(width, height, filename, filetype) {
       fathom('trackGoal', 'HORTCOPW', 0)
+
+      this.imageType = filetype
 
       this.showDitheredImage = false
       console.log(width, height, filename, filetype)

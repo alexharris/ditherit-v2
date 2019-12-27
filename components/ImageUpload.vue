@@ -6,7 +6,7 @@
       <input
         id="imageLoader"
         type="file"
-        accept=".jpg, .png, .gif, .tif, .bmp"
+        accept=".jpg, .png, .gif"
         name="imageLoader"
         class="hidden"
         @change="imageUploaded"
