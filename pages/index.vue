@@ -51,8 +51,8 @@
                 <option
                   id="originalSize"
                   name="originalSize"
-                  :value="originalCanvasWidth"
-                  >{{ originalCanvasWidth }} (Original)</option
+                  :value="'original'"
+                  >Original</option
                 >
                 <template v-for="(v, i) in imageWidths">
                   <option :id="v" name="imageWidth" :value="v">{{ v }}</option>
@@ -196,12 +196,12 @@
 
             <img class="bg-red-600" :src="selectedImage.src" v-if="!showDitheredImage"/>
             <div class="flex flex-row flex-wrap">
-              <div v-for="n in this.numberOfImages">
+              <div v-for="n in this.numberOfImages" v-if="numberOfImages > 1">
               
                 <img
                   :id="'originalImage' + n"
                   class="max-w-full w-32"
-                  @click="analyzeImagePalette"
+                  @click="analyzeImagePalette($event.target)"
                 />
               </div>
             </div>
@@ -247,7 +247,7 @@
                   </li>
                   <li>
                     
-                    <strong>Filesize: </strong>{{ Math.round(((selectedImage.src.length) * 3) / 4) / 1000 }}kb
+                    <strong>Filesize: </strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb
                   </li>
                   <li>
                     <strong>Filetype: </strong>{{ selectedImage.type }}
@@ -273,8 +273,8 @@
               <div class="w-1/2 lg:w-full">
                 <ul class="mt-1">
                   <li>
-                    <strong>Size: </strong>{{ canvasWidth }}px x
-                    {{ canvasHeight }}px
+                    <strong>Size: </strong>{{ ditheredImageWidth }}px x
+                    {{ canvasHeight.toFixed(0) }}px
                   </li>
                   <li>
                     <strong>Filesize: </strong>
@@ -300,7 +300,7 @@
                 <strong
                   >{{
                     100 -
-                      ((downloadFileSize / originalFileSize) * 100).toFixed(2)
+                      ((downloadFileSize / (Math.round(((selectedImage.src.length) * 3) / 4) / 1000)) * 100).toFixed(2)
                   }}%</strong
                 >
                 smaller than the original 👍
@@ -311,7 +311,7 @@
                 The filesize is
                 <strong
                   >{{
-                    ((downloadFileSize / originalFileSize) * 100).toFixed(2)
+                    (( downloadFileSize / (Math.round(((selectedImage.src.length) * 3) / 4) / 1000)) * 100).toFixed(2)
                   }}%</strong
                 >
                 larger than the original 🎭
@@ -410,13 +410,13 @@ export default {
       imageType: '',
       numberOfImages: '',
       images: [],
-      selectedImage: ''
+      selectedImage: '',
     }
   },
   computed: {
 
     ratioGood() {
-      if (this.downloadFileSize / this.originalFileSize < 1) {
+      if (this.downloadFileSize / (Math.round(((this.selectedImage.src.length) * 3) / 4) / 1000) < 1) {
         return true
       } else {
         return false
@@ -424,7 +424,11 @@ export default {
     },
     canvasHeight() {
       const ratio = this.selectedImage.naturalHeight / this.selectedImage.naturalWidth
-      return this.canvasWidth * ratio
+      return document.getElementById('dithered_' + this.selectedImage.id).width * ratio
+      
+    },
+    ditheredImageWidth() {
+      return document.getElementById('dithered_' + this.selectedImage.id).width
     },
     downloadFileSize() {
       const ditheredCanvas = document.getElementById('dithered_' + this.selectedImage.id)
@@ -435,7 +439,9 @@ export default {
 
   methods: {
     getSelectedImageDetails(img) {
-      img.type = this.images[img.id].filetype
+      console.log(img)
+      console.log(this.images)
+      // img.type = this.images[img.id].filetype
       this.selectedImage = img
     },
     // this calculates the dithered image height, based on whatever width is selected
@@ -459,7 +465,8 @@ export default {
       fathom('trackGoal', 'HORTCOPW', 0)
 
       this.images[id] = {width, height, filename, filetype}
-      this.getSelectedImageDetails(img)
+      this.selectedImage = img // set the selected image
+      img.type = this.images[id].filetype //give the img object the img type
 
       for (let i = 0; i < this.numberOfImages; i++) {
         this.imageType = filetype
@@ -471,7 +478,6 @@ export default {
         const head = 'data:' + filetype + ';base64,'
 
         this.rgbQuantOptions.palette = []
-
 
         if (width > 1080) {
           this.canvasWidth = 1080
@@ -486,9 +492,9 @@ export default {
 
         this.$children[1]._data.presetPaletteSelection = 'original'
       }
-      // setTimeout(() => {
-      //   this.analyzeImagePalette(id)
-      // }, 100)
+      setTimeout(() => {
+        this.analyzeImagePalette(document.getElementById('originalImage1'))
+      }, 100)
     },
     ditherImage(img) {
       console.log('ditherImage called')
@@ -499,20 +505,28 @@ export default {
       this.dithering = true
       this.showDitheredImage = true
 
+
       setTimeout(() => {
         for (let i = 1; i < this.numberOfImages + 1; i++) {
+
           const originalImage = document.getElementById('originalImage' + i) // the canvas that holds the original image
           const ditheredImageCanvas = document.getElementById('dithered_originalImage' + i) // the canvas that holds the dithered image
           const ctx = ditheredImageCanvas.getContext('2d') // canvas context
-          console.log(originalImage)
-          console.log(this.canvasWidth, originalImage.naturalHeight)
-          const height = (originalImage.naturalHeight / originalImage.naturalWidth) * this.canvasWidth
-          console.log(height)
+          const width = 1
+          
+          if(this.canvasWidth === 'original') {            
+            width = originalImage.naturalWidth
+            
+          } else {
+            width = this.canvasWidth
+          }
 
-          ctx.canvas.width = this.canvasWidth // tell the canvas what size to be
+          const height = (originalImage.naturalHeight / originalImage.naturalWidth) * width
+
+          ctx.canvas.width = width // tell the canvas what size to be
           ctx.canvas.height = height // tell the canvas what height to be
 
-          ctx.drawImage(originalImage, 0, 0, this.canvasWidth, height) // put the image on the canvas
+          ctx.drawImage(originalImage, 0, 0, width, height) // put the image on the canvas
 
           // create new RgbQuant instance
           const q = new RgbQuant(this.rgbQuantOptions)
@@ -524,7 +538,7 @@ export default {
           const imgData = ctx.getImageData(
             0,
             0,
-            this.canvasWidth,
+            width,
             height
           ) // get the image data from the canvas
 
@@ -539,28 +553,20 @@ export default {
       // this.downloadImage()
     },
     analyzeImagePalette(e) {
-      // this is because the first time we pass e in, it doesnt have a target
-      if(e.target === undefined){
-        this.getSelectedImageDetails(e)
-      } else {
-        this.getSelectedImageDetails(e.target)
-      }
+
+      this.selectedImage = e
 
       this.rgbQuantOptions.palette = []
 
-      // const imageCanvas = document.getElementById(id)
       // create new RgbQuant instance
       const q = new RgbQuant(this.rgbQuantOptions)
       // analyze histograms
-
-      if(e.target === undefined){
-        q.sample(e)
-      } else {
-        q.sample(e.target)
-      }
+      q.sample(e)
 
       this.rgbQuantOptions.palette = q.palette(true)
       this.specsCalculated = true
+
+      
     }
   }
 }
