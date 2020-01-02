@@ -30,7 +30,6 @@ export default {
       this.reportNumberOfImages(e)
       this.images = e.target.files
 
-
       setTimeout(() => {
         // wait a sec before telling mama
         for (let i = 0; i < this.images.length; i++) {
@@ -39,7 +38,6 @@ export default {
       }, 100)
 
       this.loading = false
-
     },
     createOriginalImages(image, i) {
       const id = 'originalImage' + (i + 1) // the id for img for the image
@@ -50,7 +48,7 @@ export default {
         tempImage.src = event.target.result // replace the image source, of which there is none at this point, with the result of the Reader
         setTimeout(() => {
           // wait a sec before telling mama
-          this.tellYourMama(image, id)
+          this.tellYourMama(image, id, i)
         }, 100)
       }
       reader.readAsDataURL(image) // Read the data of the target as a data url
@@ -58,7 +56,7 @@ export default {
     reportNumberOfImages(e) {
       this.$emit('number-images', e.target.files.length)
     },
-    tellYourMama(image, id) {
+    tellYourMama(image, id, i) {
       const img = document.getElementById(id)
       this.$emit(
         'image-upload',
@@ -67,7 +65,8 @@ export default {
         img.naturalHeight,
         image.name,
         image.type,
-        id
+        id,
+        i
       )
     }
   }

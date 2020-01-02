@@ -20,7 +20,7 @@
           />
 
           <div class="mt-4 text-center xl:w-64">
-            <button class="btn-red text-lg w-full" @click="ditherImage">
+            <button class="btn-red text-lg w-full" @click="ditherImage()">
               🏁 Dither
             </button>
           </div>
@@ -172,7 +172,7 @@
         <!-- Begin Main Display -->
         <div class="px-4 flex flex-col flex-1 items-center">
           <!-- Dithered Canvas Display -->
-          <div class="max-w-5xl">
+          <div class="max-w-full" v-if="images.originalImage1">
             <div
               v-show="dithering"
               class="flex flex-col justify-center items-center"
@@ -184,8 +184,9 @@
               v-show="!dithering && showDitheredImage"
               class="flex flex-col justify-center items-center w-full h-full "
             >
-              <div v-for="n in this.numberOfImages" v-show="selectedImage.id == 'originalImage' + n">            
-                <canvas :id="'dithered_originalImage' + n" class="max-w-full"></canvas>
+
+              <div v-for="n in this.numberOfImages" v-show="selectedImage.id == 'originalImage' + n">    
+                <canvas :id="'dithered_originalImage' + n" class="max-w-full" :width="images.originalImage1.width" :height="images.originalImage1.height"></canvas>
               </div>
             </div>
           </div>
@@ -273,8 +274,8 @@
               <div class="w-1/2 lg:w-full">
                 <ul class="mt-1">
                   <li>
-                    <strong>Size: </strong>{{ ditheredImageWidth }}px x
-                    {{ canvasHeight.toFixed(0) }}px
+                    <strong>Size: </strong>{{ selectedImage.naturalWidth }}px x
+                    {{ selectedImage.naturalHeight }}px
                   </li>
                   <li>
                     <strong>Filesize: </strong>
@@ -365,7 +366,7 @@ export default {
     return {
       originalCanvasWidth: '',
       originalCanvasHeight: '',
-      canvasWidth: '', // this is what the dithered canvas renders off of, height comes from a computed property
+      canvasWidth: 'original', // this is what the dithered canvas renders off of, height comes from a computed property
       fileName: '', // the name of the loaded file
       loading: false, // for the loading spinner
       dithering: false, // for the dithering spinner
@@ -411,10 +412,10 @@ export default {
       numberOfImages: '',
       images: [],
       selectedImage: '',
+      ditheredWidth: '',
     }
   },
   computed: {
-
     ratioGood() {
       if (this.downloadFileSize / (Math.round(((this.selectedImage.src.length) * 3) / 4) / 1000) < 1) {
         return true
@@ -423,28 +424,29 @@ export default {
       }
     },
     canvasHeight() {
-      const ratio = this.selectedImage.naturalHeight / this.selectedImage.naturalWidth
-      return document.getElementById('dithered_' + this.selectedImage.id).width * ratio
       
-    },
-    ditheredImageWidth() {
-      return document.getElementById('dithered_' + this.selectedImage.id).width
+      // const imageRatio = this.selectedImage.naturalHeight / this.selectedImage.naturalWidth
+      
+      // if(this.canvasWidth == 'original') {
+      //   return this.selectedImage.naturalHeight
+      // } else {
+      //   const sizeRatio = this.canvasWidth / this.selectedImage.naturalWidth
+        return document.getElementById('dithered_' + this.selectedImage.id).height
+      // }
+
+      // console.log(this.selectedImage.naturalWidth)
+      // console.log(this.selectedImage.naturalHeight)
+      // console.log(this.canvasWidth)
+      // this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).width * ratio
+      // return 200
     },
     downloadFileSize() {
       const ditheredCanvas = document.getElementById('dithered_' + this.selectedImage.id)
       const dataUrl = ditheredCanvas.toDataURL(this.imageType, 0.72)
-      return Math.round((dataUrl.length * 3) / 4) / 1000      
+      return Math.round((dataUrl.length * 3) / 4) / 1000
     }
   },
-
   methods: {
-    getSelectedImageDetails(img) {
-      console.log(img)
-      console.log(this.images)
-      // img.type = this.images[img.id].filetype
-      this.selectedImage = img
-    },
-    // this calculates the dithered image height, based on whatever width is selected
     getNumberOfImages(number) {
       this.numberOfImages = number
     },
@@ -463,38 +465,42 @@ export default {
     },
     onImageUpload(img, width, height, filename, filetype, id) {
       fathom('trackGoal', 'HORTCOPW', 0)
-
+      console.log('on image upload')
       this.images[id] = {width, height, filename, filetype}
+      console.log(img)
       this.selectedImage = img // set the selected image
+      console.log(this.selectedImage)
       img.type = this.images[id].filetype //give the img object the img type
 
-      for (let i = 0; i < this.numberOfImages; i++) {
-        this.imageType = filetype
+      // for (let i = 0; i < this.numberOfImages; i++) {
+      this.imageType = filetype
 
-        this.showDitheredImage = false
+      this.showDitheredImage = false
 
-        const originalImage = document.getElementById(id) // the canvas that holds the dithered image
+      const originalImage = document.getElementById(id) // the canvas that holds the dithered image
 
-        const head = 'data:' + filetype + ';base64,'
+      const head = 'data:' + filetype + ';base64,'
 
-        this.rgbQuantOptions.palette = []
+      this.rgbQuantOptions.palette = []
 
-        if (width > 1080) {
-          this.canvasWidth = 1080
-        } else {
-          this.canvasWidth = width
-        }
+      // if (width > 1080) {
+      //   this.canvasWidth = 1080
+      // } else {
+      //   this.canvasWidth = width
+      // }
 
-        this.originalCanvasWidth = width
-        this.originalCanvasHeight = height
-        this.fileName = filename
-        this.imageUploaded = true
+      this.originalCanvasWidth = width
+      this.originalCanvasHeight = height
+      this.fileName = filename
+      this.imageUploaded = true
 
-        this.$children[1]._data.presetPaletteSelection = 'original'
-      }
-      setTimeout(() => {
-        this.analyzeImagePalette(document.getElementById('originalImage1'))
-      }, 100)
+      this.$children[1]._data.presetPaletteSelection = 'original'
+
+      this.analyzeImagePalette(document.getElementById('originalImage1'))
+      // }
+      // setTimeout(() => {
+      //   this.analyzeImagePalette(document.getElementById('originalImage1'))
+      // }, 100)
     },
     ditherImage(img) {
       console.log('ditherImage called')
@@ -505,7 +511,6 @@ export default {
       this.dithering = true
       this.showDitheredImage = true
 
-
       setTimeout(() => {
         for (let i = 1; i < this.numberOfImages + 1; i++) {
 
@@ -513,13 +518,16 @@ export default {
           const ditheredImageCanvas = document.getElementById('dithered_originalImage' + i) // the canvas that holds the dithered image
           const ctx = ditheredImageCanvas.getContext('2d') // canvas context
           const width = 1
-          
-          if(this.canvasWidth === 'original') {            
+
+          if (this.canvasWidth === 'original') {
+            // eslint-disable-next-line no-const-assign
             width = originalImage.naturalWidth
-            
           } else {
+            // eslint-disable-next-line no-const-assign
             width = this.canvasWidth
           }
+
+          console.log(width)
 
           const height = (originalImage.naturalHeight / originalImage.naturalWidth) * width
 
@@ -547,6 +555,7 @@ export default {
           ctx.putImageData(imgData, 0, 0) // put the new dithered image data back on the canvas
 
           // this.downloadImage()
+          
           this.dithering = false
         }
       }, 100)
@@ -565,7 +574,6 @@ export default {
 
       this.rgbQuantOptions.palette = q.palette(true)
       this.specsCalculated = true
-
       
     }
   }
