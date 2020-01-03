@@ -164,11 +164,13 @@
             <!-- End Serpentine Dither -->
           </div>
         </div>
+        <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" />        
       </div>
       <!-- End Toolbar -->
       <div
         class="w-full md:w-3/4 flex flex-col xl:flex-row order-first md:order-last"
       >
+
         <!-- Begin Main Display -->
         <div class="px-4 flex flex-col flex-1 items-center">
           <!-- Dithered Canvas Display -->
@@ -185,27 +187,38 @@
               class="flex flex-col justify-center items-center w-full h-full "
             >
 
-              <div v-for="n in this.numberOfImages" v-show="selectedImage.id == 'originalImage' + n">    
-                <canvas :id="'dithered_originalImage' + n" class="max-w-full" :width="images.originalImage1.width" :height="images.originalImage1.height"></canvas>
+              <div v-for="n in this.numberOfImages" v-show="selectedImage.id == 'originalImage' + n">   
+                <canvas :id="'dithered_originalImage' + n" class="max-w-full selectedImage" :width="images.originalImage1.width" :height="images.originalImage1.height"></canvas>
               </div>
             </div>
           </div>
           <!-- End Dithered Canvas Display -->
           <!-- Original Image Display -->
           
-          <div class="max-w-5xl text-center">
+          <div class="w-full flex flex-col">
 
-            <img class="bg-red-600" :src="selectedImage.src" v-if="!showDitheredImage"/>
-            <div class="flex flex-row flex-wrap">
+            <img class="mx-auto" :src="selectedImage.src" v-if="!showDitheredImage"/>
+
+            <a
+              class="btn-red-outline inline-block self-center mt-4"
+              target="_blank"
+              :href="downloadUrl"
+              :download="'dither_it_' + fileName"
+              @click="downloadImage"
+              v-if="showDitheredImage"
+              >💾 Download</a
+            >  
+
+            <div class="flex flex-row flex-wrap mt-8 justify-center">
               <div v-for="n in this.numberOfImages" v-show="numberOfImages > 1">
               
                 <img
                   :id="'originalImage' + n"
-                  class="max-w-full w-32"
+                  class="max-w-full m-4 shadow cursor-pointer"
                   @click="analyzeImagePalette($event.target)"
-                  
+                  width="75"
                 />
-              </div>
+              </div>            
             </div>
           </div>
           <!-- End Original Image Display -->
@@ -218,16 +231,9 @@
               v-show="showDitheredImage && !dithering"
               class="text-center mt-4 mr-2 justify-center "
             >
-              <a
-                class="btn-red-outline w-full inline-block"
-                target="_blank"
-                :href="downloadUrl"
-                :download="'dither_it_' + fileName"
-                @click="downloadImage"
-                >💾 Download</a
-              >
+
             </div>
-            <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" />
+            <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" v-if="!imageUploaded" />
           </div>
           <!-- End Toolbar Stuff -->
         </div>
@@ -237,7 +243,7 @@
           class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-8 xl:px-0"
         >
           <div v-if="this.selectedImage"
-            class="border-solid border shadow-inner rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
+            class="border-solid border shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
           >
             <h4 class="text-lg font-bold mt-0" >Selected File</h4>
             <div class="flex xl:flex-col">
@@ -267,15 +273,15 @@
           </div>
           <div
             v-if="showDitheredImage"
-            class="border-solid border shadow-inner rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
+            class="border-solid border shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
           >
             <h4 class="text-lg font-bold mt-0">Dithered File</h4>
             <div class="flex xl:flex-col">
               <div class="w-1/2 lg:w-full">
                 <ul class="mt-1">
                   <li>
-                    <strong>Size: </strong>{{ selectedImage.naturalWidth }}px x
-                    {{ selectedImage.naturalHeight }}px
+                    <strong>Size: </strong>{{ ditheredWidth }}px x
+                    {{ ditheredHeight }}px
                   </li>
                   <li>
                     <strong>Filesize: </strong>
@@ -290,7 +296,7 @@
           </div>
           <div
             v-if="showDitheredImage"
-            class="border-solid border shadow-inner rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
+            class="border-solid border shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
             :class="[ratioGood ? 'bg-green-100' : '', 'bg-red-100']"
           >
             <h4 class="text-lg font-bold mt-0">Filesize Ratio</h4>
@@ -373,7 +379,7 @@ export default {
       specsCalculated: false, // for the specs
       imageUploaded: false,
       showDitheredImage: false, // control if the dithered image is visible
-      imageWidths: [320, 640, 1080, 1280, 1920],
+      imageWidths: [320, 640, 1080, 1280],
       algorithmOptions: [
         'FloydSteinberg',
         'FalseFloydSteinberg',
@@ -406,13 +412,14 @@ export default {
       showOptionsModalAlgo: false,
       showOptionsModalSerp: false,
       downloadUrl: '', // the url src thing to download the image
-      downloadFileSize: '', // the filesize of the download
+      downloadFileSize: '50', // the filesize of the download
       originalFileSize: '', // filesize of the original
       imageType: '',
       numberOfImages: '',
       images: [],
       selectedImage: '',
       ditheredWidth: '',
+      ditheredHeight: ''
     }
   },
   computed: {
@@ -423,36 +430,17 @@ export default {
         return false
       }
     },
-    canvasHeight() {
-      
-      // const imageRatio = this.selectedImage.naturalHeight / this.selectedImage.naturalWidth
-      
-      // if(this.canvasWidth == 'original') {
-      //   return this.selectedImage.naturalHeight
-      // } else {
-      //   const sizeRatio = this.canvasWidth / this.selectedImage.naturalWidth
-        return document.getElementById('dithered_' + this.selectedImage.id).height
-      // }
-
-      // console.log(this.selectedImage.naturalWidth)
-      // console.log(this.selectedImage.naturalHeight)
-      // console.log(this.canvasWidth)
-      // this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).width * ratio
-      // return 200
-    },
-    // downloadFileSize() {
-    //   const ditheredCanvas = document.getElementById('dithered_' + this.selectedImage.id)
-    //   console.log(ditheredCanvas)
-    //   const dataUrl = ditheredCanvas.toDataURL(this.imageType, 0.72)
-    //   console.log(dataUrl.length)
-    //   return Math.round((dataUrl.length * 3) / 4) / 1000
-    // }
   },
   methods: {
     getNumberOfImages(number) {
       this.numberOfImages = number
     },
     downloadImage() {
+      console.log('downloadImage called')
+
+      this.ditheredWidth = document.getElementById('dithered_' + this.selectedImage.id).width
+      this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).height
+
       const ditheredImageCanvas = document.getElementById('dithered_' + this.selectedImage.id) // the canvas that holds the dithered image
       const downloadUrl = ditheredImageCanvas.toDataURL(this.imageType, 0.72)
       this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
@@ -466,9 +454,11 @@ export default {
       })
     },
     onImageUpload(img, width, height, filename, filetype, id) {
+    
       fathom('trackGoal', 'HORTCOPW', 0)
 
       this.images[id] = {width, height, filename, filetype}
+      console.log(this.images)
       this.selectedImage = img // set the selected image
 
       img.type = this.images[id].filetype //give the img object the img type
@@ -512,7 +502,7 @@ export default {
       this.dithering = true
       this.showDitheredImage = true
 
-      setTimeout(() => {
+      // setTimeout(() => {
         for (let i = 1; i < this.numberOfImages + 1; i++) {
 
           const originalImage = document.getElementById('originalImage' + i) // the canvas that holds the original image
@@ -552,15 +542,14 @@ export default {
           imgData.data.set(ditherResult) // set the value of imageData to the dither results
 
           ctx.putImageData(imgData, 0, 0) // put the new dithered image data back on the canvas
-
-          this.downloadImage()
           
           this.dithering = false
         }
-      }, 100)
+      // }, 100)
       this.downloadImage()
     },
     analyzeImagePalette(e) {
+      console.log('analyzeimage called')
 
       this.selectedImage = e
 
@@ -573,6 +562,17 @@ export default {
 
       this.rgbQuantOptions.palette = q.palette(true)
       this.specsCalculated = true
+
+      this.ditheredWidth = document.getElementById('dithered_' + this.selectedImage.id).width
+      this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).height      
+
+      const ditheredImageCanvas = document.getElementById('dithered_' + this.selectedImage.id) // the canvas that holds the dithered image
+      const downloadUrl = ditheredImageCanvas.toDataURL(this.imageType, 0.72)
+      this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
+      this.downloadUrl = downloadUrl
+
+      this.$children[1]._data.presetPaletteSelection = 'original'
+
       
     }
   }

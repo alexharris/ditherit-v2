@@ -2,7 +2,7 @@
   <div>
     <div v-if="loading" class="loader"></div>
     <label class="btn-red-outline xl:w-64 text-center inline-block mt-4">
-      <span>✨ Select image</span>
+      <span>✨ Select images</span>
       <input
         id="imageLoader"
         type="file"
@@ -33,13 +33,13 @@ export default {
       setTimeout(() => {
         // wait a sec before telling mama
         for (let i = 0; i < this.images.length; i++) {
-          this.createOriginalImages(this.images[i], i)
+          this.createOriginalImage(this.images[i], i)
         }
       }, 100)
 
       this.loading = false
     },
-    createOriginalImages(image, i) {
+    createOriginalImage(image, i) {
       const id = 'originalImage' + (i + 1) // the id for img for the image
       const tempImage = document.getElementById(id) // the img for the image
       console.log(id)
