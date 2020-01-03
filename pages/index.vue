@@ -197,12 +197,13 @@
 
             <img class="bg-red-600" :src="selectedImage.src" v-if="!showDitheredImage"/>
             <div class="flex flex-row flex-wrap">
-              <div v-for="n in this.numberOfImages" v-if="numberOfImages > 1">
+              <div v-for="n in this.numberOfImages" v-show="numberOfImages > 1">
               
                 <img
                   :id="'originalImage' + n"
                   class="max-w-full w-32"
                   @click="analyzeImagePalette($event.target)"
+                  
                 />
               </div>
             </div>
@@ -247,7 +248,6 @@
                     {{ selectedImage.naturalHeight }}px
                   </li>
                   <li>
-                    
                     <strong>Filesize: </strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb
                   </li>
                   <li>
@@ -406,7 +406,7 @@ export default {
       showOptionsModalAlgo: false,
       showOptionsModalSerp: false,
       downloadUrl: '', // the url src thing to download the image
-      //downloadFileSize: '', // the filesize of the download
+      downloadFileSize: '', // the filesize of the download
       originalFileSize: '', // filesize of the original
       imageType: '',
       numberOfImages: '',
@@ -440,20 +440,22 @@ export default {
       // this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).width * ratio
       // return 200
     },
-    downloadFileSize() {
-      const ditheredCanvas = document.getElementById('dithered_' + this.selectedImage.id)
-      const dataUrl = ditheredCanvas.toDataURL(this.imageType, 0.72)
-      return Math.round((dataUrl.length * 3) / 4) / 1000
-    }
+    // downloadFileSize() {
+    //   const ditheredCanvas = document.getElementById('dithered_' + this.selectedImage.id)
+    //   console.log(ditheredCanvas)
+    //   const dataUrl = ditheredCanvas.toDataURL(this.imageType, 0.72)
+    //   console.log(dataUrl.length)
+    //   return Math.round((dataUrl.length * 3) / 4) / 1000
+    // }
   },
   methods: {
     getNumberOfImages(number) {
       this.numberOfImages = number
     },
     downloadImage() {
-      const ditheredImageCanvas = document.getElementById('dithered_originalImage') // the canvas that holds the dithered image
+      const ditheredImageCanvas = document.getElementById('dithered_' + this.selectedImage.id) // the canvas that holds the dithered image
       const downloadUrl = ditheredImageCanvas.toDataURL(this.imageType, 0.72)
-      //this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
+      this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
       this.downloadUrl = downloadUrl
     },
     // This receives a palette from ColorPicker in the form of an array of hex values
@@ -465,11 +467,10 @@ export default {
     },
     onImageUpload(img, width, height, filename, filetype, id) {
       fathom('trackGoal', 'HORTCOPW', 0)
-      console.log('on image upload')
+
       this.images[id] = {width, height, filename, filetype}
-      console.log(img)
       this.selectedImage = img // set the selected image
-      console.log(this.selectedImage)
+
       img.type = this.images[id].filetype //give the img object the img type
 
       // for (let i = 0; i < this.numberOfImages; i++) {
@@ -527,8 +528,6 @@ export default {
             width = this.canvasWidth
           }
 
-          console.log(width)
-
           const height = (originalImage.naturalHeight / originalImage.naturalWidth) * width
 
           ctx.canvas.width = width // tell the canvas what size to be
@@ -554,12 +553,12 @@ export default {
 
           ctx.putImageData(imgData, 0, 0) // put the new dithered image data back on the canvas
 
-          // this.downloadImage()
+          this.downloadImage()
           
           this.dithering = false
         }
       }, 100)
-      // this.downloadImage()
+      this.downloadImage()
     },
     analyzeImagePalette(e) {
 

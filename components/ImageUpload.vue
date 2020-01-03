@@ -42,6 +42,7 @@ export default {
     createOriginalImages(image, i) {
       const id = 'originalImage' + (i + 1) // the id for img for the image
       const tempImage = document.getElementById(id) // the img for the image
+      console.log(id)
       const reader = new FileReader() // this creates a new Reader
       reader.onload = (event) => {
         // when the reader is loading
