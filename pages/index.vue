@@ -205,14 +205,14 @@
               class="btn-red-outline inline-block self-center mt-4"
               target="_blank"
               :href="downloadUrl"
-              :download="'dither_it_' + fileName"
+              :download="'dither_it_' + selectedFile.name"
               @click="downloadImage"
               v-if="showDitheredImage"
               >💾 Download</a
             >  
 
             <div class="flex flex-row flex-wrap mt-8 justify-center">
-              <div v-for="n in this.numberOfImages" v-show="numberOfImages >= 1">
+              <div v-for="n in this.numberOfImages" v-show="numberOfImages > 1">
               
                 <img
                   :id="'originalImage' + n"
