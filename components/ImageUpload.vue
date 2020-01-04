@@ -26,49 +26,73 @@ export default {
   },
   methods: {
     imageUploaded(e) {
-      this.loading = true
+      
+
       this.reportNumberOfImages(e)
-      this.images = e.target.files
 
+      this.loading = true // for loading spinner
+
+      // now go through the images that have been loaded
+      for (let i = 0; i < e.target.files.length; i++) { 
+
+        
+        const id = 'originalImage' + (i + 1) // the id for img tag
+
+        console.log(id)
+        // build an array of all the upload images and their details
+        this.images[i] = []
+        this.images[i]['id'] = id
+        this.images[i]['type'] = e.target.files[i].type
+        this.images[i]['name'] = e.target.files[i].name
+        this.images[i]['size'] = e.target.files[i].size
+        // this.images[i].push(
+        //   'id': id,
+        //   'type': e.target.files[i].type,
+        //   'name': e.target.files[i].name,
+        //   'size': e.target.files[i].size
+        // )
+        // send the uploaded file to get turned into an img
+        // but we wait a second so that the originalImage img tags in index can load
+        setTimeout(() => {
+          this.createOriginalImage(e.target.files[i], i)
+        }, 100)
+
+        // setTimeout(() => {
+        //   this.$emit('image-upload',this.images[i])
+        // }, 500)
+      }
+      // this.tellYourMama() // send the data up to the parent index.vue
       setTimeout(() => {
-        // wait a sec before telling mama
-        for (let i = 0; i < this.images.length; i++) {
-          this.createOriginalImage(this.images[i], i)
-        }
+        this.$emit('image-upload',this.images)
       }, 100)
-
       this.loading = false
     },
-    createOriginalImage(image, i) {
-      const id = 'originalImage' + (i + 1) // the id for img for the image
-      const tempImage = document.getElementById(id) // the img for the image
-      console.log(id)
+    createOriginalImage(file, i) {
+      const id = i + 1
+      const tempImage = document.getElementById('originalImage' + id) // find the img already created in index.vue for this image
       const reader = new FileReader() // this creates a new Reader
+
+      // This doesnt get run until we give the reader something to read below
       reader.onload = (event) => {
-        // when the reader is loading
-        tempImage.src = event.target.result // replace the image source, of which there is none at this point, with the result of the Reader
-        setTimeout(() => {
-          // wait a sec before telling mama
-          this.tellYourMama(image, id, i)
-        }, 100)
+        tempImage.src = event.target.result // replace the image source
       }
-      reader.readAsDataURL(image) // Read the data of the target as a data url
+
+      // give the read the file object
+      reader.readAsDataURL(file) // Read the data of the target as a data url
+
+      // add width and height of the new images to the images array
+      this.images[i]['width'] = tempImage.naturalWidth
+      this.images[i]['height'] = tempImage.naturalHeight
+
     },
     reportNumberOfImages(e) {
       this.$emit('number-images', e.target.files.length)
     },
-    tellYourMama(image, id, i) {
-      const img = document.getElementById(id)
-      this.$emit(
-        'image-upload',
-        img,
-        img.naturalWidth,
-        img.naturalHeight,
-        image.name,
-        image.type,
-        id,
-        i
-      )
+    tellYourMama() {
+
+      console.log(this.images)
+
+      this.$emit('image-upload',this.images)
     }
   }
 }

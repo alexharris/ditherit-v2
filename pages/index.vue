@@ -174,7 +174,7 @@
         <!-- Begin Main Display -->
         <div class="px-4 flex flex-col flex-1 items-center">
           <!-- Dithered Canvas Display -->
-          <div class="max-w-full" v-if="images.originalImage1">
+          <div class="max-w-full" v-show="showDitheredImage">
             <div
               v-show="dithering"
               class="flex flex-col justify-center items-center"
@@ -182,13 +182,15 @@
               <div class="loader h-20 w-20 mb-4"></div>
               <div class="">Dithering...</div>
             </div>
+            <!-- v-show="!dithering && showDitheredImage" -->
             <div
-              v-show="!dithering && showDitheredImage"
               class="flex flex-col justify-center items-center w-full h-full "
             >
-
-              <div v-for="n in this.numberOfImages" v-show="selectedImage.id == 'originalImage' + n">   
-                <canvas :id="'dithered_originalImage' + n" class="max-w-full selectedImage" :width="images.originalImage1.width" :height="images.originalImage1.height"></canvas>
+              <div
+                v-for="n in this.numberOfImages"
+                v-show="selectedImage.id == 'originalImage' + n"
+              >
+                <canvas :id="'dithered_originalImage' + n" class="max-w-full selectedImage"></canvas>
               </div>
             </div>
           </div>
@@ -210,7 +212,7 @@
             >  
 
             <div class="flex flex-row flex-wrap mt-8 justify-center">
-              <div v-for="n in this.numberOfImages" v-show="numberOfImages > 1">
+              <div v-for="n in this.numberOfImages" v-show="numberOfImages >= 1">
               
                 <img
                   :id="'originalImage' + n"
@@ -257,7 +259,7 @@
                     <strong>Filesize: </strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb
                   </li>
                   <li>
-                    <strong>Filetype: </strong>{{ selectedImage.type }}
+                    <strong>Filetype: </strong>{{selectedFile.type}}
                   </li>
                 </ul>
               </div>
@@ -324,6 +326,7 @@
                 larger than the original 🎭
               </p>
             </div>
+            
           </div>
         </div>
       </div>
@@ -376,6 +379,7 @@ export default {
       fileName: '', // the name of the loaded file
       loading: false, // for the loading spinner
       dithering: false, // for the dithering spinner
+      switchingImages: false,
       specsCalculated: false, // for the specs
       imageUploaded: false,
       showDitheredImage: false, // control if the dithered image is visible
@@ -430,8 +434,14 @@ export default {
         return false
       }
     },
+    selectedFile() {
+      return this.images.find(this.getSelected)
+    }
   },
   methods: {
+    getSelected(image) {
+      return image.id === this.selectedImage.id;
+    },
     getNumberOfImages(number) {
       this.numberOfImages = number
     },
@@ -453,24 +463,30 @@ export default {
         this.rgbQuantOptions.palette.push(v)
       })
     },
-    onImageUpload(img, width, height, filename, filetype, id) {
-    
+    onImageUpload(images) {
+      console.log('on image upload')
+      console.log(images)
+      this.images = images // load the image array into data
+    // width, height, filename, filetype, id
+
+      // const img = document.getElementById(image.id)
+
       fathom('trackGoal', 'HORTCOPW', 0)
 
-      this.images[id] = {width, height, filename, filetype}
-      console.log(this.images)
-      this.selectedImage = img // set the selected image
+      // this.images[id] = {width, height, filename, filetype}
 
-      img.type = this.images[id].filetype //give the img object the img type
+      this.selectedImage = document.getElementById('originalImage1') // set the selected image
+
+      // img.type = this.images[id].filetype //give the img object the img type
 
       // for (let i = 0; i < this.numberOfImages; i++) {
-      this.imageType = filetype
+      // this.imageType = filetype
 
       this.showDitheredImage = false
 
-      const originalImage = document.getElementById(id) // the canvas that holds the dithered image
+      // const originalImage = document.getElementById(id) // the canvas that holds the dithered image
 
-      const head = 'data:' + filetype + ';base64,'
+      // const head = 'data:' + filetype + ';base64,'
 
       this.rgbQuantOptions.palette = []
 
@@ -480,18 +496,18 @@ export default {
       //   this.canvasWidth = width
       // }
 
-      this.originalCanvasWidth = width
-      this.originalCanvasHeight = height
-      this.fileName = filename
+      // this.originalCanvasWidth = width
+      // this.originalCanvasHeight = height
+      // this.fileName = filename
       this.imageUploaded = true
 
       this.$children[1]._data.presetPaletteSelection = 'original'
 
-      this.analyzeImagePalette(document.getElementById('originalImage1'))
+      // this.analyzeImagePalette(document.getElementById('originalImage1'))
       // }
-      // setTimeout(() => {
-      //   this.analyzeImagePalette(document.getElementById('originalImage1'))
-      // }, 100)
+      setTimeout(() => {
+        this.analyzeImagePalette(document.getElementById('originalImage1'))
+      }, 100)
     },
     ditherImage(img) {
       console.log('ditherImage called')
@@ -503,6 +519,7 @@ export default {
       this.showDitheredImage = true
 
       // setTimeout(() => {
+
         for (let i = 1; i < this.numberOfImages + 1; i++) {
 
           const originalImage = document.getElementById('originalImage' + i) // the canvas that holds the original image
@@ -549,8 +566,7 @@ export default {
       this.downloadImage()
     },
     analyzeImagePalette(e) {
-      console.log('analyzeimage called')
-
+      console.log(e)
       this.selectedImage = e
 
       this.rgbQuantOptions.palette = []
@@ -563,16 +579,17 @@ export default {
       this.rgbQuantOptions.palette = q.palette(true)
       this.specsCalculated = true
 
-      this.ditheredWidth = document.getElementById('dithered_' + this.selectedImage.id).width
-      this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).height      
+      if(this.showDitheredImage) {
+        this.ditheredWidth = document.getElementById('dithered_' + this.selectedImage.id).width
+        this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).height
 
-      const ditheredImageCanvas = document.getElementById('dithered_' + this.selectedImage.id) // the canvas that holds the dithered image
-      const downloadUrl = ditheredImageCanvas.toDataURL(this.imageType, 0.72)
-      this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
-      this.downloadUrl = downloadUrl
+        const ditheredImageCanvas = document.getElementById('dithered_' + this.selectedImage.id) // the canvas that holds the dithered image
+        const downloadUrl = ditheredImageCanvas.toDataURL(this.imageType, 0.72)
+        this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
+        this.downloadUrl = downloadUrl        
+      }
 
       this.$children[1]._data.presetPaletteSelection = 'original'
-
       
     }
   }
