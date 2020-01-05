@@ -106,6 +106,12 @@ export default {
                 { name: 'Yellow', value: 'yellow', colors: [
                     {hex: '#ffffff'}, {hex: '#f4eb41'}, {hex: '#a9a40c'}, {hex: '#000000'}
                 ]},
+                { name: 'Purple and Green', value: 'purplegreen', colors: [
+                    {hex: '#76C066'}, {hex: '#AD2BBB'}
+                ]}, 
+                { name: 'Yellow and Red', value: 'yellowred', colors: [
+                    {hex: '#FFEE2C'}, {hex: '#E20023'}
+                ]},                                  
                 { name: 'Black & White', value: 'blackwhite', colors: [
                     {hex: '#ffffff'}, {hex: '#000000'}
                 ]},
@@ -113,17 +119,18 @@ export default {
                     {hex: '#FF0000'}, {hex: '#00FF00'}, {hex: '#0000FF'}, {hex: '#FFFF00'}
                 ]},
                 { name: 'Hamburger', value: 'hamburger', colors: [
-                    {hex: '#ca9a4a'}, {hex: '#502902'}, {hex: '#990000'}, {hex: '#38761d'}
-                ]},
-                { name: 'A Field', value: 'field', colors: [
-                    {hex: '#81b4ed'}, {hex: '#7cb8af'}, {hex: '#c6ba79'}, {hex: '#7f6000'}
-                ]},
+                    {hex: '#ca9a4a'}, {hex: '#502902'}, {hex: '#BB1313'}, {hex: '#57BB2C'}
+                ]},   
+                            
+                // { name: 'A Field', value: 'field', colors: [
+                //     {hex: '#81b4ed'}, {hex: '#7cb8af'}, {hex: '#c6ba79'}, {hex: '#7f6000'}
+                // ]},
                 { name: 'Retrofuturism', value: 'retrofuturism', colors: [
                     {hex: '#000000'}, {hex: '#c90fff'}, {hex: '#00cece'}, {hex: '#ffb600'}
                 ]},
-                { name: 'Rupaul\'s Drag Race', value: 'rupaul', colors: [
-                    {hex: '#f397d6'}, {hex: '#915741'}, {hex: '#7c0c0e'}, {hex: '#000000'}
-                ]},
+                // { name: 'Rupaul\'s Drag Race', value: 'rupaul', colors: [
+                //     {hex: '#f397d6'}, {hex: '#915741'}, {hex: '#7c0c0e'}, {hex: '#000000'}
+                // ]},
                 { name: 'Bonfire of the Vanities', value: 'bonfire', colors: [
                     {hex: '#FFDE6C'}, {hex: '#000000'}, {hex: '#910c02'}, {hex: '#567196'}
                 ]},                           
