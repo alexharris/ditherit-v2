@@ -1,30 +1,30 @@
 <template>
 <div>
     
-    <div class="mt-24 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col text-center">
+    <div class="mt-24 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col">
         <h3>Examples</h3>
-      <h4 class="mt-8">Red Monochrome</h4>
+      <h4 class="mt-16">Red Monochrome</h4>
       <div class="flex flex-col md:flex-row text-center justify-center items-center mt-4">
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/cover-the-earth.jpg" /></div>
-        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/dither_cover-the-earth.jpg" /></div>
       </div>
-      <h4 class="mt-8">Original 8 Color</h4>
+      <h4 class="mt-16">Original 8 Color</h4>
       <div class="flex flex-col md:flex-row items-center text-center mt-8 ">
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/beauty-spot.jpg" /></div>
-        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/beauty-spot-dither.jpg" /></div>
       </div>
-      <h4 class="mt-8">RGBY</h4>
+      <h4 class="mt-16">RGBY</h4>
       <div class="flex flex-col md:flex-row text-center mt-8 ">
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/duck.jpg" /></div>
-        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/duck-dither.jpg" /></div>
       </div>
-      <h4 class="mt-8">Black & White</h4>
+      <h4 class="mt-16">Black & White</h4>
       <div class="flex flex-col md:flex-row items-center">
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/corolla.jpg" /></div>
-        <div class="w-full md:w-2/12"><img class="example-arrow w-16 md:w-auto mx-auto" src="~/assets/arrow.svg" /></div>
+        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/corolla-dither.jpg" /></div>
       </div>                  
     </div>
@@ -39,7 +39,7 @@
       </div>
       <div class="w-full md:w-1/2 p-4">
       <h4>About Dither it!</h4>
-      
+      <p class="text-xl">Built by <a href="https://alexharris.online/">Alex Harris</a>, on twitter <a href="https://twitter.com/alexharris6">@alexharris6</a>. Show me what you've dithered!</p>
       <p>Dither it! was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from a site called Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method they discussed was to reduce full color images to dithered images with very few colors. Ensuing comments clarified that there are other, more modern ways to compress images which achieve small file sizes while maintaining color, but I still think it is a fun technique that looks cool and is interesting to learn about.</p>
 
 
@@ -67,7 +67,7 @@
       <li><a href="https://lowtechmagazine.com">Low-tech Magazine</a></li>
       </ul>
 
-    <p class="text-xl">Built by <a href="https://alexharris.online/">Alex Harris</a>.</p>
+    
 
   </div>
           
