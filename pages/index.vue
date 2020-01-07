@@ -25,7 +25,7 @@
             </button>
           </div>
 
-          <div class="border-solid border shadow-lg rounded py-2 px-4 mt-4">
+          <div class="shadow-lg rounded py-2 px-4 mt-4">
             <h4 class="text-lg font-bold mt-2 mb-2">Options</h4>
             <!-- Image Size Selector -->
             <div class="flex flex-row items-center justify-between">
@@ -182,11 +182,12 @@
               <div class="loader h-20 w-20 mb-4"></div>
               <div class="">Dithering...</div>
             </div>
-            <!-- v-show="!dithering && showDitheredImage" -->
             <div
               class="flex flex-col justify-center items-center w-full h-full "
+              v-show="!dithering && showDitheredImage && !viewOriginal"
             >
               <div
+              class="max-w-full "
                 v-for="n in this.numberOfImages"
                 v-show="selectedImage.id == 'originalImage' + n"
               >
@@ -197,21 +198,26 @@
           <!-- End Dithered Canvas Display -->
           <!-- Original Image Display -->
           
-          <div class="w-full flex flex-col">
+          <div class="w-full flex flex-col ">
+            <div v-if="numberOfImages > 0">
+              <img class="mx-auto max-w-full" :src="selectedImage.src" v-if="!showDitheredImage || viewOriginal"/>
+            </div>
+            <div class="flex flex-row justify-between items-center py-2 px-4 mt-8 mx-4 shadow-lg rounded" v-if="showDitheredImage && !dithering"> 
+              <Toggler
+              @view-original="viewOriginal = !viewOriginal"
+              >View Original</Toggler>            
+              <a
+                class="btn-red-outline inline-block self-center"
+                target="_blank"
+                :href="downloadUrl"
+                :download="'dither_it_' + selectedFile.name"
+                @click="downloadImage"
+                
+                >💾 Download</a
+              >  
+            </div>
 
-            <img class="mx-auto" :src="selectedImage.src" v-if="!showDitheredImage"/>
-
-            <a
-              class="btn-red-outline inline-block self-center mt-4"
-              target="_blank"
-              :href="downloadUrl"
-              :download="'dither_it_' + selectedFile.name"
-              @click="downloadImage"
-              v-if="showDitheredImage"
-              >💾 Download</a
-            >  
-
-            <div class="flex flex-row flex-wrap mt-8 justify-center">
+            <div class="flex flex-row flex-wrap mt-4 justify-center">
               <div v-for="n in this.numberOfImages" v-show="numberOfImages > 1">
               
                 <img
@@ -245,7 +251,7 @@
           class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-8 xl:px-0"
         >
           <div v-if="this.selectedImage"
-            class="border-solid border shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
+            class="shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
           >
             <h4 class="text-lg font-bold mt-0" >Selected File</h4>
             <div class="flex xl:flex-col">
@@ -275,7 +281,7 @@
           </div>
           <div
             v-if="showDitheredImage"
-            class="border-solid border shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
+            class="shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
           >
             <h4 class="text-lg font-bold mt-0">Dithered File</h4>
             <div class="flex xl:flex-col">
@@ -298,7 +304,7 @@
           </div>
           <div
             v-if="showDitheredImage"
-            class="border-solid border shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
+            class="shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
             :class="[ratioGood ? 'bg-green-100' : '', 'bg-red-100']"
           >
             <h4 class="text-lg font-bold mt-0">Filesize Ratio</h4>
@@ -362,6 +368,7 @@ import ImageUpload from '~/components/ImageUpload.vue'
 import ColorPicker from '~/components/ColorPicker.vue'
 import InputBlock from '~/components/InputBlock.vue'
 import BottomContent from '~/components/BottomContent.vue'
+import Toggler from '~/components/Toggler.vue'
 
 export default {
   components: {
@@ -369,7 +376,8 @@ export default {
     ColorPicker,
     Logo,
     InputBlock,
-    BottomContent
+    BottomContent,
+    Toggler
   },
   data() {
     return {
@@ -423,7 +431,8 @@ export default {
       images: [],
       selectedImage: '',
       ditheredWidth: '',
-      ditheredHeight: ''
+      ditheredHeight: '',
+      viewOriginal: false
     }
   },
   computed: {
@@ -439,6 +448,9 @@ export default {
     }
   },
   methods: {
+    // viewOriginal() {
+    //   console.log(this.selectedImage)
+    // },
     getSelected(image) {
       return image.id === this.selectedImage.id;
     },
@@ -514,11 +526,13 @@ export default {
       fathom('trackGoal', 'SFMGAORY', 0)
 
       window.scrollTo(0, 0) // go back to the top
-
+      
       this.dithering = true
+      this.viewOriginal = false
+      console.log(this.dithering)
       this.showDitheredImage = true
 
-      // setTimeout(() => {
+      setTimeout(() => {
 
         for (let i = 1; i < this.numberOfImages + 1; i++) {
 
@@ -560,9 +574,11 @@ export default {
 
           ctx.putImageData(imgData, 0, 0) // put the new dithered image data back on the canvas
           
-          this.dithering = false
+          
         }
-      // }, 100)
+        this.dithering = false
+      }, 100)
+
       this.downloadImage()
     },
     analyzeImagePalette(e) {
