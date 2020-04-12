@@ -1,8 +1,12 @@
 <template>
 <div>
-    
     <div class="mt-24 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col">
-        <h3>Examples</h3>
+      <h3>Updates</h3>
+      <p><strong>April 11, 2020</strong>: We are pleased to announce <em>Quant Error</em>, the Dither it! blog. Read the first post <nuxt-link to="/quant">here</nuxt-link>, featuring a quarterly report on some Dither it! usage stats, and some select Dither it! projects from our users.</p>
+    </div>
+    
+    <div class="mt-16 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col">
+      <h3>Examples</h3>
       <h4 class="mt-16">Red Monochrome</h4>
       <div class="flex flex-col md:flex-row text-center justify-center items-center mt-4">
         <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/cover-the-earth.jpg" /></div>
