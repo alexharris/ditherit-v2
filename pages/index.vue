@@ -498,7 +498,7 @@ export default {
     // This receives a palette from ColorPicker in the form of an array of hex values
     // ----------------------------        
     onUpdatePalette(palette) {
-      console.log('Color palette updating')
+      console.log('Color palette updating:')
       console.log(palette.length)
       this.rgbQuantOptions.colors = palette.length
       this.rgbQuantOptions.palette = []
