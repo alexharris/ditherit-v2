@@ -499,6 +499,8 @@ export default {
     // ----------------------------        
     onUpdatePalette(palette) {
       console.log('Color palette updating')
+      console.log(palette.length)
+      this.rgbQuantOptions.colors = palette.length
       this.rgbQuantOptions.palette = []
       palette.forEach((v, i) => {
         this.rgbQuantOptions.palette.push(v)
