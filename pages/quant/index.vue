@@ -9,6 +9,42 @@
             </div>
         </div>
         <p class="text-xl mb-16"> The official blog of the image dithering web application <em>Dither it!</em></p>
+        <h3 class="font-bold">Quarterly Report: Q2 2020</h3>        
+        <p class="text-sm">July 28, 2020</p>
+        <p>Oh my god, I am actually doing a second <em>Quant Error</em> entry. As always (meaning the one previous time I have done this) we start by looking at the numbers</p>
+        <table class="w-full">
+            <tbody>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold w-1/2">Unique Visits</td>
+                    <td class="border border-red-700 px-4 py-2">3,400</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Page Views</td>
+                    <td class="border border-red-700 px-4 py-2">5,800</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Image Uploads</td>
+                    <td class="border border-red-700 px-4 py-2">6,400</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Dithers</td>
+                    <td class="border border-red-700 px-4 py-2">28,400</td>
+                </tr>        
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Countries</td>
+                    <td class="border border-red-700 px-4 py-2">45</td>
+                </tr>                           
+            </tbody>
+        </table>
+        <p>Numbers are up across the board, with the exception of number of countries. I will have to do some additional research to determine whether this correllates to a general decrease in the number of countries.</p>
+        <p>Of particular note, the number of dithers is up almost 50% from Q1, despite far less significant increases in number of visitors and page views. Hopefully this means that people are really dithering a lot of stuff, and not that something is broken so they are having to try over and over to get it to work correctly (we'll never know!) I think a goal for some future update is to encourage some mechanism of actually seeing what people are dithering, maybe a hashtag or something. In the meantime, please share what you are dithering with me!</p>
+        <p>What else?</p>
+        <p>I did, in the last few months, create a plugin for phpBB that dithers images uploaded by users. Behold, <a href="https://github.com/alexharris/phpbb-dither-it">phpbb-dither-it v1.0</a>. With this release, Dither it! is officially a startup on the cutting edge of tech.</p>
+        <img src="~/assets/quant/2/phpbb-ditherit.png"  />
+        <p>Oh also, thanks to a user tip I fixed a bug that was limiting the dithering to 8 colors, despite the palette showing more..so now you can select any number of colors and it will really use them all. Oops that this didn't work before!</p>
+        <p>OK, nothing else to say for this quarter. Note to self for next time if there is nothing to talk about: it might be fun to look at the top ten sources of traffic or something like that. Ok bye.</p>
+
+        <p></p>
         <h3 class="font-bold">Quarterly Report: Q1 2020</h3>
         <p class="text-sm">April 11, 2020</p>
         <p>Welcome to the inaugural post of <em>Quant Error</em>, the Dither it! blog. The first quarter of 2020 has been a wild ride for Dither it!, and I would like to highlight some of what has been going on.</p>
@@ -17,15 +53,15 @@
             <tbody>
                 <tr>
                     <td class="border border-red-700 px-4 py-2 font-bold w-1/2">Unique Visits</td>
-                    <td class="border border-red-700 px-4 py-2">3000</td>
+                    <td class="border border-red-700 px-4 py-2">3,000</td>
                 </tr>
                 <tr>
                     <td class="border border-red-700 px-4 py-2 font-bold">Page Views</td>
-                    <td class="border border-red-700 px-4 py-2">5200</td>
+                    <td class="border border-red-700 px-4 py-2">5,200</td>
                 </tr>
                 <tr>
                     <td class="border border-red-700 px-4 py-2 font-bold">Image Uploads</td>
-                    <td class="border border-red-700 px-4 py-2">6100</td>
+                    <td class="border border-red-700 px-4 py-2">6,100</td>
                 </tr>
                 <tr>
                     <td class="border border-red-700 px-4 py-2 font-bold">Dithers</td>
