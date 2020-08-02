@@ -2,6 +2,7 @@
 <div>
     <div class="mt-24 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col">
       <h3>Updates</h3>
+      <p><strong>August 2, 2020</strong>: The <nuxt-link to="/quant">second entry</nuxt-link> in <em>Quant Error</em>has been posted, with Q2 numbers, a bug fix, and a very exciting phpBB update.</p>
       <p><strong>April 11, 2020</strong>: We are pleased to announce <em>Quant Error</em>, the Dither it! blog. Read the first post <nuxt-link to="/quant">here</nuxt-link>, featuring a quarterly report on some Dither it! usage stats, and some select Dither it! projects from our users.</p>
     </div>
     
