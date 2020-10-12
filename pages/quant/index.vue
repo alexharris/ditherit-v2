@@ -1,6 +1,6 @@
 <template>
-    <div class="flex flex-col w-full container px-4 lg:px-16 lg:w-2/3 mx-auto text-red-700 mb-20">
-        <div class="flex flex-col md:flex-row items-center justify-between ">
+    <div class="flex flex-col w-full container px-4 lg:px-16 lg:w-2/3 mx-auto text-red-700 mb-20 items-start">
+        <div class="flex flex-col md:flex-row items-center justify-between w-full">
             <div class="text-3xl text-left uppercase order-2 md:order-1">
                 Quant Error
             </div>
@@ -61,6 +61,19 @@
         </ol>  
 
         <p>Perhaps unsurprising that most of the top referrers are some of the top sites on the net, but good work Tiny Helpers and kokorobot for your outsize contributions.</p>    
+        <p>Ok, enough of that, onward to showing some things people have done with Dither it!</p>
+        <hr />
+        <h4 class="font-lg">BAMPFA'S PRESERVING GUERRILLA TELEVISION</h4>
+        <img src="~/assets/quant/3/ar.gif" />
+        <img src="~/assets/quant/3/booth.gif" />
+        <p>BAMPFA released a great archive of old TVTV footage, interviews, etc and used Dither it! some of the decorative gifs. Check it <a href="https://guerrillatv.bampfa.berkeley.edu/paper-archives">here</a>.</p>
+        <hr />
+        <h4 class="font-lg">@pondcell</h4>
+        <img src="~/assets/quant/3/pondcell.png" />
+        <p>Twitter user <a href="https://twitter.com/pondcell">@pondcell</a> made some very cool <a href="https://twitter.com/pondcell">digital artwork</a> using Dither it! to get some added texture</p>
+        <hr />
+        <h4 class="font-lg">The Dithering.</h4>
+        <p>Fred at <a href="https://fdisk.space/">https://fdisk.space/</a> included Dither it! in a very nice <a href="https://fdisk.space/dithering/">write up about dithing</a>, image compression etc. Thanks Fred!</p>
         <!-- 
         __________.____    ________    ________ 
         \______   \    |   \_____  \  /  _____/ 
@@ -206,25 +219,28 @@ export default {
 </script>
 
 <style scoped>
+img {
+    @apply max-w-full;
+}
 
 p {
-    @apply pb-4
+    @apply pb-4;
 }
 
 h4 {
-    @apply pb-6
+    @apply pb-6;
 }
 
 a {
-    @apply font-bold
+    @apply font-bold;
 }
 
 a:hover {
-    @apply text-red-800 
+    @apply text-red-800 ;
 }
 
 hr {
-    @apply border-b border-red-700 my-4
+    @apply border-b border-red-700 my-4 w-full;
 }
 
 </style>
