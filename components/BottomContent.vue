@@ -6,6 +6,11 @@
       <div class="pr-8 flex flex-col w-full md:w-1/2">
         <h3>Updates</h3>
         <p>
+          <strong>October 11, 2020</strong>: The
+          <nuxt-link to="/quant">Q3 Report</nuxt-link> is up on 
+          <em>Quant Error</em>. This update includes exciting numbers updates, a Top 10 List of Referrers (!!!), and some cool user projects.
+        </p>  
+        <p>
           <strong>August 2, 2020</strong>: The
           <nuxt-link to="/quant">second entry</nuxt-link> in
           <em>Quant Error</em> has been posted, with Q2 numbers, a bug fix, and

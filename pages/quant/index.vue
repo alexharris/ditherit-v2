@@ -1,6 +1,6 @@
 <template>
-    <div class="flex flex-col w-full container px-4 lg:px-16 lg:w-2/3 mx-auto text-red-700 mb-20">
-        <div class="flex flex-col md:flex-row items-center justify-between ">
+    <div class="flex flex-col w-full container px-4 lg:px-16 lg:w-2/3 mx-auto text-red-700 mb-20 items-start">
+        <div class="flex flex-col md:flex-row items-center justify-between w-full">
             <div class="text-3xl text-left uppercase order-2 md:order-1">
                 Quant Error
             </div>
@@ -9,6 +9,79 @@
             </div>
         </div>
         <p class="text-xl mb-16"> The official blog of the image dithering web application <em>Dither it!</em></p>
+        <!-- 
+        __________.____    ________    ________ 
+        \______   \    |   \_____  \  /  _____/ 
+        |    |  _/    |    /   |   \/   \  ___ 
+        |    |   \    |___/    |    \    \_\  \
+        |______  /_______ \_______  /\______  /
+                \/        \/       \/        \/ 
+         -->
+        <h3 class="font-bold">Quarterly Report: Q3 2020</h3>        
+        <p class="text-sm">October 11, 2020</p>
+        <p>OK, what has been going on with Dither it! over the past three months? First of all, analytics:</p>
+        <table class="w-full">
+            <tbody>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold w-1/2">Unique Visits</td>
+                    <td class="border border-red-700 px-4 py-2">4,100</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Page Views</td>
+                    <td class="border border-red-700 px-4 py-2">7,400</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Image Uploads</td>
+                    <td class="border border-red-700 px-4 py-2">9,100</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Dithers</td>
+                    <td class="border border-red-700 px-4 py-2">39,000</td>
+                </tr>        
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Countries</td>
+                    <td class="border border-red-700 px-4 py-2">50</td>
+                </tr>                           
+            </tbody>
+        </table> 
+        <p>Much to everyone's surprise, all the numbers are higher again. To some extent, this might be due to getting randomly linked to
+            from a Hacker News comment..but I don't think that can explain all of the growth. Over 10,000 more dithers than the previous quarter, almost 3,000 more uploads.</p> 
+        <p> What else? Reading through the Q2 entry I mentioned that it might be fun to look at the top 10 sources of traffic, which I guess is better than doing nothing, so here goes that:</p>
+        <ol>
+            <li>1. Google, obviously, by far the largest referrer, like 10 fold over the next highest</li>
+            <li>2. Hacker News</li>
+            <li>3. Bing</li>
+            <li>4. DuckDuckGo</li>
+            <li>5. Reddit</li>
+            <li>6. <a href="https://tiny-helpers.dev/">Tiny Helpers</a></li>
+            <li>7. <a href="https://kokorobot.ca/">https://kokorobot.ca/</a></li>
+            <li>8. Facebook</li>
+            <li>9. Twitter</li>
+            <li>10. Are.na</li>
+        </ol>  
+
+        <p>Perhaps unsurprising that most of the top referrers are some of the top sites on the net, but good work Tiny Helpers and kokorobot for your outsize contributions.</p>    
+        <p>Ok, enough of that, onward to showing some things people have done with Dither it!</p>
+        <hr />
+        <h4 class="font-lg">BAMPFA'S PRESERVING GUERRILLA TELEVISION</h4>
+        <img src="~/assets/quant/3/ar.gif" />
+        <img src="~/assets/quant/3/booth.gif" />
+        <p>BAMPFA released a great archive of old TVTV footage, interviews, etc and used Dither it! some of the decorative gifs. Check it <a href="https://guerrillatv.bampfa.berkeley.edu/paper-archives">here</a>.</p>
+        <hr />
+        <h4 class="font-lg">@pondcell</h4>
+        <img src="~/assets/quant/3/pondcell.png" />
+        <p>Twitter user <a href="https://twitter.com/pondcell">@pondcell</a> made some very cool <a href="https://twitter.com/pondcell">digital artwork</a> using Dither it! to get some added texture</p>
+        <hr />
+        <h4 class="font-lg">The Dithering.</h4>
+        <p>Fred at <a href="https://fdisk.space/">https://fdisk.space/</a> included Dither it! in a very nice <a href="https://fdisk.space/dithering/">write up about dithing</a>, image compression etc. Thanks Fred!</p>
+        <!-- 
+        __________.____    ________    ________ 
+        \______   \    |   \_____  \  /  _____/ 
+        |    |  _/    |    /   |   \/   \  ___ 
+        |    |   \    |___/    |    \    \_\  \
+        |______  /_______ \_______  /\______  /
+                \/        \/       \/        \/ 
+         -->
         <h3 class="font-bold">Quarterly Report: Q2 2020</h3>        
         <p class="text-sm">July 28, 2020</p>
         <p>Oh my god, I am actually doing a second <em>Quant Error</em> entry. As always (meaning the one previous time I have done this) we start by looking at the numbers</p>
@@ -45,6 +118,14 @@
         <p>OK, nothing else to say for this quarter. Note to self for next time if there is nothing to talk about: it might be fun to look at the top ten sources of traffic or something like that. Ok bye.</p>
 
         <p></p>
+        <!-- 
+        __________.____    ________    ________ 
+        \______   \    |   \_____  \  /  _____/ 
+        |    |  _/    |    /   |   \/   \  ___ 
+        |    |   \    |___/    |    \    \_\  \
+        |______  /_______ \_______  /\______  /
+                \/        \/       \/        \/ 
+         -->        
         <h3 class="font-bold">Quarterly Report: Q1 2020</h3>
         <p class="text-sm">April 11, 2020</p>
         <p>Welcome to the inaugural post of <em>Quant Error</em>, the Dither it! blog. The first quarter of 2020 has been a wild ride for Dither it!, and I would like to highlight some of what has been going on.</p>
@@ -138,25 +219,28 @@ export default {
 </script>
 
 <style scoped>
+img {
+    @apply max-w-full;
+}
 
 p {
-    @apply pb-4
+    @apply pb-4;
 }
 
 h4 {
-    @apply pb-6
+    @apply pb-6;
 }
 
 a {
-    @apply font-bold
+    @apply font-bold;
 }
 
 a:hover {
-    @apply text-red-800 
+    @apply text-red-800 ;
 }
 
 hr {
-    @apply border-b border-red-700 my-4
+    @apply border-b border-red-700 my-4 w-full;
 }
 
 </style>
