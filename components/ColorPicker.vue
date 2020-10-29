@@ -231,7 +231,18 @@ export default {
             { hex: '#910c02' },
             { hex: '#567196' }
           ]
-        }
+        },
+        {
+          name: 'Game Boy DMG-01',
+          value: 'gameboy',
+          colors: [
+            { hex: '#CADC9F' },
+            { hex: '#0F380F' },
+            { hex: '#306230' },
+            { hex: '#8BAC0F' },
+            { hex: '#9BBC0F' }
+          ]
+        }        
       ]
     }
   },
