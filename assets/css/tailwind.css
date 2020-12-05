@@ -17,6 +17,14 @@
   @apply bg-red-800 text-white;
 }
 
+.btn-red-small-outline {
+  @apply border border-red-700 text-red-700 font-bold py-1 px-1 text-xs rounded;
+}
+
+.btn-red-small-outline:hover {
+  @apply bg-red-800 text-white cursor-pointer;
+}
+
 .btn-red-large {
     @apply bg-red-700 text-white font-bold py-4 px-4 rounded;
 }

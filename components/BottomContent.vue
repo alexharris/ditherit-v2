@@ -6,6 +6,9 @@
       <div class="pr-8 flex flex-col w-full md:w-1/2">
         <h3>Updates</h3>
         <p>
+          <strong>December 5, 2020</strong>: Palette importing and exporting has been added. Now, save your favorite palettes and import them for re-use!
+        </p>          
+        <p>
           <strong>October 11, 2020</strong>: The
           <nuxt-link to="/quant">Q3 Report</nuxt-link> is up on 
           <em>Quant Error</em>. This update includes exciting numbers updates, a Top 10 List of Referrers (!!!), and some cool user projects.

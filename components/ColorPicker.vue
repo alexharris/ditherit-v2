@@ -59,6 +59,46 @@
             </div>
           </div>
         </div>
+        <div class="mt-4">
+          <div class="block flex flex-row items-center justify-between">
+            <div>
+              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewExportPalette = !viewExportPalette; viewImportPalette = false; showOptionsPaletteImportExport = false;" :class=" viewExportPalette ? 'border-b-2 border-red-600': '' ">Export</span>
+              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewImportPalette = !viewImportPalette; viewExportPalette = false; showOptionsPaletteImportExport = false;" :class=" viewImportPalette ? 'border-b-2 border-red-600': ''" id="importPalette">Import</span>
+            </div>
+            <span
+              class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
+              @click="showOptionsPaletteImportExport = !showOptionsPaletteImportExport"
+            >
+              <span v-if="!showOptionsPaletteImportExport">
+                ?
+              </span>
+              <span v-else>
+                X
+              </span>
+            </span>            
+          </div>
+          <div v-if="!showOptionsPaletteImportExport">
+            <div class="border border-dashed border-gray-400 p-2 rounded" v-if="viewExportPalette || viewImportPalette">
+              <div v-show="viewExportPalette">
+                <textarea readonly v-model="palette2Export" rows="5" class="w-full border border-grey-400 p-2 text-xs"></textarea>
+                <div class="pt-2">
+                  <a id="exportPalette" class="btn-red-small-outline text-xs" download="ditherit_palette.txt" :href="'data:text/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.palette))">Save</a>
+                </div>
+              </div>
+              <div v-if="viewImportPalette">
+                <textarea v-model="palette2Import" placeholder="Enter a palette here" rows="5" class="w-full border border-gray-400 p-2 text-xs">{{palette2Import}}</textarea>
+                <div class="pt-2">
+                  <span class="btn-red-small-outline" @click="importPalette">Add</span>
+                </div>  
+              </div>
+            </div>
+          </div>
+          <div v-else>
+              <div class="mt-2 bg-red-100 p-2 rounded">
+                Export palettes by copying the text or downloading a text file, import them by pasting and clicking add.
+              </div>            
+          </div>
+        </div>
       </div>
       <!-- Colorpicker Modal -->
       <div v-else>
@@ -109,6 +149,10 @@ export default {
       convertedColorArray: [], // the colors as they are sent to the ditherer ([0,0,0])
       originalInitialPalette: [], //this holds the first initial palette loaded
       presetPaletteSelection: 'original',
+      viewImportPalette: false,
+      viewExportPalette: false,
+      palette2Import: '',
+      showOptionsPaletteImportExport: false,
       presetPalettes: [
         {
           name: 'Red',
@@ -222,16 +266,16 @@ export default {
         // { name: 'Rupaul\'s Drag Race', value: 'rupaul', colors: [
         //     {hex: '#f397d6'}, {hex: '#915741'}, {hex: '#7c0c0e'}, {hex: '#000000'}
         // ]},
-        {
-          name: 'Bonfire of the Vanities',
-          value: 'bonfire',
-          colors: [
-            { hex: '#FFDE6C' },
-            { hex: '#000000' },
-            { hex: '#910c02' },
-            { hex: '#567196' }
-          ]
-        },
+        // {
+        //   name: 'Bonfire of the Vanities',
+        //   value: 'bonfire',
+        //   colors: [
+        //     { hex: '#FFDE6C' },
+        //     { hex: '#000000' },
+        //     { hex: '#910c02' },
+        //     { hex: '#567196' }
+        //   ]
+        // },
         {
           name: 'Game Boy DMG-01',
           value: 'gameboy',
@@ -246,7 +290,11 @@ export default {
       ]
     }
   },
-  computed: {},
+  computed: {
+    palette2Export() {
+      return JSON.stringify(this.palette)
+    } 
+  },
   watch: {
     initialPalette: function(newVal, oldVal) {
       // watch it
@@ -358,6 +406,21 @@ export default {
           this.originalInitialPalette.push({ hex })
         }
       }
+    },
+    exportPalette() {
+      var palJSON = "data:text/txt;charset=utf-8," + encodeURIComponent(JSON.stringify(this.palette));
+  
+      var exportPalette = document.getElementById('exportPalette');
+          exportPalette.setAttribute("href", palJSON);
+          exportPalette.setAttribute("download", "ditherit_palette.txt");
+
+          
+
+    },
+    importPalette() {
+      this.palette = JSON.parse(this.palette2Import)
+      this.updatePallete();
+      fathom('trackGoal', 'QQLOUIS1', 0);
     }
   }
 }

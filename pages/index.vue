@@ -213,6 +213,7 @@
                 :download="'dither_it_' + selectedFile.name"
                 @click="downloadImage"
                 
+                
                 >💾 Download</a
               >  
             </div>
@@ -388,6 +389,7 @@ import InputBlock from '~/components/InputBlock.vue'
 import BottomContent from '~/components/BottomContent.vue'
 import Toggler from '~/components/Toggler.vue'
 
+
 export default {
   components: {
     ImageUpload,
@@ -493,6 +495,8 @@ export default {
       const downloadUrl = ditheredImageCanvas.toDataURL(this.imageType, 0.72)
       this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
       this.downloadUrl = downloadUrl
+
+      fathom('trackGoal', 'UAT4LRNZ', 0)
     },
     // ---------------------------
     // This receives a palette from ColorPicker in the form of an array of hex values
