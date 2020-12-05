@@ -82,20 +82,20 @@
               <div v-show="viewExportPalette">
                 <textarea readonly v-model="palette2Export" rows="5" class="w-full border border-grey-400 p-2 text-xs"></textarea>
                 <div class="pt-2">
-                  <a id="exportPalette" class="btn-red-small-outline text-xs" download="ditherit_palette.txt" :href="'data:text/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.palette))">Save</a>
+                  <a id="exportPalette" class="btn-red-small-outline text-xs" download="ditherit_palette.txt" :href="'data:text/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.palette))">Export</a>
                 </div>
               </div>
               <div v-if="viewImportPalette">
                 <textarea v-model="palette2Import" placeholder="Enter a palette here" rows="5" class="w-full border border-gray-400 p-2 text-xs">{{palette2Import}}</textarea>
                 <div class="pt-2">
-                  <span class="btn-red-small-outline" @click="importPalette">Add</span>
+                  <span class="btn-red-small-outline" @click="importPalette">Import</span>
                 </div>  
               </div>
             </div>
           </div>
           <div v-else>
               <div class="mt-2 bg-red-100 p-2 rounded">
-                Export palettes by copying the text or downloading a text file, import them by pasting and clicking add.
+                Export palettes by copying the text or downloading a text file, import them by pasting and clicking import.
               </div>            
           </div>
         </div>
@@ -420,6 +420,7 @@ export default {
     importPalette() {
       this.palette = JSON.parse(this.palette2Import)
       this.updatePallete();
+      this.presetPaletteSelection = 'custom'
       fathom('trackGoal', 'QQLOUIS1', 0);
     }
   }
