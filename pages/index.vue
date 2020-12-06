@@ -55,7 +55,7 @@
                   >Original</option
                 >
                 <template v-for="(v, i) in imageWidths">
-                  <option :id="v" name="imageWidth" :value="v">{{ v }}</option>
+                  <option :id="v" name="imageWidth" :value="v" @click="fathom('JN4RHD7N')">{{ v }}</option>
                 </template>
               </select>
               <div
@@ -649,6 +649,9 @@ export default {
         this.selectingImage = false
       }, 50)
       
+    },
+    fathom(id) {
+      fathom('trackGoal', id, 0)
     }
   }
 }
