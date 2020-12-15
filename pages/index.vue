@@ -137,7 +137,7 @@
                   type="checkbox"
                   class="form-checkbox"
                 />
-                <span class="ml-2"><strong>Serpentine Dither</strong></span>
+                <label for="ditherSerp" class="ml-2"><strong>Serpentine Dither</strong></label>
                 <span
                   class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                   @click="showOptionsModalSerp = !showOptionsModalSerp"
