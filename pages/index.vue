@@ -155,6 +155,7 @@
                 class="inline-block relative w-full"
               >
                 <div class="mt-2 bg-red-100 p-2 rounded">
+                  <!-- This could be clarified -->
                   This determines if the dithering just goes left to right, top
                   to bottom, or does a snake wiggle.
                 </div>
