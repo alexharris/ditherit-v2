@@ -1,17 +1,16 @@
 ```
-______   ___   _______  __   __  _______  ______      ___   _______  __  
-|      | |   | |       ||  | |  ||       ||    _ |    |   | |       ||  | 
-|  _    ||   | |_     _||  |_|  ||    ___||   | ||    |   | |_     _||  | 
-| | |   ||   |   |   |  |       ||   |___ |   |_||_   |   |   |   |  |  | 
-| |_|   ||   |   |   |  |       ||    ___||    __  |  |   |   |   |  |__| 
-|       ||   |   |   |  |   _   ||   |___ |   |  | |  |   |   |   |   __  
-|______| |___|   |___|  |__| |__||_______||___|  |_|  |___|   |___|  |__| 
+ ______     _   _   __                       _   _    _  
+|_   _ `.  (_) / |_[  |                     (_) / |_ | | 
+  | | `. \ __ `| |-'| |--.  .---.  _ .--.   __ `| |-'| | 
+  | |  | |[  | | |  | .-. |/ /__\\[ `/'`\] [  | | |  | | 
+ _| |_.' / | | | |, | | | || \__., | |      | | | |, |_| 
+|______.' [___]\__/[___]|__]'.__.'[___]    [___]\__/ (_) 
 ```
+Dither it! is a web application for dithering images. It is built with Vue, using NuxtJS. The dithering is done using [RgbQuant.js](https://github.com/leeoniya/RgbQuant.js). Visit it at [ditherit.com](https://ditherit.com).
 
+![Dither example](https://ditherit.com/_nuxt/img/earth-dither.993faef.gif)
 
-> Image dithering web tool
-
-## Build Setup
+You can run it locally by cloning the repo and running the following:
 
 ``` bash
 # install dependencies
