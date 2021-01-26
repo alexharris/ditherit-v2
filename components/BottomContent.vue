@@ -6,6 +6,11 @@
       <div class="pr-8 flex flex-col w-full md:w-1/2">
         <h3>Updates</h3>
         <p>
+          <strong>January 26, 2021</strong>: The
+          <nuxt-link to="/quant">Q4 Report</nuxt-link> is up on 
+          <em>Quant Error</em>. Numbers, links, not very exciting!
+        </p>         
+        <p>
           <strong>December 5, 2020</strong>: Palette importing and exporting has been added. Now, save your favorite palettes and import them for re-use!
         </p>          
         <p>

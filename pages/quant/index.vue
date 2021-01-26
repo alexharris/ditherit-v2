@@ -17,6 +17,47 @@
         |______  /_______ \_______  /\______  /
                 \/        \/       \/        \/ 
          -->
+        <h3 class="font-bold">Quarterly Report: Q4 2020</h3>        
+        <p class="text-sm">January 16, 2021</p>
+        <p>New year, same Quant Error.</p>
+        <p>First off, new functionality: it has been a while since I did anything more than some bug fixes, but this quarter I actually added functionality: palette import! Here is how it looks:</p>
+        <img src="~/assets/quant/Q1-2021/import-palette.png" />
+        <p>Basically, it is just an array of hex values that can be copied and pasted. Is it the most graceful solution? No, but it is simple and functional..at least I hope.</p>
+        <p>What else? Someone who works at google wrote a very thorough and cool article about dithering here: <a href="https://surma.dev/things/ditherpunk/">https://surma.dev/things/ditherpunk/</a>. A lot of it is over my head but it's great. I would like to try and add Bayer dithering to Dither it! at some point...and maybe a synopsis of the portions relevant to Dither it!. Enough blathering, on to the numbers:</p>
+        
+        <table class="w-full">
+            <tbody>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold w-1/2">Unique Visits</td>
+                    <td class="border border-red-700 px-4 py-2">5,100</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Page Views</td>
+                    <td class="border border-red-700 px-4 py-2">8,600</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Image Uploads</td>
+                    <td class="border border-red-700 px-4 py-2">10,000</td>
+                </tr>
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Dithers</td>
+                    <td class="border border-red-700 px-4 py-2">40,600</td>
+                </tr>        
+                <tr>
+                    <td class="border border-red-700 px-4 py-2 font-bold">Countries</td>
+                    <td class="border border-red-700 px-4 py-2">50</td>
+                </tr>                           
+            </tbody>
+        </table> 
+        <p>Again, numbers are up across the board (shout out <a href="https://twitter.com/bennett4senate">@bennett4senate</a>), except for countries which is the same. That might actually be a pretty unexciting number to track over time, so maybe I'll stop including it and replace it with something else. I should also figure out a way to chart this so it shows the values over time instead of me just narrating them. Maybe that will be the goal or Q1-2021. Also I should probably eventually paginate Quant Error..and like make it an actual blog? Not likely, ditherers.</p>
+        <!-- 
+        __________.____    ________    ________ 
+        \______   \    |   \_____  \  /  _____/ 
+        |    |  _/    |    /   |   \/   \  ___ 
+        |    |   \    |___/    |    \    \_\  \
+        |______  /_______ \_______  /\______  /
+                \/        \/       \/        \/ 
+         -->
         <h3 class="font-bold">Quarterly Report: Q3 2020</h3>        
         <p class="text-sm">October 11, 2020</p>
         <p>OK, what has been going on with Dither it! over the past three months? First of all, analytics:</p>
