@@ -217,15 +217,20 @@ export default {
           ]
         },
         {
-          name: 'Purple and Green',
+          name: 'Purple & Green',
           value: 'purplegreen',
           colors: [{ hex: '#76C066' }, { hex: '#AD2BBB' }]
         },
         {
-          name: 'Yellow and Red',
+          name: 'Yellow & Red',
           value: 'yellowred',
           colors: [{ hex: '#FFEE2C' }, { hex: '#E20023' }]
         },
+        {
+          name: 'Blue & Yellow',
+          value: 'blueyellow',
+          colors: [{ hex: '#134E87' }, { hex: '#FFF585' }]
+        },        
         {
           name: 'Black & White',
           value: 'blackwhite',
@@ -242,42 +247,16 @@ export default {
           ]
         },
         {
-          name: 'Hamburger',
-          value: 'hamburger',
-          colors: [
-            { hex: '#ca9a4a' },
-            { hex: '#502902' },
-            { hex: '#BB1313' },
-            { hex: '#57BB2C' }
-          ]
-        },
-
-        // { name: 'A Field', value: 'field', colors: [
-        //     {hex: '#81b4ed'}, {hex: '#7cb8af'}, {hex: '#c6ba79'}, {hex: '#7f6000'}
-        // ]},
-        {
-          name: 'Retrofuturism',
-          value: 'retrofuturism',
+          name: 'CMYK',
+          value: 'cmyk',
           colors: [
             { hex: '#000000' },
-            { hex: '#c90fff' },
-            { hex: '#00cece' },
-            { hex: '#ffb600' }
+            { hex: '#ffff00' },
+            { hex: '#00FFFF' },
+            { hex: '#FF00FF' },
+            { hex: '#FFFFFF' }
           ]
-        },
-        // { name: 'Rupaul\'s Drag Race', value: 'rupaul', colors: [
-        //     {hex: '#f397d6'}, {hex: '#915741'}, {hex: '#7c0c0e'}, {hex: '#000000'}
-        // ]},
-        // {
-        //   name: 'Bonfire of the Vanities',
-        //   value: 'bonfire',
-        //   colors: [
-        //     { hex: '#FFDE6C' },
-        //     { hex: '#000000' },
-        //     { hex: '#910c02' },
-        //     { hex: '#567196' }
-        //   ]
-        // },
+        },        
         {
           name: 'Game Boy DMG-01',
           value: 'gameboy',

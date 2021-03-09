@@ -1,56 +1,29 @@
 <template>
 <div>
     <div
-      class="flex flex-col md:flex-row border-t border-dashed border-red-500 pt-8 mt-24 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 "
+      class="flex  gap-16 flex-col md:flex-row border-t border-dashed border-red-500 pt-8 mt-24 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 "
     >
-      <div class="pr-8 flex flex-col w-full md:w-1/2">
-        <h3>Updates</h3>
+      <div class="w-full md:w-1/3">
+        <h3 class="text-lg font-serif">Quant Error</h3>
+        <p>The Dither it! blog.</p>
         <p>
           <strong>January 26, 2021</strong>: The
           <nuxt-link to="/quant">Q4 Report</nuxt-link> is up on 
           <em>Quant Error</em>. Numbers, links, not very exciting!
-        </p>         
-        <p>
-          <strong>December 5, 2020</strong>: Palette importing and exporting has been added. Now, save your favorite palettes and import them for re-use!
-        </p>          
-        <p>
-          <strong>October 11, 2020</strong>: The
-          <nuxt-link to="/quant">Q3 Report</nuxt-link> is up on 
-          <em>Quant Error</em>. This update includes exciting numbers updates, a Top 10 List of Referrers (!!!), and some cool user projects.
-        </p>  
-        <p>
-          <strong>August 2, 2020</strong>: The
-          <nuxt-link to="/quant">second entry</nuxt-link> in
-          <em>Quant Error</em> has been posted, with Q2 numbers, a bug fix, and
-          a very exciting phpBB update.
-        </p>
-        <p>
-          <strong>April 11, 2020</strong>: We are pleased to announce
-          <em>Quant Error</em>, the Dither it! blog. Read the first post
-          <nuxt-link to="/quant">here</nuxt-link>, featuring a quarterly report
-          on some Dither it! usage stats, and some select Dither it! projects
-          from our users.
-        </p>
+        </p> 
+        <p><a href="/quant">Read more</a></p>        
       </div>
-      <div
-        class="w-full md:w-1/2 inline-block p-6 flex flex-col sm:flex-row md:flex-col justify-center items-center align-center bg-red-100 rounded"
-      >
-        <span class="mb-4">Enjoy Dither it!?</span>
+      <div class="w-full md:w-1/3">
+        <h3 class="text-lg font-serif">Resources</h3>
+        <p>A list of dithering <a href="/resources">resources</a> from around the web. Explainers, algorithms, examples, etc.</p>
+      </div>      
+      <div class="w-full md:w-1/3">
+        <h3 class="text-lg font-serif">Support</h3>
+        <p class="pb-8">Support the continued existence of Dither it! with a small donation.</p>
         <style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 15px 7px 10px !important;line-height: 35px !important;height:51px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#FF5F5F !important;border-radius: 8px !important;border: 1px solid transparent !important;font-size: 18px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Arial', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/alexharris" @click="coffeeClick()"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px;font-size:18px !important;">Buy me a coffee</span></a>
-        <!-- <a class="border-0" href="https://www.paypal.me/alexharris6">
-          <svg class="w-32 float-left starburst" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100.819 103.278" xml:space="preserve">
-            <path stroke-miterlimit="10" d="M22.426,12.262c3.916,13.892,1.229,19.672-17.174,24.251
-            c12.256,16.732,10.45,22.707-0.797,34.271C17.508,69.64,26.115,70.05,21.196,90.95c14.174-7.54,21.099-5.277,32.574,7.018
-            c5.328-17.213,16.752-15.636,26.442-10.295c-4.098-18.033,0-20.902,15.164-22.951c-13.524-9.017-10.246-15.983,0.409-25
-            c-15.573-3.623-19.671-6.558-16.803-23.771c-17.213,7.787-21.115-1.59-27.262-11.017C45.786,19.23,37.994,17.771,22.426,12.262z"/>
-            <text x="22" y="45" class="text-sm">Support</text>
-            <text x="22" y="65" class="text-sm">Dither it!</text>
-          </svg> 
-        </a> -->
-        <!-- <p class="text-lg p-8">Enjoy Dither it!? <a href="https://www.paypal.me/alexharris6">Make a donation</a> to help us keep the lights on.</p> -->
-      </div>
+      </div>  
     </div>
-    <div class="mt-16 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col">
+    <div class=" font-serif mt-16 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col">
       <h3>Examples</h3>
       <h4 class="mt-16">Red Monochrome</h4>
       <div class="flex flex-col md:flex-row text-center justify-center items-center mt-4">
@@ -125,7 +98,6 @@ export default {
   },
   methods: {
     coffeeClick() {
-      console.log('hello');
       fathom('trackGoal', 'ZCRPUIOP', 0)
     },
   }

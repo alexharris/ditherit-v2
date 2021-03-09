@@ -23,7 +23,8 @@
           />
           <div class="shadow rounded p-3 bg-white w-full mt-2">
             <div class="flex flex-row items-center justify-between">
-              <label for="imageSize" h4 class="text-sm  uppercase font-bold mt-2 mb-2">Image Size</label>
+              
+              <label for="imageSize" h4 class="text-sm  uppercase font-bold mt-2 mb-2">Image Width</label>
               <span
                 class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                 @click="showOptionsModalSize = !showOptionsModalSize"
@@ -46,7 +47,7 @@
                   id="originalSize"
                   name="originalSize"
                   :value="'original'"
-                  >Original</option
+                  >Original ({{selectedImage.naturalWidth}}px)</option
                 >
                 <template v-for="(v, i) in imageWidths">
                   <option :id="v" name="imageWidth" :value="v" @click="fathom('JN4RHD7N')">{{ v }}</option>
@@ -211,7 +212,7 @@
           </div>   
           <!-- End Top Toolbar -->
           <!-- Dithered Canvas Display -->
-          <div class="pt-8 max-w-full w-full" v-show="showDitheredImage">
+          <div class="pt-8 md:p-8 max-w-full w-full" v-show="showDitheredImage">
 
 
             <div
