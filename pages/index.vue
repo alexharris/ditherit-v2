@@ -1,19 +1,22 @@
 <template>
-  <div class="flex flex-col items-center max-w-full pb-8 mx-4">
-    <Logo />
-    <div v-show="!imageUploaded" class="flex flex-col items-center mt-8">
+  <div class="flex flex-col items-center max-w-full">
+    <div :class="{ 'w-full flex justify-center': imageUploaded}">
+      <Logo />
+    </div>
+    <div v-show="!imageUploaded" class="flex flex-col items-center mt-4">
       <p class="mt-8 text-2xl">An image dithering tool 🏁</p>
       <img class="mt-8" src="~/assets/earth-dither.gif" />
     </div>
     <div
-      class="p-y12 px-4 flex flex-col md:flex-row mt-8 w-full justify-center"
+      class="py-12 px-2 md:px-4 flex flex-col md:flex-row pt-8 w-full justify-center"
+      :class="{ 'checkers shadow-inner': imageUploaded}"
     >
       <!-- Begin Main Toolbar -->
       <div
         v-show="imageUploaded"
         class="w-full md:w-1/4 order-last md:order-first"
       >
-        <div class="flex-1">
+        <div class="flex flex-col items-center">
           <ColorPicker
             :initial-palette="rgbQuantOptions.palette"
             @update-palette="onUpdatePalette"
@@ -25,7 +28,7 @@
             </button>
           </div>
 
-          <div class="shadow-lg rounded py-2 px-4 mt-4">
+          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full">
             <h4 class="text-lg font-bold mt-2 mb-2">Options</h4>
             <!-- Image Size Selector -->
             <div class="flex flex-row items-center justify-between">
@@ -164,18 +167,39 @@
 
             <!-- End Serpentine Dither -->
           </div>
+          
         </div>
-        <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" />
+        
       </div>
       <!-- End Toolbar -->
       <div
-        class="w-full md:w-3/4 flex flex-col xl:flex-row order-first md:order-last"
+        class="w-full md:w-3/4 flex flex-col xl:flex-row order-first md:order-last items-start"
       >
 
         <!-- Begin Main Display -->
-        <div class="px-4 flex flex-col flex-1 items-center">
+        <div class="px-2 md:px-4 flex flex-col flex-1 items-center w-full">
+          <!-- Begin Top Toolbar -->
+          <div class="flex flex-row justify-between gap-2 w-full items-center py-2 px-2  mb-4 shadow rounded bg-white" v-if="showDitheredImage && !dithering"> 
+            <Toggler class="flex-grow"
+            @view-original="viewOriginal = !viewOriginal"
+            >View Original</Toggler>  
+            <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ New"/>          
+            <a
+              class="btn-red-outline inline-block self-center"
+              target="_blank"
+              :href="downloadUrl"
+              :download="'dither_it_' + selectedFile.name"
+              @click="downloadImage"
+              
+              
+              >💾 Save</a
+            >  
+          </div>   
+          <!-- End Top Toolbar -->
           <!-- Dithered Canvas Display -->
-          <div class="max-w-full" v-show="showDitheredImage">
+          <div class="pt-8 max-w-full w-full" v-show="showDitheredImage">
+
+
             <div
               v-show="dithering"
               class="flex flex-col justify-center items-center"
@@ -200,25 +224,10 @@
           <!-- Original Image Display -->
           
           <div class="w-full flex flex-col ">
+          
             <div v-if="numberOfImages > 0">
               <img class="mx-auto max-w-full" :src="selectedImage.src" v-if="!showDitheredImage || viewOriginal"/>
             </div>
-            <div class="flex flex-row justify-between items-center py-2 px-4 mt-8 mx-4 shadow-lg rounded" v-if="showDitheredImage && !dithering"> 
-              <Toggler
-              @view-original="viewOriginal = !viewOriginal"
-              >View Original</Toggler>            
-              <a
-                class="btn-red-outline inline-block self-center"
-                target="_blank"
-                :href="downloadUrl"
-                :download="'dither_it_' + selectedFile.name"
-                @click="downloadImage"
-                
-                
-                >💾 Download</a
-              >  
-            </div>
-
             <div class="flex flex-row flex-wrap mt-4 justify-center">
               <div v-for="n in this.numberOfImages" v-show="numberOfImages > 1">
               
@@ -243,121 +252,30 @@
             >
 
             </div>
-            <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" v-if="!imageUploaded" />
+            <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ Select images" v-if="!imageUploaded" />
           </div>
           <!-- End Toolbar Stuff -->
         </div>
-        <!-- Begin Output -->
+        <!-- Begin Report -->
+        <!-- {{imageUploaded}}
+        {{showDitheredImage}}
+        {{selectingImage}} -->
         <div
-          v-if="imageUploaded"
-          class="w-full xl:w-1/4 flex flex-col md:flex-row xl:flex-col mt-8 xl:mt-0 px-8 xl:px-0"
-        >
-          <div v-if="this.selectedImage"
-            class="shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
-          >
-            <h4 class="text-lg font-bold mt-0" >Selected File</h4>
-            <div
-              v-if="selectingImage"
-              class="flex flex-col justify-center items-center"
-            >
-              <div class="loader h-8 w-8 my-4 "></div>
-            </div>
-            <div  v-else class="flex xl:flex-col">
-              <div class="w-1/2 lg:w-full">
-                <ul class="mt-1">
-                  <li>
-                    <strong>Size: </strong>{{ selectedImage.naturalWidth }}px x
-                    {{ selectedImage.naturalHeight }}px
-                  </li>
-                  <li>
-                    <strong>Filesize: </strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb
-                  </li>
-                  <li>
-                    <strong>Filetype: </strong>{{selectedFile.type}}
-                  </li>
-                </ul>
-              </div>
-              <!-- <div class="w-1/2 lg:w-full" v-show="showDitheredImage">
-                      <h5 class="mt-2 text-md font-bold">Dithered</h5>
-                      <ul>
-                      <li>Filename: dither_it_{{fileName}} </li>
-                      <li>Width: {{canvasWidth}}px</li>
-                      <li>Height: {{canvasHeight}}px</li>
-                      </ul>                
-                  </div> -->
-            </div>
-          </div>
-          <div
-            v-if="showDitheredImage"
-            class="shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
-          >
-            <h4 class="text-lg font-bold mt-0">Dithered File</h4>
-            <div
-              v-if="selectingImage"
-              class="flex flex-col justify-center items-center"
-            >
-              <div class="loader h-8 w-8 my-4"></div>
-            </div>
-            <div v-else class="flex xl:flex-col">
-              <div class="w-1/2 lg:w-full">
-                <ul class="mt-1">
-                  <li>
-                    <strong>Size: </strong>{{ ditheredWidth }}px x
-                    {{ ditheredHeight }}px
-                  </li>
-                  <li>
-                    <strong>Filesize: </strong>
-                    {{ downloadFileSize.toFixed(2) }}kb
-                  </li>
-
-                  <!-- {{originalFileSize}}<br />
-                    {{downloadFileSize}} -->
-                </ul>
-              </div>
-            </div>
-          </div>
-          <div
-            v-if="showDitheredImage"
-            class="shadow-lg rounded p-3 m-2 w-full h-0 md:h-auto invisible md:visible"
-            :class="[ratioGood ? 'bg-green-100' : '', 'bg-red-100']"
-          >
-            <h4 class="text-lg font-bold mt-0">Filesize Ratio</h4>
-            <div
-              v-if="selectingImage"
-              class="flex flex-col justify-center items-center"
-            >
-              <div class="loader h-8 w-8 my-4"></div>
-            </div>   
-            <div v-else>         
-              <div v-if="ratioGood">
-                <p class="mt-1">
-                  The filesize is
-                  <strong
-                    >{{
-                      100 -
-                        ((downloadFileSize / (Math.round(((selectedImage.src.length) * 3) / 4) / 1000)) * 100).toFixed(2)
-                    }}%</strong
-                  >
-                  smaller than the original 👍
-                </p>
-              </div>
-              <div v-else>
-                <p class="mt-1">
-                  The filesize is
-                  <strong
-                    >{{
-                      (( downloadFileSize / (Math.round(((selectedImage.src.length) * 3) / 4) / 1000)) * 100).toFixed(2)
-                    }}%</strong
-                  >
-                  larger than the original 🎭
-                </p>
-              </div>
-            </div>
-          </div>
+          v-if="showDitheredImage && !dithering"
+          class="shadow rounded m-4 xl:m-0 p-4 xl:w-1/4 bg-white"
+        >       
+          <FilesizeResults 
+            :ratio-good="ratioGood"
+            :download-file-size="downloadFileSize"
+            :selected-image="selectedImage"
+            :dithered-height="ditheredHeight"
+            :dithered-width="ditheredWidth"
+            :download-filesize="downloadFileSize.toFixed(2)"
+            :rgbquant="rgbQuantOptions"
+          />
         </div>
       </div>
     </div>
-
     <BottomContent />
     <!-- Fathom - simple website analytics - https://usefathom.com -->
     <script>
@@ -389,6 +307,7 @@ import ColorPicker from '~/components/ColorPicker.vue'
 import InputBlock from '~/components/InputBlock.vue'
 import BottomContent from '~/components/BottomContent.vue'
 import Toggler from '~/components/Toggler.vue'
+import FilesizeResults from '~/components/FilesizeResults.vue'
 
 
 export default {
@@ -398,7 +317,8 @@ export default {
     Logo,
     InputBlock,
     BottomContent,
-    Toggler
+    Toggler,
+    FilesizeResults
   },
   data() {
     return {
@@ -657,3 +577,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .checkers {
+    background-color: #fcfffb;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='p' width='100' height='100' patternUnits='userSpaceOnUse' patternTransform='scale(0.36)'%3E%3Cpath data-color='outline' fill='none' stroke='%239D9D9D' stroke-width='0.25' d='M50 0v100M100 50H0'%3E%3C/path%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23p)' width='100%25' height='100%25'%3E%3C/rect%3E%3C/svg%3E");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+</style>

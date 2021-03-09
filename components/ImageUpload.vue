@@ -2,8 +2,8 @@
 <template>
   <div>
     <div v-if="loading" class="loader"></div>
-    <label class="btn-red-outline xl:w-64 text-center inline-block mt-4">
-      <span>✨ Select images</span>
+    <label class="btn-red-outline text-center inline-block bg-white">
+      <span>{{text}}</span>
       <input
         id="imageLoader"
         type="file"
@@ -25,6 +25,7 @@ export default {
       images: []
     }
   },
+  props: ['text'],
   methods: {
     // ---------------------------
     // Get the uploaded images and create an initial array of the objects

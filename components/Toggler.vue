@@ -1,5 +1,5 @@
 <template>
-<div class="flex items-center justify-center">
+<div class="flex items-center pl-2">
   
   <!-- Toggle Button -->
   <label 
