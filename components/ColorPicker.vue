@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <div class="shadow-lg rounded p-3 bg-white">
+  <div class="w-full pt-2">
+    <div class="shadow rounded p-3 bg-white">
+      <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Palette</h4>
+
       <!-- Palette menu -->
       <div v-if="!showModal">
         <div class="flex flex-wrap" v-if="palette.length > 0">

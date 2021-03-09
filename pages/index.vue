@@ -16,23 +16,14 @@
         v-show="imageUploaded"
         class="w-full md:w-1/4 order-last md:order-first"
       >
-        <div class="flex flex-col items-center">
+        <div class="flex flex-col items-center w-full">
           <ColorPicker
             :initial-palette="rgbQuantOptions.palette"
             @update-palette="onUpdatePalette"
           />
-
-          <div class="mt-4 text-center xl:w-64">
-            <button class="btn-red text-lg w-full" @click="ditherImage()">
-              🏁 Dither
-            </button>
-          </div>
-
-          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full">
-            <h4 class="text-lg font-bold mt-2 mb-2">Options</h4>
-            <!-- Image Size Selector -->
+          <div class="shadow rounded p-3 bg-white w-full mt-2">
             <div class="flex flex-row items-center justify-between">
-              <label for="imageSize" class="font-bold">Image Size</label>
+              <label for="imageSize" h4 class="text-sm  uppercase font-bold mt-2 mb-2">Image Size</label>
               <span
                 class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                 @click="showOptionsModalSize = !showOptionsModalSize"
@@ -79,11 +70,20 @@
               <div class="mt-2 bg-red-100 p-2 rounded">
                 This determines the size of the final file, and can also affect how the dither looks.
               </div>
-            </div>
-            <!-- End Image Size Selector -->
+            </div>         
+         </div>
+          <div class="mt-4 text-center xl:w-64 shadow">
+            <button class="btn-red text-lg w-full" @click="ditherImage()">
+              🏁 Dither
+            </button>
+          </div>
+
+          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full">
+            <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Advanced Options</h4>
+
             <!-- Algorithm Selector -->
-            <div class="flex flex-row items-center justify-between mt-4">
-              <label for="ditherAlgo" class="font-bold">Algorithm</label>
+            <div class="flex flex-row items-center justify-between mt-4 pb-2">
+              <label for="ditherAlgo" class="font-bold text-sm">Algorithm</label>
               <span
                 class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                 @click="showOptionsModalAlgo = !showOptionsModalAlgo"
@@ -140,7 +140,7 @@
                   type="checkbox"
                   class="form-checkbox"
                 />
-                <label for="ditherSerp" class="ml-2"><strong>Serpentine Dither</strong></label>
+                <label for="ditherSerp" class="ml-2 text-sm"><strong>Serpentine Dither</strong></label>
                 <span
                   class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                   @click="showOptionsModalSerp = !showOptionsModalSerp"
@@ -169,7 +169,21 @@
           </div>
           
         </div>
-        
+        <!-- This is the same as the other report block, this one is for mobile positioning -->
+        <div
+          v-if="showDitheredImage && !dithering"
+          class="shadow rounded xl:m-0 p-4 w-full xl:w-1/4 bg-white md:hidden"
+        >       
+          <FilesizeResults 
+            :ratio-good="ratioGood"
+            :download-file-size="downloadFileSize"
+            :selected-image="selectedImage"
+            :dithered-height="ditheredHeight"
+            :dithered-width="ditheredWidth"
+            :download-filesize="downloadFileSize.toFixed(2)"
+            :rgbquant="rgbQuantOptions"
+          />
+        </div>
       </div>
       <!-- End Toolbar -->
       <div
@@ -257,12 +271,9 @@
           <!-- End Toolbar Stuff -->
         </div>
         <!-- Begin Report -->
-        <!-- {{imageUploaded}}
-        {{showDitheredImage}}
-        {{selectingImage}} -->
         <div
           v-if="showDitheredImage && !dithering"
-          class="shadow rounded m-4 xl:m-0 p-4 xl:w-1/4 bg-white"
+          class="shadow rounded xl:m-0 p-4 w-full xl:w-1/4 bg-white hidden md:block"
         >       
           <FilesizeResults 
             :ratio-good="ratioGood"

@@ -46,7 +46,7 @@
         </ul>  
       </div>    
     </div>   -->
-    <div class="w-full md:w-1/3 xl:w-full">
+    <div class="w-full md:w-2/3 xl:w-full">
       <p class="mt-1">
         The file size is
         <strong
@@ -58,13 +58,13 @@
         <p>The original was <strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb</strong>, and the dithered one is <strong>{{ downloadFileSize.toFixed(2) }}kb</strong>. 
       </p> 
     </div>   
-    <div class="w-full md:w-1/3 xl:w-full">
-      Dither details
+    <!-- <div class="w-full md:w-1/3 xl:w-full border-t border-dashed pt-2">
       <ul>
         <li><strong>Size:</strong> {{ditheredWidth}}px x {{ditheredHeight}}px</li>
         <li><strong>Colors:</strong> {{rgbquant.colors}}</li>
+        <li><strong>Algorithm:</strong> {{rgbquant.dithKern}}</li>
       </ul>
-    </div>    
+    </div>     -->
   </div>
 
 </template>
