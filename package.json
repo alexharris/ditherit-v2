@@ -22,7 +22,8 @@
     "rgbquant": "^1.1.2",
     "ts-jest": "^23.10.5",
     "vue-color": "^2.7.1",
-    "vue-palette-builder": "^1.0.4"
+    "vue-palette-builder": "^1.0.4",
+    "vue-twentytwenty": "^0.10.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",

@@ -1,5 +1,6 @@
 <template>
 <div>
+
     <div
       class="flex  gap-16 flex-col md:flex-row border-t border-dashed border-red-500 pt-8 mt-24 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 "
     >
@@ -23,33 +24,8 @@
         <style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 15px 7px 10px !important;line-height: 35px !important;height:51px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#FF5F5F !important;border-radius: 8px !important;border: 1px solid transparent !important;font-size: 18px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Arial', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/alexharris" @click="coffeeClick()"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px;font-size:18px !important;">Buy me a coffee</span></a>
       </div>  
     </div>
-    <div class=" font-serif mt-16 px-4 border-t border-dashed border-red-500 pt-8 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col">
-      <h3>Examples</h3>
-      <h4 class="mt-16">Red Monochrome</h4>
-      <div class="flex flex-col md:flex-row text-center justify-center items-center mt-4">
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/cover-the-earth.jpg" /></div>
-        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/dither_cover-the-earth.jpg" /></div>
-      </div>
-      <h4 class="mt-16">Original 8 Color</h4>
-      <div class="flex flex-col md:flex-row items-center text-center mt-8 ">
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/beauty-spot.jpg" /></div>
-        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/beauty-spot-dither.jpg" /></div>
-      </div>
-      <h4 class="mt-16">RGBY</h4>
-      <div class="flex flex-col md:flex-row text-center mt-8 ">
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/duck.jpg" /></div>
-        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/duck-dither.jpg" /></div>
-      </div>
-      <h4 class="mt-16">Black & White</h4>
-      <div class="flex flex-col md:flex-row items-center">
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/corolla.jpg" /></div>
-        <div class="w-full md:w-2/12 self-center"><img class="example-arrow w-16 mx-auto" src="~/assets/arrow.svg" /></div>
-        <div class="w-full md:w-5/12"><img class="mx-auto" src="~/assets/examples/corolla-dither.jpg" /></div>
-      </div>                  
-    </div>
+
+    <Examples />
     
     <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:md-64 flex-col md:flex-row">
       
@@ -90,16 +66,22 @@
 
 
 <script>
+import Examples from '~/components/examples.vue'
+
 export default {
+  components: {
+    Examples
+  },     
   data() {
     return {
-
     }
   },
+  
   methods: {
     coffeeClick() {
       fathom('trackGoal', 'ZCRPUIOP', 0)
     },
+  
   }
 }
 </script>
