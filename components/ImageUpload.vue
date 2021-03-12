@@ -2,18 +2,24 @@
 <template>
   <div>
     <div v-if="loading" class="loader"></div>
-    <label class="btn-red-outline text-center inline-block bg-white">
-      <span>{{text}}</span>
-      <input
-        id="imageLoader"
-        type="file"
-        accept=".jpg, .png, .gif"
-        name="imageLoader"
-        class="hidden"
-        multiple="multiple"
-        @change="imageUploaded"
-      />
-    </label>
+    <div class="flex flex-col md:flex-row items-center">
+      <label class="btn-red-outline text-center inline-block bg-white">
+        <span>{{text}}</span>
+        <input
+          id="imageLoader"
+          type="file"
+          accept=".jpg, .png, .gif"
+          name="imageLoader"
+          class="hidden"
+          multiple="multiple"
+          @change="imageUploaded"
+        />
+      </label>
+      <span class="px-4">or</span>
+      <label class="btn-red-outline text-center inline-block bg-white" v-if="duck">
+        <span @click="startWithDuck" v-if="duck == 'true'">🦆 Start with a duck</span>
+      </label>
+    </div>
   </div>
 </template>
 
@@ -25,15 +31,15 @@ export default {
       images: []
     }
   },
-  props: ['text'],
+  props: ['text', 'duck'],
   methods: {
     // ---------------------------
     // Get the uploaded images and create an initial array of the objects
     // ----------------------------
     imageUploaded(e) {
       console.log('Images uploaded:')
-      this.reportNumberOfImages(e)
-
+      this.reportNumberOfImages(e.target.files.length)
+      console.log(e);
       this.loading = true // for loading spinner
 
       // now go through the images that have been loaded
@@ -41,7 +47,8 @@ export default {
 
         const id = 'originalImage' + (i + 1) // the id for img tag
 
-        console.log((i + 1) + ': ' + e.target.files[i].name)
+        // console.log((i + 1) + ': ' + e.target.files[i].name)
+
         // build an array of all the upload images and their details
         this.images[i] = []
         this.images[i]['id'] = id
@@ -51,6 +58,8 @@ export default {
 
         // send the uploaded file to get turned into an img
         // but we wait a second so that the originalImage img tags in index can load
+        console.log('hello');
+        console.log(e.target.files[i]);
         setTimeout(() => {
           this.createOriginalImage(e.target.files[i], i)
         }, 100)
@@ -80,6 +89,7 @@ export default {
       }
 
       // give the reader the file object
+      console.log(file)
       reader.readAsDataURL(file) // Read the data of the target as a data url
 
       // add width and height of the new images to the images array
@@ -90,9 +100,52 @@ export default {
     // ---------------------------
     // Tell the parent how many images there are
     // ----------------------------
-    reportNumberOfImages(e) {
-      this.$emit('number-images', e.target.files.length)
-    }
+    reportNumberOfImages(i) {
+      this.$emit('number-images', i)
+    },
+    // ---------------------------
+    // This does the same as imageUploaded but for the static duck image
+    // ----------------------------    
+    startWithDuck() {
+      
+      window.fathom.trackGoal('HJQ6OA1C', 0);
+      
+      this.loading = true // for loading spinner
+
+      // conver tot blob
+      var file;
+
+      fetch(require('~/assets/examples/duck.jpg'))
+      .then((response) => {
+        return response.blob()
+      })
+      .then((blob) => {
+        // here the image is a blob
+        file = new File([blob], "name");
+        this.reportNumberOfImages(1);
+        var i = 0;
+        const id = 'originalImage' + (i + 1) // the id for img ta
+        
+
+        this.images[i] = []
+        this.images[i]['id'] = id
+        this.images[i]['type'] = 'jpg'
+        this.images[i]['name'] = 'Duck'
+        this.images[i]['size'] = file.size
+
+        
+        setTimeout(() => {
+          this.createOriginalImage(file, i)
+        }, 100)
+
+        setTimeout(() => {
+            this.$emit('image-upload',this.images)
+          }, 100);           
+      });   
+
+      this.loading = false // for loading spinner 
+    },
+  
   }
 }
 </script>

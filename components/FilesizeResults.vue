@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 <template> 
-  <div class="flex flex-col sm:flex-row xl:flex-col gap-4 items-center md:items-start">  
+  <div class="flex flex-col sm:flex-row xl:flex-col gap-4 items-center md:items-start m-4">  
     <div class="donutContainer w-2/3 sm:w-1/2 md:w-1/3 xl:w-full">
       <svg viewBox="0 0 42 42" class="donut">
         <!-- <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle> -->

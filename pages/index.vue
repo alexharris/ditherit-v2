@@ -188,13 +188,13 @@
       </div>
       <!-- End Toolbar -->
       <div
-        class="w-full md:w-3/4 flex flex-col xl:flex-row order-first md:order-last items-start"
+        class="w-full md:w-3/4 flex flex-col xl:flex-row order-first md:order-last items-stretch"
       >
 
         <!-- Begin Main Display -->
-        <div class="px-2 md:px-4 flex flex-col flex-1 items-center w-full">
+        <div class="md:px-4 flex flex-col flex-1 items-center w-full">
           <!-- Begin Top Toolbar -->
-          <div class="flex flex-row justify-between gap-2 w-full items-center py-2 px-2  mb-4 shadow rounded bg-white" v-if="showDitheredImage && !dithering"> 
+          <div class="flex flex-row justify-between gap-2 w-full items-center py-2 px-2 mb-4 shadow rounded bg-white" v-if="showDitheredImage && !dithering"> 
             <Toggler class="flex-grow"
             @view-original="viewOriginal = !viewOriginal"
             >View Original</Toggler>  
@@ -212,7 +212,7 @@
           </div>   
           <!-- End Top Toolbar -->
           <!-- Dithered Canvas Display -->
-          <div class="pt-8 md:p-8 max-w-full w-full" v-show="showDitheredImage">
+          <div id="dithered-canvas-display" class="max-w-full w-full"  :class="{ 'pt-8': showDitheredImage == true }" v-show="showDitheredImage">
 
 
             <div
@@ -267,14 +267,15 @@
             >
 
             </div>
-            <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ Select images" v-if="!imageUploaded" />
+            <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ Select images" duck="true" v-if="!imageUploaded" />
+            
           </div>
           <!-- End Toolbar Stuff -->
         </div>
         <!-- Begin Report -->
         <div
           v-if="showDitheredImage && !dithering"
-          class="shadow rounded xl:m-0 p-4 w-full xl:w-1/4 bg-white hidden md:block"
+          class="shadow rounded xl:m-0 m-4 xl:w-1/4 bg-white hidden md:block"
         >       
           <FilesizeResults 
             :ratio-good="ratioGood"
@@ -585,7 +586,7 @@ export default {
     },
     fathom(id) {
       fathom('trackGoal', id, 0)
-    }
+    },
   }
 }
 </script>

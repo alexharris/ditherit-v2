@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full pt-2">
+  <div class="w-full">
     <div class="shadow rounded p-3 bg-white">
       <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Palette</h4>
 
