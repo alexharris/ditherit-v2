@@ -3,7 +3,7 @@
   <div>
     <div v-if="loading" class="loader"></div>
     <div class="flex flex-col md:flex-row items-center">
-      <label class="btn-red-outline text-center inline-block bg-white">
+      <label class="btn-red-outline text-center inline-block bg-white cursor-pointer">
         <span>{{text}}</span>
         <input
           id="imageLoader"
@@ -15,8 +15,8 @@
           @change="imageUploaded"
         />
       </label>
-      <span class="px-4">or</span>
-      <label class="btn-red-outline text-center inline-block bg-white" v-if="duck">
+      <span class="py-4 px-4" v-if="duck">or</span>
+      <label class="btn-red-outline text-center inline-block bg-white  cursor-pointer" v-if="duck">
         <span @click="startWithDuck" v-if="duck == 'true'">🦆 Start with a duck</span>
       </label>
     </div>
@@ -108,7 +108,7 @@ export default {
     // ----------------------------    
     startWithDuck() {
       
-      window.fathom.trackGoal('HJQ6OA1C', 0);
+      fathom('trackGoal', 'HJQ6OA1C', 0)
       
       this.loading = true // for loading spinner
 
@@ -149,3 +149,5 @@ export default {
   }
 }
 </script>
+
+
