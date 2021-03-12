@@ -17,7 +17,7 @@
       </label>
       <span class="py-4 px-4" v-if="duck">or</span>
       <label class="btn-red-outline text-center inline-block bg-white  cursor-pointer" v-if="duck">
-        <span @click="startWithDuck" v-if="duck == 'true'">🦆 Start with a duck</span>
+        <span @click="startWithDuck" v-if="duck == 'true'">🐸 Start with a frog</span>
       </label>
     </div>
   </div>
@@ -115,7 +115,7 @@ export default {
       // conver tot blob
       var file;
 
-      fetch(require('~/assets/examples/duck.jpg'))
+      fetch(require('~/assets/examples/quantfrog.png'))
       .then((response) => {
         return response.blob()
       })
@@ -129,8 +129,8 @@ export default {
 
         this.images[i] = []
         this.images[i]['id'] = id
-        this.images[i]['type'] = 'jpg'
-        this.images[i]['name'] = 'Duck'
+        this.images[i]['type'] = 'png'
+        this.images[i]['name'] = 'Frog'
         this.images[i]['size'] = file.size
 
         
