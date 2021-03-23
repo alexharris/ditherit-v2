@@ -52,8 +52,15 @@
                 <template v-for="(v, i) in imageWidths">
                   <option :id="v" name="imageWidth" :value="v" @click="fathom('JN4RHD7N')">{{ v }}</option>
                 </template>
+                <option
+                  @click="fathom('trackGoal', 'MHEE0ZOY', 0)"
+                  id="customWidth"
+                  name="customWidth"
+                  :value="'custom'"
+                  >Custom</option
+                >                
               </select>
-              <div
+              <div 
                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
               >
                 <svg
@@ -71,7 +78,21 @@
               <div class="mt-2 bg-red-100 p-2 rounded">
                 This determines the size of the final file, and can also affect how the dither looks.
               </div>
-            </div>         
+            </div>  
+            <!-- Custom Width Form -->
+            <div v-if="canvasWidth == 'custom'">
+              <div class="flex flex-row items-center justify-between">
+                
+                <label for="imageSize" h4 class="text-sm w-full uppercase font-bold mt-2 mb-2">Custom Width</label>
+              </div>  
+              <div v-if="!showOptionsModalSize" class="w-full relative flex flex-row gap-2">  
+                <input class="block appearance-none w-1/2 bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline"
+  type="number"  id="name" name="name" maxlength="4" v-model="customWidth"> x 
+                <div>{{(selectedImage.naturalHeight / selectedImage.naturalWidth) * customWidth}}</div>
+              </div>
+            </div>
+
+                
          </div>
           <div class="mt-4 text-center xl:w-64 shadow">
             <button class="btn-red text-lg w-full" @click="ditherImage()">
@@ -81,7 +102,6 @@
 
           <div class="shadow rounded py-2 px-4 my-4 bg-white w-full">
             <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Advanced Options</h4>
-
             <!-- Algorithm Selector -->
             <div class="flex flex-row items-center justify-between mt-4 pb-2">
               <label for="ditherAlgo" class="font-bold text-sm">Algorithm</label>
@@ -107,7 +127,7 @@
                 class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
               >
                 <template v-for="(v, i) in algorithmOptions">
-                  <option :id="v" name="imageWidth" :value="v">{{ v }}</option>
+                  <option :id="v" :name="v" :value="v">{{ v }}</option>
                 </template>
               </select>
               <div
@@ -345,6 +365,7 @@ export default {
       showDitheredImage: false, // control if the dithered image is visible
       imageWidths: [320, 640, 1080, 1280],
       algorithmOptions: [
+        // 'Bayer',
         'FloydSteinberg',
         'FalseFloydSteinberg',
         'Stucki',
@@ -385,7 +406,8 @@ export default {
       ditheredWidth: '',
       ditheredHeight: '',
       viewOriginal: false,
-      selectingImage: false
+      selectingImage: false,
+      customWidth: 1000
     }
   },
   computed: {
@@ -511,6 +533,8 @@ export default {
             // Set the canvas width to the original image width
             // eslint-disable-next-line no-const-assign
             width = originalImage.naturalWidth
+          } else if (this.canvasWidth === 'custom') { 
+            width = this.customWidth
           } else {
             // Otherwise, set it to whatever is selected
             // eslint-disable-next-line no-const-assign
@@ -523,20 +547,27 @@ export default {
           ctx.canvas.height = height
           // Put the image on the canvas
           ctx.drawImage(originalImage, 0, 0, width, height)
-          // Create new RgbQuant instance
-          const q = new RgbQuant(this.rgbQuantOptions)
-          // Analyze histograms to get colors
-          q.sample(originalImage) 
-          // Dither what is on the canvas
-          const ditherResult = q.reduce(ditheredImageCanvas) 
-          // Get the newly dithered image data
-          const imgData = ctx.getImageData(0, 0, width, height)
-          // Set the value of imageData to the dithered image data
-          imgData.data.set(ditherResult) 
-          // Put the new image data on the canvas
-          ctx.putImageData(imgData, 0, 0)
-          // Set the data for the image download
-          this.downloadImage()
+
+          if(this.rgbQuantOptions.dithKern == 'Bayer') {
+            this.bayerDither(ctx, ctx.getImageData(0, 0, width, height))
+          } else {
+            // Create new RgbQuant instance
+            const q = new RgbQuant(this.rgbQuantOptions)
+            // Analyze histograms to get colors
+            q.sample(originalImage) 
+            // Dither what is on the canvas
+            const ditherResult = q.reduce(ditheredImageCanvas) 
+            console.log(ditherResult) // this is a Uint8Array of all of the pixels as RGB values where every 3 values is an RGB value like 255,0,0 etc.
+            // Get the newly dithered image data
+            const imgData = ctx.getImageData(0, 0, width, height)
+            // Set the value of imageData to the dithered image data
+            imgData.data.set(ditherResult) 
+            // Put the new image data on the canvas
+            ctx.putImageData(imgData, 0, 0)
+            // Set the data for the image download
+            this.downloadImage()
+          }
+
         }
         // Turn off dithering indicator
         this.dithering = false
@@ -545,6 +576,135 @@ export default {
       }, 100)
       // Set the data for the image download (again?)
       this.downloadImage()
+    },
+    bayerDitherOld2(ctx,imageData) {
+      var depth      = 16;
+
+
+      // Matrix
+      var threshold_map_2x2 = [
+          [ 0, 2],
+          [ 3, 1],
+      ];
+
+      var threshold_map_4x4 = [
+          [  1,  9,  3, 11 ],
+          [ 13,  5, 15,  7 ],
+          [  4, 12,  2, 10 ],
+          [ 16,  8, 14,  6 ]
+      ];
+
+      // imageData
+      var width  = imageData.width;
+      var height = imageData.height;
+      var pixel  = imageData.data;
+      var x, y, a, b;
+
+      // filter
+      for ( x=0; x<width; x++ )
+      {
+          for ( y=0; y<height; y++ )
+          {
+              a    = ( x * height + y ) * 4;
+              b    = threshold_map_4x4[ x%4 ][ y%4 ];
+              // pixel[ a + 0 ] = ( (pixel[ a + 0 ]+ b) / depth | 0 ) * depth;
+              // pixel[ a + 1 ] = ( (pixel[ a + 1 ]+ b) / depth | 0 ) * depth;
+              // pixel[ a + 2 ] = ( (pixel[ a + 2 ]+ b) / depth | 0 ) * depth;
+              // pixel[ a + 3 ] = ( (pixel[ a + 3 ]+ b) / depth | 3 ) * depth;
+              pixel[ a ] = pixel[ a + 1 ] = pixel[ a + 2 ] = ( (pixel[ a ]+ b) / depth | 0 ) * depth;
+          }
+      }
+
+      ctx.putImageData( imageData, 0, 0);
+    },
+    bayerDither(ctx, imageData) {
+
+      var bayerThresholdMap = [
+        [  15, 135,  45, 165 ],
+        [ 195,  75, 225, 105 ],
+        [  60, 180,  30, 150 ],
+        [ 240, 120, 210,  90 ]
+      ];
+
+      var lumR = [];
+      var lumG = [];
+      var lumB = [];
+      for (var i=0; i<256; i++) {
+        lumR[i] = i*0.299;
+        lumG[i] = i*0.587;
+        lumB[i] = i*0.114;
+      }
+
+
+      var imageDataLength = imageData.data.length;
+      console.log(imageDataLength);
+
+      // Greyscale luminance (sets r pixels to luminance of rgb)
+      for (var i = 0; i <= imageDataLength; i += 4) {
+        imageData.data[i] = Math.floor(lumR[imageData.data[i]] + lumG[imageData.data[i+1]] + lumB[imageData.data[i+2]]);
+      }      
+
+      var w = imageData.width;
+      var newPixel, err;
+
+      for (var currentPixel = 0; currentPixel <= imageDataLength; currentPixel+=4) {
+        // 4x4 Bayer ordered dithering algorithm
+        var x = currentPixel/4 % w;
+        var y = Math.floor(currentPixel/4 / w);
+        var map = Math.floor( (imageData.data[currentPixel] + bayerThresholdMap[x%4][y%4]) / 2 );
+        imageData.data[currentPixel] = (map < 129) ? 0 : 255;        
+
+        // Set g and b pixels equal to r
+        imageData.data[currentPixel + 1] = imageData.data[currentPixel + 2] = imageData.data[currentPixel];        
+      }
+      console.log(imageData)
+      // Put the new image data on the canvas
+      ctx.putImageData(imageData, 0, 0)
+
+    },
+    bayerDitherOld(ctx, imgData) {
+
+      // add up every three values
+      var v = 0;
+      const arr = imgData.data;
+      console.log(arr)
+
+    // imageData.data[i] = Math.floor(lumR[imageData.data[i]] + lumG[imageData.data[i+1]] + lumB[imageData.data[i+2]]);
+
+      var newArr = [];
+      const num = 3;
+      for(let i = 0; i < arr.length; i++){
+        if(i % num !== 0){
+          // console.log(i)
+          //1,2
+          //4,5
+          //7,8
+          // etc
+          continue;
+        };
+        if(arr[i] + arr[i+1] + arr[i+2] > 255) {
+          newArr.push(255)
+          newArr.push(255)
+          newArr.push(255)
+        } else {
+          newArr.push(0)
+          newArr.push(0)
+          newArr.push(0)
+        }
+
+
+        
+      };
+      // console.log(newArr)
+      newArr.pop()
+      newArr.pop()
+      // console.log(newArr)
+      var uint8 = new Uint8Array(newArr);
+      // console.log(uint8)
+      // Set the value of imageData to the dithered image data
+      imgData.data.set(uint8) 
+      // Put the new image data on the canvas
+      ctx.putImageData(imgData, 0, 0)
     },
     // ---------------------------
     // Analyze the image palette

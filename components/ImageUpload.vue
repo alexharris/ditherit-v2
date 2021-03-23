@@ -16,9 +16,9 @@
         />
       </label>
       <span class="py-4 px-4" v-if="duck">or</span>
-      <label class="btn-red-outline text-center inline-block bg-white  cursor-pointer" v-if="duck">
-        <span @click="startWithDuck" v-if="duck == 'true'">🐸 Start with a frog</span>
-      </label>
+      <span class="btn-red-outline text-center inline-block bg-white cursor-pointer"  @click="startWithDuck" v-if="duck == 'true'">
+        🐸 Start with a frog
+      </span>
     </div>
   </div>
 </template>
