@@ -78,7 +78,7 @@ export default {
     // & add width/height to images array
     // ----------------------------
     createOriginalImage(file, i) {
-      console.log('Create original images.')
+      // console.log('Create original images.')
       const id = i + 1 // id starts at 1
       const tempImage = document.getElementById('originalImage' + id) // find the img tag already created in index.vue for this image
       const reader = new FileReader() // this creates a new Reader
@@ -89,7 +89,7 @@ export default {
       }
 
       // give the reader the file object
-      console.log(file)
+      // console.log(file)
       reader.readAsDataURL(file) // Read the data of the target as a data url
 
       // add width and height of the new images to the images array

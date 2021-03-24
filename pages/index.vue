@@ -21,10 +21,10 @@
             :initial-palette="rgbQuantOptions.palette"
             @update-palette="onUpdatePalette"
           />
-          <div class="shadow rounded p-3 bg-white w-full mt-2">
+          <div class="shadow rounded p-3 bg-white w-full mt-2" v-if="selectedImage">
             <div class="flex flex-row items-center justify-between">
               
-              <label for="imageSize" h4 class="text-sm  uppercase font-bold mt-2 mb-2">Image Width</label>
+              <label for="imageSize" h4 class="text-sm  uppercase font-bold mt-2 mb-2">Image Size</label>
               <span
                 class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                 @click="showOptionsModalSize = !showOptionsModalSize"
@@ -37,8 +37,44 @@
                 </span>
               </span>
             </div>
+            <div v-if="canvasWidth > 5000" class="bg-red-100 p-2 mt-2 mb-4 rounded">
+              Width must be less than 5000px
+            </div>
             <div v-if="!showOptionsModalSize" class="w-full relative">
-              <select
+                <div class="flex flex-row gap-4 w-full items-center">
+                  <div class="w-1/2">
+                    Width (px)
+                    <span v-if="customWidth == false" @click="customWidth = !customWidth; focus();" class="block  bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline">{{selectedImage.naturalWidth}}</span> 
+                    <input 
+                      v-else class="block w-full bg-white border border-gray-300 hover:border-gray-500 px-2 py-2 mt-1 rounded leading-tight focus:outline-none focus:shadow-outline"
+                      @change="validateWidth()"
+                      type="number"  
+                      ref="customWidthField"
+                      id="customWidthField" 
+                      name="customWidthField" 
+                      maxlength="4" 
+                      max="5000"
+                      v-model="canvasWidth" 
+                    />                  
+                  </div>
+                  <!-- <span v-else class="block appearance-none w-1/2 bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline"> -->
+    
+
+                  <!-- </span> -->
+                  
+                  <div class="w-1/2">
+                  Height (px)
+                    <span class="block appearance-none bg-gray-200 border border-gray-300 text-gray-500 px-4 py-2 mt-1 rounded leading-tight focus:outline-none focus:shadow-outline">
+                    <template v-if="canvasWidth == 'original'">
+                      {{selectedImage.height}}
+                    </template>
+                    <template v-else>   
+                      {{(selectedImage.naturalHeight / selectedImage.naturalWidth) * canvasWidth}}
+                    </template>               
+                    </span>
+                  </div>
+                </div>           
+              <!-- <select
                 id="imageSize"
                 v-model="canvasWidth"
                 class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
@@ -59,8 +95,8 @@
                   :value="'custom'"
                   >Custom</option
                 >                
-              </select>
-              <div 
+              </select> -->
+              <!-- <div 
                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
               >
                 <svg
@@ -72,7 +108,7 @@
                     d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
                   />
                 </svg>
-              </div>
+              </div> -->
             </div>
             <div v-else>
               <div class="mt-2 bg-red-100 p-2 rounded">
@@ -80,22 +116,12 @@
               </div>
             </div>  
             <!-- Custom Width Form -->
-            <div v-if="canvasWidth == 'custom'">
-              <div class="flex flex-row items-center justify-between">
-                
-                <label for="imageSize" h4 class="text-sm w-full uppercase font-bold mt-2 mb-2">Custom Width</label>
-              </div>  
-              <div v-if="!showOptionsModalSize" class="w-full relative flex flex-row gap-2">  
-                <input class="block appearance-none w-1/2 bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline"
-  type="number"  id="name" name="name" maxlength="4" v-model="customWidth"> x 
-                <div>{{(selectedImage.naturalHeight / selectedImage.naturalWidth) * customWidth}}</div>
-              </div>
-            </div>
+
 
                 
          </div>
           <div class="mt-4 text-center xl:w-64 shadow">
-            <button class="btn-red text-lg w-full" @click="ditherImage()">
+            <button class="btn-red text-lg w-full" @click="ditherImage()" :disabled="isError">
               🏁 Dither
             </button>
           </div>
@@ -407,7 +433,8 @@ export default {
       ditheredHeight: '',
       viewOriginal: false,
       selectingImage: false,
-      customWidth: 1000
+      customWidth: false,
+      isError: false
     }
   },
   computed: {
@@ -420,6 +447,20 @@ export default {
     },
     selectedFile() {
       return this.images.find(this.getSelected)
+    },
+    computedHeight() {
+      console.log(this.selectedImage);
+      console.log(this.selectedImage.width);
+      console.log(this.selectedImage.height);
+      console.log(this.canvasWidth)
+      if(this.canvasWidth === 'original') {
+        console.log('hello')
+        return this.selectedImage.naturalHeight
+      } else {
+        console.log('goodbye')
+        return (this.selectedImage.naturalHeight / this.selectedImage.naturalWidth) * this.canvasWidth
+      }
+      
     }
   },
   methods: {
@@ -557,7 +598,7 @@ export default {
             q.sample(originalImage) 
             // Dither what is on the canvas
             const ditherResult = q.reduce(ditheredImageCanvas) 
-            console.log(ditherResult) // this is a Uint8Array of all of the pixels as RGB values where every 3 values is an RGB value like 255,0,0 etc.
+            //console.log(ditherResult) // this is a Uint8Array of all of the pixels as RGB values where every 3 values is an RGB value like 255,0,0 etc.
             // Get the newly dithered image data
             const imgData = ctx.getImageData(0, 0, width, height)
             // Set the value of imageData to the dithered image data
@@ -747,6 +788,18 @@ export default {
     fathom(id) {
       fathom('trackGoal', id, 0)
     },
+    focus() {
+      fathom('MHEE0ZOY');
+      this.canvasWidth = this.selectedImage.naturalWidth
+      this.$nextTick(() => this.$refs.customWidthField.focus())
+    },
+    validateWidth() {
+      if(this.canvasWidth > 5000) {
+        this.isError = true
+      } else {
+        this.isError = false
+      }
+    }
   }
 }
 </script>
