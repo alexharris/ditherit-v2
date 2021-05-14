@@ -2,7 +2,7 @@
 <div>
 
     <div
-      class="flex  gap-16 flex-col md:flex-row border-t border-dashed border-red-500 pt-8 mt-24 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64 "
+      class="flex space-y-8 md:space-y-0 md:space-x-16 flex-col md:flex-row border-t border-dashed border-red-500 pt-8 mt-24 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64 "
     >
       <div class="w-full md:w-1/3">
         <h3 class="text-lg font-serif">Quant Error</h3>

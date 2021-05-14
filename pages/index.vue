@@ -41,12 +41,12 @@
               Width must be less than 5000px
             </div>
             <div v-if="!showOptionsModalSize" class="w-full relative">
-                <div class="flex flex-row gap-4 w-full items-center">
+                <div class="flex flex-row space-x-4 w-full items-center">
                   <div class="w-1/2">
                     Width (px)
-                    <span v-if="customWidth == false" @click="customWidth = !customWidth; focus();" class="block  bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline">{{selectedImage.naturalWidth}}</span> 
+                    <span v-if="customWidth == false" @click="customWidth = !customWidth; focus();" class="block  bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 mt-1 rounded leading-tight focus:outline-none focus:shadow-outline">{{selectedImage.naturalWidth}}</span> 
                     <input 
-                      v-else class="block w-full bg-white border border-gray-300 hover:border-gray-500 px-2 py-2 mt-1 rounded leading-tight focus:outline-none focus:shadow-outline"
+                      v-else class="block w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 mt-1 rounded leading-tight focus:outline-none focus:shadow-outline"
                       @change="validateWidth()"
                       type="number"  
                       ref="customWidthField"
@@ -57,20 +57,15 @@
                       v-model="canvasWidth" 
                     />                  
                   </div>
-                  <!-- <span v-else class="block appearance-none w-1/2 bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded leading-tight focus:outline-none focus:shadow-outline"> -->
-    
-
-                  <!-- </span> -->
-                  
                   <div class="w-1/2">
                   Height (px)
                     <span class="block appearance-none bg-gray-200 border border-gray-300 text-gray-500 px-4 py-2 mt-1 rounded leading-tight focus:outline-none focus:shadow-outline">
-                    <template v-if="canvasWidth == 'original'">
-                      {{selectedImage.height}}
-                    </template>
-                    <template v-else>   
-                      {{(selectedImage.naturalHeight / selectedImage.naturalWidth) * canvasWidth}}
-                    </template>               
+                      <template v-if="canvasWidth == 'original'">
+                        {{selectedImage.height}}
+                      </template>
+                      <template v-else>   
+                        {{(selectedImage.naturalHeight / selectedImage.naturalWidth) * canvasWidth}}
+                      </template>               
                     </span>
                   </div>
                 </div>           
@@ -240,7 +235,7 @@
         <!-- Begin Main Display -->
         <div class="md:px-4 flex flex-col flex-1 items-center w-full">
           <!-- Begin Top Toolbar -->
-          <div class="flex flex-row justify-between gap-2 w-full items-center py-2 px-2 mb-4 shadow rounded bg-white" v-if="showDitheredImage && !dithering"> 
+          <div class="flex flex-row justify-between space-x-2 w-full items-center py-2 px-2 mb-4 shadow rounded bg-white" v-if="showDitheredImage && !dithering"> 
             <Toggler class="flex-grow"
             @view-original="viewOriginal = !viewOriginal"
             >View Original</Toggler>  
