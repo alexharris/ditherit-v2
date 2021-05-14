@@ -66,7 +66,7 @@
 
 
 <script>
-import Examples from '~/components/examples.vue'
+import Examples from '~/components/Examples.vue'
 
 export default {
   components: {
