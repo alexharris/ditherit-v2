@@ -794,6 +794,7 @@ export default {
       this.$nextTick(() => this.$refs.customWidthField.focus())
     },
     validateWidth() {
+      fathom('trackGoal', 'MHEE0ZOY', 0)
       if(this.canvasWidth > 5000) {
         this.isError = true
       } else {

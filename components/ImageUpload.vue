@@ -2,8 +2,50 @@
 <template>
   <div>
     <div v-if="loading" class="loader"></div>
-    <div class="flex flex-col md:flex-row items-center">
-      <label class="btn-red-outline text-center inline-block bg-white cursor-pointer">
+    <div class="flex flex-col md:flex-row items-center flex-wrap" v-if="duck == 'true'">
+      <div
+        
+        class="border-0 md:border border-gray-200 border-dashed md:p-16 md:mt-8 text-center text-gray-400 rounded-lg flex flex-col md:flex-row flex-wrap items-center justify-center"
+        :class="[dragging ? 'dragenterClass' : '']" 
+        @drop.prevent="imageUploaded" 
+        @dragenter.prevent="dragging = false"
+        @dragover.prevent="dragging = true"
+        @dragleave.prevent="dragging = false"
+      >     
+        <label class="btn-red-outline text-center inline-block bg-white cursor-pointer ">
+          <span>{{text}}</span>
+          <input
+            id="imageLoader"
+            type="file"
+            accept=".jpg, .png, .gif"
+            name="imageLoader"
+            class="hidden"
+            multiple="multiple"
+            @change="imageUploaded"
+
+          />
+
+        </label>
+
+        <span class="py-4 px-4" v-if="duck">or</span>
+        <span class="btn-red-outline text-center inline-block bg-white cursor-pointer"  @click="startWithDuck" >
+          🐸 Start with a frog
+        </span>        
+        <div class="invisible md:visible h-0 md:h-16 pt-8 w-full">
+          <span v-if="notAnImage" class="text-red-700 bg-red-200 rounded p-4">
+            No one knows what that is. Try using a jpg, png, or gif.
+          </span>
+          <span v-else>
+            or drop 'em here!
+          </span>
+          
+        </div>
+      </div>
+
+
+    </div>
+    <div class="flex flex-col md:flex-row items-center" v-else>
+      <label  class="btn-red-outline text-center inline-block bg-white cursor-pointer " >
         <span>{{text}}</span>
         <input
           id="imageLoader"
@@ -13,13 +55,12 @@
           class="hidden"
           multiple="multiple"
           @change="imageUploaded"
+
         />
+
       </label>
-      <span class="py-4 px-4" v-if="duck">or</span>
-      <span class="btn-red-outline text-center inline-block bg-white cursor-pointer"  @click="startWithDuck" v-if="duck == 'true'">
-        🐸 Start with a frog
-      </span>
     </div>
+
   </div>
 </template>
 
@@ -28,6 +69,8 @@ export default {
   data() {
     return {
       loading: false,
+      dragging: false,
+      notAnImage: false,
       images: []
     }
   },
@@ -37,9 +80,23 @@ export default {
     // Get the uploaded images and create an initial array of the objects
     // ----------------------------
     imageUploaded(e) {
-      console.log('Images uploaded:')
+      if(!e.target.files) {
+        for (let i = 0; i < e.dataTransfer.files.length; i++) {
+            if (
+              e.dataTransfer.files[i].type !== 'image/jpeg' &&
+              e.dataTransfer.files[i].type !== 'image/jpg' &&
+              e.dataTransfer.files[i].type !== 'image/gif' &&
+              e.dataTransfer.files[i].type !== 'image/png'
+            ) {
+              this.notAnImage = true
+              this.dragging = false
+              return
+            }
+        }
+        fathom('trackGoal', 'TG6BKJ0A', 0) // drag and dropped
+        e.target.files = e.dataTransfer.files
+      } 
       this.reportNumberOfImages(e.target.files.length)
-      console.log(e);
       this.loading = true // for loading spinner
 
       // now go through the images that have been loaded
@@ -58,8 +115,6 @@ export default {
 
         // send the uploaded file to get turned into an img
         // but we wait a second so that the originalImage img tags in index can load
-        console.log('hello');
-        console.log(e.target.files[i]);
         setTimeout(() => {
           this.createOriginalImage(e.target.files[i], i)
         }, 100)
@@ -151,3 +206,8 @@ export default {
 </script>
 
 
+<style scoped>
+.dragenterClass {
+  @apply bg-gray-200
+}
+</style>

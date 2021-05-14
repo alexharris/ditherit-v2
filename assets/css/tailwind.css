@@ -4,7 +4,7 @@
 
 
 .btn-red {
-    @apply bg-red-700 text-white font-bold py-2 px-2 rounded;
+    @apply bg-red-700 text-white font-bold py-2 px-2 rounded
 }
 .btn-red:hover {
     @apply bg-red-800 cursor-pointer;
