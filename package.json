@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@nuxtjs/pwa": "^3.0.0-beta.20",
+    "dart-sass": "^1.25.0",
     "eslint-plugin-vue": "^5.2.3",
     "fs": "^0.0.1-security",
     "nuxt": "^2.14.0",
@@ -37,7 +38,6 @@
     "eslint-plugin-nuxt": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^24.1.0",
-    "node-sass": "^4.14.1",
     "prettier": "^1.19.1",
     "sass-loader": "^8.0.2",
     "vue-jest": "^4.0.0-beta.4"
