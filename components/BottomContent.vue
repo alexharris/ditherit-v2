@@ -1,7 +1,33 @@
 <template>
 <div>
+    <Examples />
 
-    <div
+    <div class="md:flex-row border-t border-dashed border-red-500 pt-8 mt-24 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64">
+      <h3 class="font-serif text-center text-lg">About Dithering</h3>
+      <p> Dithering is a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
+      <blockquote class="bg-gray-50">Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
+      <p>For more information, see this list of dithering <a href="/resources">resources</a> from around the web: explainers, algorithms, examples, etc.</p>
+
+      
+      <h3 class="font-serif text-center text-lg pt-8">About Dither it!</h3>
+      <p>Dither it! was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method discussed was to reduce full color images to dithered images with very few colors and subsequently smaller file sizes. Ensuing discussion clarified that there are other, more modern ways to compress images (try <a href="https://squoosh.app/">Squoosh</a>) which achieve reduced file sizes while maintaining color. Nonetheless, dithering is a fun technique that looks cool and is interesting to learn about.</p>
+
+      <p>Dither it! is built by <a href="https://alexharris.online/">Alex Harris</a>, on twitter <a href="https://twitter.com/alexharris6">@alexharris6</a>.</p>
+      <h3 class="font-serif text-center text-lg pt-8">Support</h3>
+      <p>If you would like to support Dither it!, please consider donating to the Dither it! <a href="https://app.mobilecause.com/vf/SURFRIDER/AlexHarris">fundraiser for the Surfrider Foundation</a>, or buy a copy of <a href="https://www.birdsoflakemerritt.com/">my book about the birds at the Lake Merritt wildlife refuge in Oakland, California.</a></p>  
+
+
+    
+    </div>  
+    <div class="md:flex-row border-t border-dashed border-red-500 pt-8 my-24 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64">
+      <p>The Dither it! source code is freely available on the <a href="https://github.com/alexharris/ditherit-v2">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
+
+      <p>Thanks to Leon Sorokin, for making <a href="https://github.com/leeoniya/RgbQuant.js">RgbQuant.js</a> and Don for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a>.</p>
+
+    </div>  
+
+    <!-- begin three column -->
+    <!-- <div
       class="flex space-y-8 md:space-y-0 md:space-x-16 flex-col md:flex-row border-t border-dashed border-red-500 pt-8 mt-24 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64 "
     >
       <div class="w-full md:w-1/3">
@@ -23,18 +49,18 @@
         <p class="pb-8">Support the continued existence of Dither it! with a small donation.</p>
         <style>.bmc-button img{height: 34px !important;width: 35px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{padding: 7px 15px 7px 10px !important;line-height: 35px !important;height:51px !important;text-decoration: none !important;display:inline-flex !important;color:#ffffff !important;background-color:#FF5F5F !important;border-radius: 8px !important;border: 1px solid transparent !important;font-size: 18px !important;letter-spacing:0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Arial', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#ffffff !important;}</style><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/alexharris" @click="coffeeClick()"><img src="https://cdn.buymeacoffee.com/buttons/bmc-new-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px;font-size:18px !important;">Buy me a coffee</span></a>
       </div>  
-    </div>
+    </div> -->
 
-    <Examples />
+
     
-    <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64 flex-col md:flex-row">
+    <!-- <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64 flex-col md:flex-row">
       
       <div class="w-full md:w-1/2 p-4">
-      <h4>About Dithering</h4>
-      <p> Dithering is essentially a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
-      <blockquote>Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
-      <p>I'm no scientist, but I think basically what that means is: When reducing an image from many colors to fewer colors you can't get every pixel exactly right, but you can spread that error around to neighboring pixels which helps it look more like the original. The various wasy to spread that error around are the various dithering algorithms.</p>
-      <p>Is this wrong? <a href="https://twitter.com/alexharris6">Tweet at me</a>.</p>
+        <h4>About Dithering</h4>
+        <p> Dithering is essentially a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
+        <blockquote>Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
+        <p>I'm no scientist, but I think basically what that means is: When reducing an image from many colors to fewer colors you can't get every pixel exactly right, but you can spread that error around to neighboring pixels which helps it look more like the original. The various wasy to spread that error around are the various dithering algorithms.</p>
+        <p>Is this wrong? <a href="https://twitter.com/alexharris6">Tweet at me</a>.</p>
 
       </div>
       <div class="w-full md:w-1/2 p-4">
@@ -60,7 +86,7 @@
 
   </div>
           
-      </div>
+      </div> -->
 </div>
 </template>
 
