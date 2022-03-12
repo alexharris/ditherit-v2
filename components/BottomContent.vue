@@ -9,11 +9,11 @@
           <blockquote class="bg-gray-50">Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
           <p>For more information, see this list of dithering <a href="/resources">resources</a> from around the web: explainers, algorithms, examples, etc.</p>
           <h3 class="font-serif text-lg pt-8">About Dither it!</h3>
-          <p>Dither it! was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method discussed was to reduce full color images to dithered images with very few colors and subsequently smaller file sizes. Ensuing discussion clarified that there are other, more modern ways to compress images (try <a href="https://squoosh.app/">Squoosh</a>) which achieve reduced file sizes while maintaining color. Nonetheless, dithering is a fun technique that looks cool and is interesting to learn about.</p>
-
           <p>Dither it! is built by <a href="https://alexharris.online/">Alex Harris</a>, on twitter <a href="https://twitter.com/alexharris6">@alexharris6</a>.</p>
-          <h3 class="font-serif text-lg pt-8">Support</h3>
-          <p>If you would like to support Dither it!, please consider donating to the Dither it! <a href="https://app.mobilecause.com/vf/SURFRIDER/AlexHarris">fundraiser for the Surfrider Foundation</a>, or buy a copy of <a href="https://www.birdsoflakemerritt.com/">my book about the birds at the Lake Merritt wildlife refuge in Oakland, California.</a></p>  
+
+          <p>It was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method discussed was to reduce full color images to dithered images with very few colors and subsequently smaller file sizes. Ensuing discussion clarified that there are other, more modern ways to compress images (try <a href="https://squoosh.app/">Squoosh</a>) which achieve reduced file sizes while maintaining color. Nonetheless, dithering is a fun technique that looks cool and is interesting to learn about.</p>
+
+          
 
           <p>The Dither it! source code is freely available on the <a href="https://github.com/alexharris/ditherit-v2">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
 
