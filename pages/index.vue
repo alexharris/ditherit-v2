@@ -429,7 +429,50 @@ export default {
       viewOriginal: false,
       selectingImage: false,
       customWidth: false,
-      isError: false
+      isError: false,
+      baseColors: [
+        {
+          "hex": "#FFFFFF",
+          "name": "White",
+        },
+        {
+          "hex": "#000000",
+          "name": "Black",
+        },
+        {
+          "hex": "#808080",
+          "name": "Grey",
+        },
+        
+        {
+          "hex": "#ff0000",
+          "name": "Red",
+        },
+        {
+          "hex": "#ffa500",
+          "name": "Orange",
+        },
+        {
+          "hex": "#ffff00",
+          "name": "Yellow",
+        },
+        {
+          "hex": "#008000",
+          "name": "Green",
+        },
+        {
+          "hex": "#0000ff",
+          "name": "Blue",
+        },
+        {
+          "hex": "#4b0082",
+          "name": "Indigo",
+        },
+        {
+          "hex": "#ee82ee",
+          "name": "Violet",
+        },
+      ]      
     }
   },
   computed: {
@@ -613,46 +656,7 @@ export default {
       // Set the data for the image download (again?)
       this.downloadImage()
     },
-    bayerDitherOld2(ctx,imageData) {
-      var depth      = 16;
 
-
-      // Matrix
-      var threshold_map_2x2 = [
-          [ 0, 2],
-          [ 3, 1],
-      ];
-
-      var threshold_map_4x4 = [
-          [  1,  9,  3, 11 ],
-          [ 13,  5, 15,  7 ],
-          [  4, 12,  2, 10 ],
-          [ 16,  8, 14,  6 ]
-      ];
-
-      // imageData
-      var width  = imageData.width;
-      var height = imageData.height;
-      var pixel  = imageData.data;
-      var x, y, a, b;
-
-      // filter
-      for ( x=0; x<width; x++ )
-      {
-          for ( y=0; y<height; y++ )
-          {
-              a    = ( x * height + y ) * 4;
-              b    = threshold_map_4x4[ x%4 ][ y%4 ];
-              // pixel[ a + 0 ] = ( (pixel[ a + 0 ]+ b) / depth | 0 ) * depth;
-              // pixel[ a + 1 ] = ( (pixel[ a + 1 ]+ b) / depth | 0 ) * depth;
-              // pixel[ a + 2 ] = ( (pixel[ a + 2 ]+ b) / depth | 0 ) * depth;
-              // pixel[ a + 3 ] = ( (pixel[ a + 3 ]+ b) / depth | 3 ) * depth;
-              pixel[ a ] = pixel[ a + 1 ] = pixel[ a + 2 ] = ( (pixel[ a ]+ b) / depth | 0 ) * depth;
-          }
-      }
-
-      ctx.putImageData( imageData, 0, 0);
-    },
     bayerDither(ctx, imageData) {
 
       var bayerThresholdMap = [
@@ -662,86 +666,85 @@ export default {
         [ 240, 120, 210,  90 ]
       ];
 
-      var lumR = [];
-      var lumG = [];
-      var lumB = [];
-      for (var i=0; i<256; i++) {
-        lumR[i] = i*0.299;
-        lumG[i] = i*0.587;
-        lumB[i] = i*0.114;
-      }
-
+      // var lumR = [];
+      // var lumG = [];
+      // var lumB = [];
+      // for (var i=0; i<256; i++) {
+      //   lumR[i] = i*0.299;
+      //   lumG[i] = i*0.587;
+      //   lumB[i] = i*0.114;
+      // }
 
       var imageDataLength = imageData.data.length;
-      console.log(imageDataLength);
 
-      // Greyscale luminance (sets r pixels to luminance of rgb)
-      for (var i = 0; i <= imageDataLength; i += 4) {
-        imageData.data[i] = Math.floor(lumR[imageData.data[i]] + lumG[imageData.data[i+1]] + lumB[imageData.data[i+2]]);
-      }      
+      console.log('Number of pixels: ' + imageDataLength/4)
+
+      // for (var i = 0; i <= imageDataLength; i += 4) {
+      //   imageData.data[i] = Math.floor(lumR[imageData.data[i]] + lumG[imageData.data[i+1]] + lumB[imageData.data[i+2]]);
+      // }      
 
       var w = imageData.width;
-      var newPixel, err;
 
-      for (var currentPixel = 0; currentPixel <= imageDataLength; currentPixel+=4) {
-        // 4x4 Bayer ordered dithering algorithm
+      // Go through the RGBA data, at every 4th value, each of which corresponds to a pixel
+      for (var currentPixel = 0; currentPixel <= imageDataLength - 4; currentPixel+=4) {
+        
+        // console.log(currentPixel + ': ' + this.nearestColor({ r: imageData.data[currentPixel], g: imageData.data[currentPixel + 1], b: imageData.data[currentPixel + 2] }).name)
+
+        // This tells what the curent x coordinate is
         var x = currentPixel/4 % w;
+        // This tells what the current y coordinate is
         var y = Math.floor(currentPixel/4 / w);
-        var map = Math.floor( (imageData.data[currentPixel] + bayerThresholdMap[x%4][y%4]) / 2 );
-        imageData.data[currentPixel] = (map < 129) ? 0 : 255;        
+        // This finds the right Bayer matrix value based on the x/y coordinate of the current pixel
+        // why is it divided by 2??
+        
+        // here we assign the RGBA data to the image
+        // For each pixel there are three values we care about R, G, B
+        // For each of those three values:
+        // Add the original (imageData.data[currentPixel])
+        // To the threshold map value (bayerThresholdMap[x%4][y%4])
+        // Divide it by 2 to get the new R, G or B value
+        // If that value is deemed to be "light", meaning it is less than 129, make it 0
+        // If it is "dark", make it 255
+        // Doing this, you will end up with RGB triple like 0 255 255
+        // There are 8 of these possible colors
+        // R | G | B |  Color
+        //------------------
+        // 0   0   0    Black
+        // 0   0   255  Blue
+        // 0   255 0    Green
+        // 255 0   0    Red
+        // 0   255 255  Cyan
+        // 255 0   255  Magenta
+        // 255 255 0    Yellow
+        // 255 255 255  White
+        //-------------------
+        // Then you replace the old values in the imagedata array with the new values
+        // This replaces all of the colors in this image with one of these eight colors
+        // 
+        // The next step would be to take the RGB triple and compare it to a color palette to find the "nearest" color
+        // In theory this would allow us to replace the image with custom colors 
+        
 
-        // Set g and b pixels equal to r
-        imageData.data[currentPixel + 1] = imageData.data[currentPixel + 2] = imageData.data[currentPixel];        
+        var map = Math.floor( (imageData.data[currentPixel] + bayerThresholdMap[x%4][y%4]) / 2 );
+        imageData.data[currentPixel] = (map < 129) ? 0 : 255;  
+        
+        var map2 = Math.floor( (imageData.data[currentPixel + 1] + bayerThresholdMap[x%4][y%4]) / 2 );    
+        imageData.data[currentPixel + 1] = (map2 < 129) ? 0 : 255;  
+        
+        var map3 = Math.floor( (imageData.data[currentPixel + 2] + bayerThresholdMap[x%4][y%4]) / 2 );
+        imageData.data[currentPixel + 2] = (map3 < 129) ? 0 : 255;  
+            
       }
-      console.log(imageData)
+
+      
+
       // Put the new image data on the canvas
       ctx.putImageData(imageData, 0, 0)
 
+      
+
     },
-    bayerDitherOld(ctx, imgData) {
 
-      // add up every three values
-      var v = 0;
-      const arr = imgData.data;
-      console.log(arr)
-
-    // imageData.data[i] = Math.floor(lumR[imageData.data[i]] + lumG[imageData.data[i+1]] + lumB[imageData.data[i+2]]);
-
-      var newArr = [];
-      const num = 3;
-      for(let i = 0; i < arr.length; i++){
-        if(i % num !== 0){
-          // console.log(i)
-          //1,2
-          //4,5
-          //7,8
-          // etc
-          continue;
-        };
-        if(arr[i] + arr[i+1] + arr[i+2] > 255) {
-          newArr.push(255)
-          newArr.push(255)
-          newArr.push(255)
-        } else {
-          newArr.push(0)
-          newArr.push(0)
-          newArr.push(0)
-        }
-
-
-        
-      };
-      // console.log(newArr)
-      newArr.pop()
-      newArr.pop()
-      // console.log(newArr)
-      var uint8 = new Uint8Array(newArr);
-      // console.log(uint8)
-      // Set the value of imageData to the dithered image data
-      imgData.data.set(uint8) 
-      // Put the new image data on the canvas
-      ctx.putImageData(imgData, 0, 0)
-    },
     // ---------------------------
     // Analyze the image palette
     // ----------------------------    
@@ -795,7 +798,49 @@ export default {
       } else {
         this.isError = false
       }
-    }
+    },
+    // FROM https://gist.github.com/Ademking/560d541e87043bfff0eb8470d3ef4894
+    // from https://stackoverflow.com/a/5624139
+    hexToRgb(hex) {
+      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+      });
+
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    },
+    // Distance between 2 colors (in RGB)
+    // https://stackoverflow.com/questions/23990802/find-nearest-color-from-a-colors-list
+    distance(a, b) {
+        return Math.sqrt(Math.pow(a.r - b.r, 2) + Math.pow(a.g - b.g, 2) + Math.pow(a.b - b.b, 2));
+    },
+    // return nearest color from array
+    // nearestColor(colorRGB){
+    //   var lowest = Number.POSITIVE_INFINITY;
+    //   var tmp;
+    //   let index = 0;
+    //   this.baseColors.forEach( (el, i) => {
+    //     // console.log(colorRGB)
+    //       tmp = this.distance(colorRGB, this.hexToRgb(el.hex))
+    //       if (tmp < lowest) {
+    //         lowest = tmp;
+    //         index = i;
+    //       };
+          
+    //   })
+    //   // This is the palette as it is set in Dither it!
+    //   // console.log(this.rgbQuantOptions.palette)
+    //   // This is the default color list provided by the Gist answer being cribbed from 
+    //   // console.log(this.baseColors)
+    //   // This needs to be changed to search from the dither it palette
+    //   return this.baseColors[index];
+      
+    // }
   }
 }
 </script>
