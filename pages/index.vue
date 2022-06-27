@@ -17,7 +17,62 @@
         class="w-full md:w-1/4 order-last md:order-first"
       >
         <div class="flex flex-col items-center w-full">
+          <div class="shadow rounded py-2 px-4 mt-0 mb-2 bg-white w-full">
+            
+            <!-- Dither mode Selector -->
+            <div class="flex flex-row items-center justify-between pb-2">
+              <label for="ditherMode" class="font-bold text-sm"><h4 class="text-sm font-bold mt-2 mb-2 uppercase">Dither Mode</h4></label>
+              <span
+                class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
+                @click="showDitherModeModal = !showDitherModeModal"
+              >
+                <span v-if="!showDitherModeModal">
+                  ?
+                </span>
+                <span v-else>
+                  X
+                </span>
+              </span>
+            </div>
+            <div
+              v-if="!showDitherModeModal"
+              class="inline-block relative w-full"
+            >
+              <select
+                id="ditherMode"
+                v-model="ditherMode"
+                class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
+              >
+                <template v-for="(v, i) in ditherModeOptions">
+                  <option :id="v" :name="v" :value="v">{{ v }}</option>
+                </template>
+              </select>
+              <div
+                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+              >
+                <svg
+                  class="fill-current h-4 w-4"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div v-else>
+              <div class="mt-2 bg-red-100 p-2 rounded">
+                These methods are different ways to spread around the quantization error introduced by reducing an images color palette. They look quite different, try them out!
+              </div>
+            </div>
+            <div class="pt-2 text-xs" v-if="ditherMode == 'Ordered Dither (beta)'">
+              Dither it! is proud to announce the addition of ordered dithering. For the time being, I haven't figured out how to be able to use a custom color palette, so for now, this only works to reduce images to 8 standard web colors. But it looks cool.
+            </div>
+            <!-- End Dither mode Selector -->            
+          </div>          
           <ColorPicker
+          v-show="ditherMode == 'Error Diffusion'"
             :initial-palette="rgbQuantOptions.palette"
             @update-palette="onUpdatePalette"
           />
@@ -114,14 +169,14 @@
 
 
                 
-         </div>
+          </div>
           <div class="mt-4 text-center xl:w-64 shadow">
             <button class="btn-red text-lg w-full" @click="ditherImage()" :disabled="isError">
               🏁 Dither
             </button>
           </div>
 
-          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full">
+          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full" v-show="ditherMode == 'Error Diffusion'">
             <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Advanced Options</h4>
             <!-- Algorithm Selector -->
             <div class="flex flex-row items-center justify-between mt-4 pb-2">
@@ -385,8 +440,12 @@ export default {
       imageUploaded: false,
       showDitheredImage: false, // control if the dithered image is visible
       imageWidths: [320, 640, 1080, 1280],
+      ditherMode: 'Error Diffusion',
+      ditherModeOptions: [
+        'Error Diffusion',
+        'Ordered Dither (beta)'
+      ],
       algorithmOptions: [
-        // 'Bayer',
         'FloydSteinberg',
         'FalseFloydSteinberg',
         'Stucki',
@@ -417,6 +476,7 @@ export default {
       showOptionsModalSize: false,
       showOptionsModalAlgo: false,
       showOptionsModalSerp: false,
+      showDitherModeModal: false,
       downloadUrl: '', // the url src thing to download the image
       downloadFileSize: '50', // the filesize of the download
       originalFileSize: '', // filesize of the original
@@ -430,7 +490,7 @@ export default {
       selectingImage: false,
       customWidth: false,
       isError: false,
-      baseColors: [
+      baseColors: [ // this is from old bayer stuff and can prob be deleted
         {
           "hex": "#FFFFFF",
           "name": "White",
@@ -627,8 +687,11 @@ export default {
           // Put the image on the canvas
           ctx.drawImage(originalImage, 0, 0, width, height)
 
-          if(this.rgbQuantOptions.dithKern == 'Bayer') {
+          if(this.ditherMode != 'Error Diffusion') {
+
             this.bayerDither(ctx, ctx.getImageData(0, 0, width, height))
+            fathom('trackGoal', 'Q3QWCGJU', 0)
+            this.downloadImage()
           } else {
             // Create new RgbQuant instance
             const q = new RgbQuant(this.rgbQuantOptions)
@@ -783,11 +846,11 @@ export default {
       }, 50)
       
     },
-    fathom(id) {
-      fathom('trackGoal', id, 0)
-    },
+    // fathom(id) {
+    //   fathom('trackGoal', id, 0)
+    // },
     focus() {
-      fathom('MHEE0ZOY');
+      
       this.canvasWidth = this.selectedImage.naturalWidth
       this.$nextTick(() => this.$refs.customWidthField.focus())
     },
