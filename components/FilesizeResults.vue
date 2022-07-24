@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 <template> 
-  <div class="flex flex-col sm:flex-row xl:flex-col gap-4 items-center md:items-start m-4">  
-    <div class="donutContainer w-2/3 sm:w-1/2 md:w-1/3 xl:w-full">
+  <div class="flex flex-col xl:flex-row xl:flex-col gap-4 items-center md:items-start p-4">  
+    <h2 class="text-sm font-bold mt-2 mb-2 uppercase">Report Card</h2>
+    <div class="donutContainer w-2/3 self-center">
       <svg viewBox="0 0 42 42" class="donut">
         <!-- <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle> -->
         <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#d2d3d4" stroke-width="3"></circle>
@@ -46,7 +47,7 @@
         </ul>  
       </div>    
     </div>   -->
-    <div class="w-full md:w-2/3 xl:w-full">
+    <div class="w-full">
       <p class="mt-1">
         The file size is
         <strong

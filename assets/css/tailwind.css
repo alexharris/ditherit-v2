@@ -52,11 +52,19 @@
     @apply bg-blue-800;
 }
 
+.btn-green {
+  @apply bg-green-600 text-white font-bold py-2 px-2 rounded;
+}
+
+.btn-green:hover {
+  @apply bg-green-800;
+}
+
 .btn-grey {
     @apply border-gray-400 border text-gray-700 font-bold py-2 px-2 rounded;
 }
 .btn-grey:hover {
-    @apply bg-gray-900;
+    @apply bg-gray-900 text-white;
 }
 
 

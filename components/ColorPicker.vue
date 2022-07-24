@@ -112,19 +112,20 @@
         </div>
         <div class="mt-2">
           <hr />
-          <div class="inline-block w-full mt-2">
-            <button class="btn-grey float-left" @click="showModal = !showModal">
+          <div class="inline-block w-full mt-2  flex justify-between sm:flex-row md:flex-col-reverse lg:flex-row gap-4">
+            <button class="btn-grey" @click="showModal = !showModal">
               Cancel
             </button>
-            <button class="btn-blue float-right mr-2" @click="selectColor">
-              Select
-            </button>
             <button
-              class="btn-red float-right mr-2"
+              class="btn-red"
               @click="removeSwatch(activeSwatch)"
             >
               Remove
+            </button>            
+            <button class="btn-green" @click="selectColor">
+              Select
             </button>
+
           </div>
         </div>
       </div>

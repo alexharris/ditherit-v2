@@ -1,5 +1,6 @@
 <template>
 <div class="w-full">
+
     <Examples />
     <div class="flex flex-col items-center">
       <div class="max-w-3xl border-t border-dashed border-red-500 pt-8 my-24 ">
@@ -88,11 +89,12 @@
 
 
 <script>
+
 import Examples from '~/components/Examples.vue'
 
 export default {
   components: {
-    Examples
+    Examples,
   },     
   data() {
     return {

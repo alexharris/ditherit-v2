@@ -14,7 +14,7 @@
       <!-- Begin Main Toolbar -->
       <div
         v-show="imageUploaded"
-        class="w-full md:w-1/4 order-last md:order-first"
+        class="w-full md:w-1/3 order-last md:order-first"
       >
         <div class="flex flex-col items-center w-full">
           <div class="shadow rounded py-2 px-4 mt-0 mb-2 bg-white w-full">
@@ -267,24 +267,31 @@
           
         </div>
         <!-- This is the same as the other report block, this one is for mobile positioning -->
-        <div
-          v-if="showDitheredImage && !dithering"
-          class="shadow rounded xl:m-0 p-4 w-full xl:w-1/4 bg-white md:hidden"
-        >       
-          <FilesizeResults 
-            :ratio-good="ratioGood"
-            :download-file-size="downloadFileSize"
-            :selected-image="selectedImage"
-            :dithered-height="ditheredHeight"
-            :dithered-width="ditheredWidth"
-            :download-filesize="downloadFileSize.toFixed(2)"
-            :rgbquant="rgbQuantOptions"
-          />
+        <div v-show="imageUploaded"
+          class="md:hidden"
+        >
+          <div
+            v-if="showDitheredImage && !dithering"
+            class="shadow rounded xl:m-0 p-4 mb-4 w-full xl:w-1/4 bg-white "
+          >       
+            <FilesizeResults 
+              :ratio-good="ratioGood"
+              :download-file-size="downloadFileSize"
+              :selected-image="selectedImage"
+              :dithered-height="ditheredHeight"
+              :dithered-width="ditheredWidth"
+              :download-filesize="downloadFileSize.toFixed(2)"
+              :rgbquant="rgbQuantOptions"
+            />
+          </div>
+          <div class="shadow rounded xl:m-0 p-4 w-full xl:w-1/4 bg-white">
+            <Donate />
+          </div>
         </div>
       </div>
       <!-- End Toolbar -->
       <div
-        class="w-full md:w-3/4 flex flex-col xl:flex-row order-first md:order-last items-stretch"
+        class="w-full md:w-2/3 flex flex-col xl:flex-row order-first md:order-last items-stretch"
       >
 
         <!-- Begin Main Display -->
@@ -368,20 +375,31 @@
           </div>
           <!-- End Toolbar Stuff -->
         </div>
-        <!-- Begin Report -->
-        <div
-          v-if="showDitheredImage && !dithering"
-          class="shadow rounded xl:m-0 m-4 xl:w-1/4 bg-white hidden md:block"
-        >       
-          <FilesizeResults 
-            :ratio-good="ratioGood"
-            :download-file-size="downloadFileSize"
-            :selected-image="selectedImage"
-            :dithered-height="ditheredHeight"
-            :dithered-width="ditheredWidth"
-            :download-filesize="downloadFileSize.toFixed(2)"
-            :rgbquant="rgbQuantOptions"
-          />
+        <!-- End Main Display -->
+        <!-- Begin right sidebar -->
+        <div class="w-full xl:w-1/4 hidden md:flex flex-row xl:flex-col gap-4 px-4 xl:m-0 justify-center xl:justify-start" 
+        v-show="imageUploaded">
+          <div
+            v-if="showDitheredImage && !dithering"
+            class="shadow rounded bg-white self-start w-1/2 xl:w-full"
+          >       
+            <FilesizeResults 
+              :ratio-good="ratioGood"
+              :download-file-size="downloadFileSize"
+              :selected-image="selectedImage"
+              :dithered-height="ditheredHeight"
+              :dithered-width="ditheredWidth"
+              :download-filesize="downloadFileSize.toFixed(2)"
+              :rgbquant="rgbQuantOptions"
+            />
+            
+          </div>
+          <div 
+            
+            class="shadow rounded xl:m-0 bg-white w-full md:w-1/2 xl:w-full self-start"
+          >
+            <Donate />
+          </div>
         </div>
       </div>
     </div>
@@ -417,6 +435,7 @@ import InputBlock from '~/components/InputBlock.vue'
 import BottomContent from '~/components/BottomContent.vue'
 import Toggler from '~/components/Toggler.vue'
 import FilesizeResults from '~/components/FilesizeResults.vue'
+import Donate from '~/components/Donate.vue'
 
 
 export default {
@@ -427,7 +446,8 @@ export default {
     InputBlock,
     BottomContent,
     Toggler,
-    FilesizeResults
+    FilesizeResults,
+    Donate
   },
   data() {
     return {
