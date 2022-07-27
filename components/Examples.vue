@@ -1,9 +1,9 @@
 /* eslint-disable no-console */
 <template>
   <div
-    class="mt-16 border-t border-dashed border-red-500 md:items-start pt-8 "
+    class="mt-16 border-t border-b border-dashed border-red-500 md:items-start pt-8"
   >
-    <h3 class="text-3xl w-full pb-12 font-serif text-center mx-0 px-0">Examples</h3>
+    <h3 class="text-3xl w-full pb-12 font-serif text-center mx-0 px-0">Dither Examples</h3>
     <div class="flex flex-row justify-center mb-12 space-x-4">
       <span
         class="border border-red-700 p-2 my-2 rounded-lg hover:bg-red-700 hover:text-white cursor-pointer"
