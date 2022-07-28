@@ -14,7 +14,7 @@
       <!-- Begin Main Toolbar -->
       <div
         v-show="imageUploaded"
-        class="w-full md:w-1/3 order-last md:order-first"
+        class="w-full md:w-1/5 order-last md:order-first"
       >
         <div class="flex flex-col items-center w-full">
           <div class="shadow rounded py-2 px-4 mt-0 mb-2 bg-white w-full">
@@ -291,7 +291,7 @@
       </div>
       <!-- End Toolbar -->
       <div
-        class="w-full md:w-2/3 flex flex-col xl:flex-row order-first md:order-last items-stretch"
+        class="w-full md:w-4/5 flex flex-col xl:flex-row order-first md:order-last items-stretch"
       >
 
         <!-- Begin Main Display -->
@@ -302,9 +302,6 @@
             @view-original="viewOriginal = !viewOriginal"
             >View Original</Toggler>  
             <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ New"/>          
-<a class="twitter-share-button"
-  href="https://twitter.com/intent/tweet">
-Tweet</a>
             <a
               class="btn-red-outline inline-block self-center"
               target="_blank"
