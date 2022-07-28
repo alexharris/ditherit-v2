@@ -9,29 +9,27 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       {
-        hid: 'description',
         name: 'description',
         content: 'Dither it! is a web application for processing images using dithering. Dithering is a process for reducing the number of colors used in an image.'        
       },
-      { name: "twitter:site", content: "@alexharris6" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:site", 
+        content: "@alexharris6" 
+      },
+      { name: "twitter:card", 
+        content: "summary" },
       {
-        hid: "twitter:url",
         name: "twitter:url",
         content: "https://ditherit.com",
       },
       {
-        hid: "twitter:title",
         name: "twitter:title",
         content: "Dither it!",
       },
       {
-        hid: "twitter:description",
         name: "twitter:description",
         content: "An image dithering tool.",
       },
       {
-        hid: "twitter:image",
         name: "twitter:image",
         content: "https://ditherit.com/_nuxt/img/blueyellow_earth.b4e250b.jpg",
       },      
