@@ -302,6 +302,9 @@
             @view-original="viewOriginal = !viewOriginal"
             >View Original</Toggler>  
             <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ New"/>          
+<a class="twitter-share-button"
+  href="https://twitter.com/intent/tweet">
+Tweet</a>
             <a
               class="btn-red-outline inline-block self-center"
               target="_blank"
