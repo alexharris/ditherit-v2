@@ -1,10 +1,10 @@
 <template>
-  <div class="w-full">
+  <div id="palette" class="w-full">
     <div class="shadow rounded p-3 bg-white">
       <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Palette</h4>
 
       <!-- Palette menu -->
-      <div v-if="!showModal">
+      <div  v-if="!showModal">
         <div class="flex flex-wrap" v-if="palette.length > 0">
           <template v-for="(item, i) in palette">
             <div
@@ -112,7 +112,7 @@
         </div>
         <div class="mt-2">
           <hr />
-          <div class="inline-block w-full mt-2  flex justify-between sm:flex-row md:flex-col-reverse lg:flex-row gap-4">
+          <div class="inline-block w-full mt-2  flex justify-between flex-col sm:flex-row md:flex-col-reverse xl:flex-row gap-4">
             <button class="btn-grey" @click="showModal = !showModal">
               Cancel
             </button>

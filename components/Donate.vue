@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import 'vue-twentytwenty/dist/vue-twentytwenty.css'
 
 
 

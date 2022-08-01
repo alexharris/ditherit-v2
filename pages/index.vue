@@ -14,7 +14,7 @@
       <!-- Begin Main Toolbar -->
       <div
         v-show="imageUploaded"
-        class="w-full md:w-1/5 order-last md:order-first"
+        class="w-full md:w-1/3 lg:w-1/5 order-last md:order-first p-4 rounded"
       >
         <div class="flex flex-col items-center w-full">
           <div class="shadow rounded py-2 px-4 mt-0 mb-2 bg-white w-full">
@@ -66,13 +66,10 @@
                 These methods are different ways to spread around the quantization error introduced by reducing an images color palette. They look quite different, try them out!
               </div>
             </div>
-            <div class="pt-2 text-xs" v-if="ditherMode == 'Ordered Dither (beta)'">
-              Dither it! is proud to announce the addition of ordered dithering. For the time being, I haven't figured out how to be able to use a custom color palette, so for now, this only works to reduce images to 8 standard web colors. But it looks cool.
-            </div>
             <!-- End Dither mode Selector -->            
           </div>          
           <ColorPicker
-          v-show="ditherMode == 'Error Diffusion'"
+    
             :initial-palette="rgbQuantOptions.palette"
             @update-palette="onUpdatePalette"
           />
@@ -170,8 +167,8 @@
 
                 
           </div>
-          <div class="mt-4 text-center xl:w-64 shadow">
-            <button class="btn-red text-lg w-full" @click="ditherImage()" :disabled="isError">
+          <div class="mt-4 text-center xl:w-64 shadow max-w-full">
+            <button class="btn-red text-lg w-full " @click="ditherImage()" :disabled="isError">
               🏁 Dither
             </button>
           </div>
@@ -291,7 +288,7 @@
       </div>
       <!-- End Toolbar -->
       <div
-        class="w-full md:w-4/5 flex flex-col xl:flex-row order-first md:order-last items-stretch"
+        class="w-full md:w-2/3 lg:w-4/5 flex flex-col xl:flex-row order-first md:order-last items-stretch"
       >
 
         <!-- Begin Main Display -->
@@ -463,7 +460,7 @@ export default {
       ditherMode: 'Error Diffusion',
       ditherModeOptions: [
         'Error Diffusion',
-        'Ordered Dither (beta)'
+        'Bayer (Ordered)'
       ],
       algorithmOptions: [
         'FloydSteinberg',
@@ -749,24 +746,22 @@ export default {
         [ 240, 120, 210,  90 ]
       ];
 
-      // var lumR = [];
-      // var lumG = [];
-      // var lumB = [];
-      // for (var i=0; i<256; i++) {
-      //   lumR[i] = i*0.299;
-      //   lumG[i] = i*0.587;
-      //   lumB[i] = i*0.114;
-      // }
 
       var imageDataLength = imageData.data.length;
 
-      console.log('Number of pixels: ' + imageDataLength/4)
-
-      // for (var i = 0; i <= imageDataLength; i += 4) {
-      //   imageData.data[i] = Math.floor(lumR[imageData.data[i]] + lumG[imageData.data[i+1]] + lumB[imageData.data[i+2]]);
-      // }      
-
       var w = imageData.width;
+
+
+      const oldPalette = this.rgbQuantOptions.palette.slice()
+      var newPalette = [];
+
+      oldPalette.forEach((color, id) => {
+
+          var newColor = [id].concat(color)
+          
+          newPalette.push(newColor)
+        }
+      )
 
       // Go through the RGBA data, at every 4th value, each of which corresponds to a pixel
       for (var currentPixel = 0; currentPixel <= imageDataLength - 4; currentPixel+=4) {
@@ -804,30 +799,47 @@ export default {
         // Then you replace the old values in the imagedata array with the new values
         // This replaces all of the colors in this image with one of these eight colors
         // 
-        // The next step would be to take the RGB triple and compare it to a color palette to find the "nearest" color
-        // In theory this would allow us to replace the image with custom colors 
-        
+    
+        // Update 08/01/22
+        // Now this uses the "getClosestColor" function and the preset ditherit palette to do cusotm color bayer dithers.
+
 
         var map = Math.floor( (imageData.data[currentPixel] + bayerThresholdMap[x%4][y%4]) / 2 );
-        imageData.data[currentPixel] = (map < 129) ? 0 : 255;  
+        // imageData.data[currentPixel] = (map < 129) ? 0 : 255;  
         
         var map2 = Math.floor( (imageData.data[currentPixel + 1] + bayerThresholdMap[x%4][y%4]) / 2 );    
-        imageData.data[currentPixel + 1] = (map2 < 129) ? 0 : 255;  
+        // imageData.data[currentPixel + 1] = (map2 < 129) ? 0 : 255;  
         
         var map3 = Math.floor( (imageData.data[currentPixel + 2] + bayerThresholdMap[x%4][y%4]) / 2 );
-        imageData.data[currentPixel + 2] = (map3 < 129) ? 0 : 255;  
-            
-      }
+        // imageData.data[currentPixel + 2] = (map3 < 129) ? 0 : 255;  
+        
+ 
 
+        const closest_color = this.getClosestColor(newPalette, [map, map2, map3]);
+       
+        imageData.data[currentPixel] = closest_color[1]
+        imageData.data[currentPixel + 1] = closest_color[2]
+        imageData.data[currentPixel + 2] = closest_color[3]
       
 
+
+      }
+    
       // Put the new image data on the canvas
       ctx.putImageData(imageData, 0, 0)
 
-      
-
     },
-
+    // https://stackoverflow.com/a/69880443/2201446
+    getClosestColor(colors, [r2, g2, b2]) {
+      const [[closest_color_id]] = (
+        colors
+        .map(([id,r1,g1,b1]) => (
+          [id, Math.sqrt((r2-r1)**2 + (g2-g1)**2 + (b2-b1)**2)]
+        ))
+        .sort(([, d1], [, d2]) => d1 - d2)
+      );
+      return colors.find(([id]) => id == closest_color_id);
+    },
     // ---------------------------
     // Analyze the image palette
     // ----------------------------    
@@ -848,6 +860,7 @@ export default {
         q.sample(e)
 
         this.rgbQuantOptions.palette = q.palette(true)
+
         this.specsCalculated = true
 
         if(this.showDitheredImage) {
@@ -897,11 +910,8 @@ export default {
         b: parseInt(result[3], 16)
       } : null;
     },
-    // Distance between 2 colors (in RGB)
-    // https://stackoverflow.com/questions/23990802/find-nearest-color-from-a-colors-list
-    distance(a, b) {
-        return Math.sqrt(Math.pow(a.r - b.r, 2) + Math.pow(a.g - b.g, 2) + Math.pow(a.b - b.b, 2));
-    },
+
+
     // return nearest color from array
     // nearestColor(colorRGB){
     //   var lowest = Number.POSITIVE_INFINITY;

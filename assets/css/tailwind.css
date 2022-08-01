@@ -3,6 +3,8 @@
 @import 'tailwindcss/utilities';
 
 
+
+
 .btn-red {
     @apply bg-red-700 text-white font-bold py-2 px-2 rounded
 }
@@ -146,6 +148,10 @@ ul {
   border: 2px solid black;
 
 }
+}
+
+#palette button {
+  font-size: 14px;
 }
             
 
