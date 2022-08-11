@@ -48,7 +48,7 @@
           src="~/assets/examples/cmyk_earth_bayer.png"
           v-if="currentExample == 'CMYK'"
         />        
-        Error Diffusion
+        Ordered (Bayer)
       </div>
       <div
         class="w-full md:w-1/2 flex flex-col items-center gap-4 order-1 md:order-2"
@@ -77,7 +77,7 @@
           src="~/assets/examples/earth.jpg"
           v-if="currentExample == 'Original'"
         />
-        Bayer Dither
+        Error Diffusion
       </div>
     </div>
   
