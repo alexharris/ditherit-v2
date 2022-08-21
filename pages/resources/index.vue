@@ -25,7 +25,11 @@
         <h2><a href="https://legacy.imagemagick.org/Usage/quantize/">Image dithering with ImageMagick</a></h2>
         <p>ImageMagick has some robust looking quantization and dithering functionality.</p> 
         <h2><a href="https://www.php.net/manual/en/function.imagetruecolortopalette.php">PHP imagetruecolortopalette</a></h2>
-        <p>A PHP function for very simple image dithering.</p>                 
+        <p>A PHP function for very simple image dithering.</p>   
+        <h2><a href="https://github.com/makeworld-the-better-one/didder">Didder</a></h2>
+        <p>A beefy looking command line interface for dithering images.</p>
+        <h2><a href="https://hbfs.wordpress.com/2013/12/31/dithering/">Dithering.</a></h2>
+        <p>A nice little rundown of some error diffusion algorithms, including one developed by the author.</p>                        
         <div class="my-12 bg-red-200 p-4 rounded shadow w-full flex flex-row items-center text-xl">
             <svg class="pr-4 w-1/2 md:w-auto" xmlns="http://www.w3.org/2000/svg" width="47" height="47" viewBox="0 0 24 24" fill="none" stroke="#c53030" stroke-width="2" stroke-linecap="round" stroke-linejoin="bevel"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             <p>Something missing from this list? <a href="https://twitter.com/alexharris6"> Tweet me @alexharris6</a>.</p>
