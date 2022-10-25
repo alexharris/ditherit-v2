@@ -163,7 +163,7 @@ export default {
     // ----------------------------    
     startWithDuck() {
       
-      fathom('trackGoal', 'HJQ6OA1C', 0)
+      fathom('trackGoal', '8UHGAHDO', 0)
       
       this.loading = true // for loading spinner
 
