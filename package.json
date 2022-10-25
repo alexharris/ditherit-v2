@@ -10,7 +10,6 @@
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
-    "test": "jest",
     "build:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt build",
     "generate:gh-pages": "DEPLOY_ENV=GH_PAGES nuxt generate"
   },
@@ -18,13 +17,12 @@
     "@nuxtjs/pwa": "^3.0.0-beta.20",
     "autoprefixer": "^10.2.5",
     "dart-sass": "^1.25.0",
-    "eslint-plugin-vue": "^5.2.3",
+    "eslint-plugin-vue": "^9.6.0",
     "fs": "^0.0.1-security",
     "nuxt": "^2.14.0",
     "postcss": "^8.2.15",
     "rgbquant": "^1.1.2",
     "tailwindcss": "^2.1.2",
-    "ts-jest": "^23.10.5",
     "vue-color": "^2.7.1",
     "vue-palette-builder": "^1.0.4",
     "vue-twentytwenty": "^0.10.1"
@@ -35,14 +33,11 @@
     "@nuxtjs/tailwindcss": "^1.4.1",
     "@vue/test-utils": "^1.0.3",
     "babel-eslint": "^10.1.0",
-    "babel-jest": "^24.1.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-nuxt": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "jest": "^24.1.0",
     "prettier": "^1.19.1",
-    "sass-loader": "^8.0.2",
-    "vue-jest": "^4.0.0-beta.4"
+    "sass-loader": "^8.0.2"
   }
 }

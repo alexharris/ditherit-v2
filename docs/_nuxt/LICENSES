@@ -1,18 +1,13 @@
 /*!
-  * vue-router v3.3.4
-  * (c) 2020 Evan You
-  * @license MIT
-  */
-
-/*!
- * Vue.js v2.6.11
- * (c) 2014-2019 Evan You
+ * Vue.js v2.7.13
+ * (c) 2014-2022 Evan You
  * Released under the MIT License.
  */
 
+
 /*!
- * vue-client-only v2.0.0
- * (c) 2019-present egoist <0x142857@gmail.com>
+ * vue-client-only v0.0.0-semantic-release
+ * (c) 2021-present egoist <0x142857@gmail.com>
  * Released under the MIT License.
  */
 
