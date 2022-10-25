@@ -683,7 +683,7 @@ export default {
           // Get the canvas context
           const ctx = ditheredImageCanvas.getContext('2d')
           // Set an arbitrary initial width
-          const width = 1
+          var width = 1
           // If the canvas width param is set to 'Original'
           if (this.canvasWidth === 'original') {
             // Set the canvas width to the original image width
