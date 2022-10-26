@@ -77,7 +77,7 @@
               <span v-else>
                 X
               </span>
-            </span>            
+            </span>
           </div>
           <div v-if="!showOptionsPaletteImportExport">
             <div class="border border-dashed border-gray-400 p-2 rounded" v-if="viewExportPalette || viewImportPalette">
@@ -91,14 +91,14 @@
                 <textarea v-model="palette2Import" placeholder="Enter a palette here" rows="5" class="w-full border border-gray-400 p-2 text-xs">{{palette2Import}}</textarea>
                 <div class="pt-2">
                   <span class="btn-red-small-outline" @click="importPalette">Import</span>
-                </div>  
+                </div>
               </div>
             </div>
           </div>
           <div v-else>
               <div class="mt-2 bg-red-100 p-2 rounded">
                 Export palettes by copying the text or downloading a text file, import them by pasting and clicking import.
-              </div>            
+              </div>
           </div>
         </div>
       </div>
@@ -121,7 +121,7 @@
               @click="removeSwatch(activeSwatch)"
             >
               Remove
-            </button>            
+            </button>
             <button class="btn-green" @click="selectColor">
               Select
             </button>
@@ -231,7 +231,7 @@ export default {
           name: 'Blue & Yellow',
           value: 'blueyellow',
           colors: [{ hex: '#134E87' }, { hex: '#FFF585' }]
-        },        
+        },
         {
           name: 'Black & White',
           value: 'blackwhite',
@@ -257,7 +257,7 @@ export default {
             { hex: '#FF00FF' },
             { hex: '#FFFFFF' }
           ]
-        },        
+        },
         {
           name: 'Game Boy DMG-01',
           value: 'gameboy',
@@ -268,14 +268,19 @@ export default {
             { hex: '#8BAC0F' },
             { hex: '#9BBC0F' }
           ]
-        }        
+        },
+        {
+          name: 'Black White Red',
+          value: 'bwr',
+          colors: [{ hex: '#FFFFFF' }, { hex: '#000000' }, { hex: '#FF0000' }]
+        }
       ]
     }
   },
   computed: {
     palette2Export() {
       return JSON.stringify(this.palette)
-    } 
+    }
   },
   watch: {
     initialPalette: function(newVal, oldVal) {
@@ -391,12 +396,12 @@ export default {
     },
     exportPalette() {
       var palJSON = "data:text/txt;charset=utf-8," + encodeURIComponent(JSON.stringify(this.palette));
-  
+
       var exportPalette = document.getElementById('exportPalette');
           exportPalette.setAttribute("href", palJSON);
           exportPalette.setAttribute("download", "ditherit_palette.txt");
 
-          
+
 
     },
     importPalette() {
