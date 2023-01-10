@@ -2,6 +2,19 @@
 
 <div class="w-full border-t border-b border-dashed border-red-500 flex flex-col items-center py-16">
     <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
+      <a class="border-0 hover:border-0 w-[200px] shrink-0" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular"  @click="fathom('trackGoal', 'GAHXDKWX', 0)">
+        <img src="~/assets/t-shirt.png" />   
+      </a>
+      <div class="flex-shrink"> 
+        <h3 class="text-lg font-serif mt-0">Dither it! t-shirts</h3>
+        <p>Idk maybe this is a bad idea but let's try it. Here are some Dither it! t-shirts. Confuse your friends, confuse your enemies. Interested but hate the design? Let me know, I have other ideas, too.</p>
+        <p>5% of proceeds goes to the National Audubon Society. </p>
+        <span class="btn-red-outline text-center inline-block bg-white cursor-pointer mt-8" >
+          <a class="border-0 hover:text-white" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="fathom('trackGoal', 'GAHXDKWX', 0)">🌎 Check em out</a>
+        </span>                 
+      </div>  
+    </div>    
+    <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
       <a class="border-0 hover:border-0" href="https://www.figma.com/community/plugin/1141558599392169513/Dither-it!">
         <svg width="200" height="82" viewBox="0 0 200 82" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <path d="M27 41C27 33.5291 32.9826 27.4725 40.3626 27.4725C47.7424 27.4725 53.7251 33.5291 53.7251 41C53.7251 48.4711 47.7424 54.5275 40.3626 54.5275C32.9826 54.5275 27 48.4711 27 41Z" fill="#1ABCFE"/>
@@ -28,7 +41,7 @@
         <ul class="list-disc pl-4">
           <li>Dithering images in Figma</li>
         </ul>
-        <span class="btn-red-outline text-center inline-block bg-white cursor-pointer mt-8"  @click="startWithDuck" >
+        <span class="btn-red-outline text-center inline-block bg-white cursor-pointer mt-8">
           <a class="border-0 hover:text-white" href="https://www.figma.com/community/plugin/1141558599392169513/Dither-it!">🌀 Take it for a spin</a>
         </span>                 
       </div>  
@@ -138,9 +151,7 @@ export default {
   },
   
   methods: {
-    coffeeClick() {
-      fathom('trackGoal', 'ZCRPUIOP', 0)
-    },
+
   
   }
 }

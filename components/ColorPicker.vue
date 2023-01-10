@@ -395,16 +395,13 @@ export default {
       var exportPalette = document.getElementById('exportPalette');
           exportPalette.setAttribute("href", palJSON);
           exportPalette.setAttribute("download", "ditherit_palette.txt");
-
-          
-
     },
     importPalette() {
       this.palette = JSON.parse(this.palette2Import)
       this.updatePallete();
       this.presetPaletteSelection = 'custom'
       fathom('trackGoal', 'QQLOUIS1', 0);
-    }
+    },
   }
 }
 </script>
