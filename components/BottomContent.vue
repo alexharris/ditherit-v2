@@ -8,7 +8,7 @@
       <div class="flex-shrink"> 
         <h3 class="text-lg font-serif mt-0">Dither it! t-shirts</h3>
         <p>Idk maybe this is a bad idea but let's try it. Here are some Dither it! t-shirts. Confuse your friends, confuse your enemies. Interested but hate the design? Let me know, I have other ideas, too.</p>
-        <p>5% of proceeds goes to the National Audubon Society. </p>
+        <p>5% of proceeds go to the National Audubon Society. </p>
         <span class="btn-red-outline text-center inline-block bg-white cursor-pointer mt-8" >
           <a class="border-0 hover:text-white" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="fathom('trackGoal', 'GAHXDKWX', 0)">🌎 Check em out</a>
         </span>                 
