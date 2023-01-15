@@ -2,16 +2,14 @@
 
 <div class="w-full border-t border-b border-dashed border-red-500 flex flex-col items-center py-16">
     <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
-      <a class="border-0 hover:border-0 w-[200px] shrink-0" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular"  @click="fathom('trackGoal', 'GAHXDKWX', 0)">
+      <a class="border-0 hover:border-0 w-[200px] shrink-0" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular"  @click="track()">
         <img src="~/assets/t-shirt.png" />   
       </a>
       <div class="flex-shrink"> 
         <h3 class="text-lg font-serif mt-0">Dither it! t-shirts</h3>
         <p>Idk maybe this is a bad idea but let's try it. Here are some Dither it! t-shirts. Confuse your friends, confuse your enemies. Interested but hate the design? Let me know, I have other ideas, too.</p>
         <p>5% of proceeds go to the National Audubon Society. </p>
-        <span class="btn-red-outline text-center inline-block bg-white cursor-pointer mt-8" >
-          <a class="border-0 hover:text-white" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="fathom('trackGoal', 'GAHXDKWX', 0)">🌎 Check em out</a>
-        </span>                 
+        <a class="pt-4 border-b-1 border-red-700 hover:text-red-800 inline-block" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="track()">🌎 Check em out</a>
       </div>  
     </div>    
     <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
@@ -41,9 +39,7 @@
         <ul class="list-disc pl-4">
           <li>Dithering images in Figma</li>
         </ul>
-        <span class="btn-red-outline text-center inline-block bg-white cursor-pointer mt-8">
-          <a class="border-0 hover:text-white" href="https://www.figma.com/community/plugin/1141558599392169513/Dither-it!">🌀 Take it for a spin</a>
-        </span>                 
+        <a class="pt-4 border-b-1 border-red-700 hover:text-red-800 inline-block" href="https://www.figma.com/community/plugin/1141558599392169513/Dither-it!">🌀 Take it for a spin</a>
       </div>  
     </div>  
     <!-- begin three column -->
@@ -151,7 +147,9 @@ export default {
   },
   
   methods: {
-
+    track() {
+      fathom('trackGoal', 'GAHXDKWX', 0)
+    }
   
   }
 }
