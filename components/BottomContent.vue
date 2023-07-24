@@ -1,7 +1,7 @@
 <template>
 
 <div class="w-full border-t border-b border-dashed border-red-500 flex flex-col items-center py-16">
-    <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
+    <!-- <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
       <a class="border-0 hover:border-0 w-[200px] shrink-0" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular"  @click="track()">
         <img src="~/assets/t-shirt.png" />   
       </a>
@@ -11,7 +11,7 @@
         <p>5% of proceeds go to the National Audubon Society. </p>
         <a class="pt-4 border-b-1 border-red-700 hover:text-red-800 inline-block" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="track()">🌎 Check em out</a>
       </div>  
-    </div>    
+    </div>     -->
     <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
       <a class="border-0 hover:border-0" href="https://www.figma.com/community/plugin/1141558599392169513/Dither-it!">
         <svg width="200" height="82" viewBox="0 0 200 82" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
