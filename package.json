@@ -19,7 +19,7 @@
     "dart-sass": "^1.25.0",
     "eslint-plugin-vue": "^9.6.0",
     "fs": "^0.0.1-security",
-    "nuxt": "^2.14.0",
+    "nuxt": "^3.0.0",
     "postcss": "^8.4.8",
     "rgbquant": "^1.1.2",
     "tailwindcss": "^3.2.1",
@@ -38,6 +38,6 @@
     "eslint-plugin-nuxt": "^1.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^1.19.1",
-    "sass-loader": "^8.0.2"
+    "sass-loader": "^13.2.0"
   }
 }
