@@ -29,7 +29,7 @@
 
         <span class="py-4 px-4" v-if="duck">or</span>
         <span class="btn-red-outline text-center inline-block bg-white cursor-pointer"  @click="startWithDuck" >
-          🐸 Start with a frog
+          🦆 Start with a duck
         </span>        
         <div class="invisible md:visible h-0 md:h-16 pt-8 w-full">
           <span v-if="notAnImage" class="text-red-700 bg-red-200 rounded p-4">
@@ -163,14 +163,14 @@ export default {
     // ----------------------------    
     startWithDuck() {
       
-      fathom('trackGoal', 'HJQ6OA1C', 0)
+      fathom('trackGoal', '8UHGAHDO', 0)
       
       this.loading = true // for loading spinner
 
       // conver tot blob
       var file;
 
-      fetch(require('~/assets/examples/quantfrog.png'))
+      fetch(require('~/assets/examples/quantduck.png'))
       .then((response) => {
         return response.blob()
       })
