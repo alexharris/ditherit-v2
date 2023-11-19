@@ -21,7 +21,7 @@
     "fs": "^0.0.1-security",
     "nuxt": "^2.14.0",
     "postcss": "^8.4.8",
-    "rgbquant": "^1.1.2",
+    "rgbquant": "github:alexharris/RgbQuant.js#transparency",
     "tailwindcss": "^3.2.1",
     "vue-color": "^2.7.1",
     "vue-palette-builder": "^1.0.4",
