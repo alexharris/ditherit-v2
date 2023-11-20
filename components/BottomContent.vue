@@ -88,7 +88,7 @@
           <p>The Dither it! source code is freely available on the <a href="https://github.com/alexharris/ditherit-v2">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
 
           <p>Thanks to Leon Sorokin, for making <a href="https://github.com/leeoniya/RgbQuant.js">RgbQuant.js</a> and Don for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a>.</p>
-
+          <p>Image slider for examples: <a href="https://img-comparison-slider.sneas.io/examples.html">Img Comparison Slider</a></p>
         </div>  
       </div>
     </div>

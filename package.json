@@ -19,6 +19,7 @@
     "dart-sass": "^1.25.0",
     "eslint-plugin-vue": "^9.6.0",
     "fs": "^0.0.1-security",
+    "img-comparison-slider": "^8.0.4",
     "nuxt": "^2.14.0",
     "postcss": "^8.4.8",
     "rgbquant": "^1.1.2",
