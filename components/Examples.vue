@@ -1,106 +1,163 @@
 /* eslint-disable no-console */
 <template>
   <div
-    class="mt-16 border-t border-b border-dashed border-red-500 md:items-start pt-8"
+    class="mt-16 w-full border-t border-b border-dashed border-red-500 md:items-start pt-8"
   >
-    <h3 class="text-3xl w-full pb-12 font-serif text-center mx-0 px-0">Examples</h3>
-    <div
-      class="flex flex-col md:flex-row items-center gap-8 justify-center pb-8"
-    >
-      <span
-        class="border-b border-red-700 text-red-700 cursor-pointer"
-        :class="{ 'star': currentExample == example }"
-        @click="currentExample = example"
-        v-for="example in examples"
-      >
-        {{ example }}
-      </span>
-    </div>    
-    <div
-      class="flex flex-col md:flex-row items-start md:space-x-4 checkers shadow-inner p-8"
-      v-if="example == 'color'"
-    >
- 
-      <div
-        class="w-full md:w-1/2 flex flex-col justify-end items-center gap-4 order-2 md:order-1"
-      >
-        <img
-          src="~/assets/examples/earth.jpg"
-          v-if="currentExample == 'Original'"
-        />
-        <img
-          src="~/assets/examples/redmono_earth_bayer.png"
-          v-if="currentExample == 'Red Mono'"
-        />
-        <img
-          src="~/assets/examples/bw_earth_bayer.png"
-          v-if="currentExample == 'Black & White'"
-        />
-        <img
-          src="~/assets/examples/blueyellow_earth_bayer.png"
-          v-if="currentExample == 'Blue & Yellow'"
-        />
-        <img
-          src="~/assets/examples/gameboy_earth_bayer.png"
-          v-if="currentExample == 'Gameboy'"
-        />
-        <img
-          src="~/assets/examples/cmyk_earth_bayer.png"
-          v-if="currentExample == 'CMYK'"
-        />        
-        Ordered (Bayer)
-      </div>
-      <div
-        class="w-full md:w-1/2 flex flex-col items-center gap-4 order-1 md:order-2"
-      >    
-        <img
-          src="~/assets/examples/redmono_earth.png"
-          v-if="currentExample == 'Red Mono'"
-        />
-        <img
-          src="~/assets/examples/bw_earth.jpg"
-          v-if="currentExample == 'Black & White'"
-        />
-        <img
-          src="~/assets/examples/blueyellow_earth.jpg"
-          v-if="currentExample == 'Blue & Yellow'"
-        />
-        <img
-          src="~/assets/examples/gameboy_earth.jpg"
-          v-if="currentExample == 'Gameboy'"
-        />
-        <img
-          src="~/assets/examples/cmyk_earth.jpg"
-          v-if="currentExample == 'CMYK'"
-        />        
-        <img
-          src="~/assets/examples/earth.jpg"
-          v-if="currentExample == 'Original'"
-        />
-        Error Diffusion
-      </div>
+    <h3 class="text-3xl w-full font-serif text-center mx-0 px-0">Examples</h3>
+    <div class="flex flex-row gap-4 items-center justify-center p-8">
+      <img class="w-24" src="~/assets/examples/frog_icon.png" @click="example = 'frog';console()" />
+      <img class="w-24" src="~/assets/examples/earth_icon.png" @click="example = 'earth';console()" />
     </div>
-  
+    <div class="flex flex-col checkers shadow-inner">
+
+      <!-- Frog Examples  -->
+      <div
+        class="flex flex-row items-start md:space-x-4 p-8 pb-4"
+        v-if="example == 'frog'"
+      >
+        <!-- Bayer Examples -->
+        <div class="w-full flex flex-col justify-end items-center gap-4 order-2 md:order-1">
+          Ordered (Bayer)
+          <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_bayer_redmono.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Black & White'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_bayer_bw.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Blue & Yellow'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_bayer_by.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Gameboy'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_bayer_bw.png" />
+          </img-comparison-slider>                                    
+          <img-comparison-slider v-if="currentExample == 'CMYK'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_bayer_cmyk.png" />
+          </img-comparison-slider>          
+        </div>
+        <!-- Error Diffusion Exmaples -->
+        <div class="w-full flex flex-col items-center gap-4 order-1 md:order-2">    
+          Error Diffusion
+          <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_diffusion_redmono.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Black & White'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_diffusion_bw.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Blue & Yellow'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_diffusion_by.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Gameboy'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_diffusion_bw.png" />
+          </img-comparison-slider>                                    
+          <img-comparison-slider v-if="currentExample == 'CMYK'" class="img-slider">
+            <img slot="first" src="~/assets/examples/quantfrog.png" />
+            <img slot="second" src="~/assets/examples/frog_diffusion_cmyk.png" />
+          </img-comparison-slider>          
+          
+        </div>
+      </div>
+        <!-- Earth Examples  -->
+      <div
+        class="flex flex-row items-start md:space-x-4 p-8 pb-4"
+        v-if="example == 'earth'"
+      >
+        <!-- Bayer Examples -->
+        <div class="w-full flex flex-col justify-end items-center gap-4 order-2 md:order-1">
+          Ordered (Bayer)
+          <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/redmono_earth_bayer.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Black & White'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/bw_earth_bayer.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Blue & Yellow'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/blueyellow_earth_bayer.png" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Gameboy'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/gameboy_earth_bayer.png" />
+          </img-comparison-slider>                                    
+          <img-comparison-slider v-if="currentExample == 'CMYK'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/cmyk_earth_bayer.png" />
+          </img-comparison-slider>          
+        </div>
+        <!-- Error Diffusion Exmaples -->
+        <div class="w-full flex flex-col items-center gap-4 order-1 md:order-2">    
+          Error Diffusion
+          <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/redmono_earth.jpg" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Black & White'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/bw_earth.jpg" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Blue & Yellow'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/blueyellow_earth.jpg" />
+          </img-comparison-slider>    
+          <img-comparison-slider v-if="currentExample == 'Gameboy'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/gameboy_earth.jpg" />
+          </img-comparison-slider>                                    
+          <img-comparison-slider v-if="currentExample == 'CMYK'" class="img-slider">
+            <img slot="first" src="~/assets/examples/earth.jpg" />
+            <img slot="second" src="~/assets/examples/cmyk_earth.jpg" />
+          </img-comparison-slider>                     
+        </div>
+      </div>      
+      <!-- Example buttons -->
+      <div class="flex flex-row items-start gap-8 p-8 justify-center w-full" >
+        <div
+          class="btn-red-outline"
+          :class="{ 'star': currentExample == example }"
+          @click="currentExample = example"
+          v-for="example in examples"
+        >
+          {{ example }}
+        </div>
+      </div>       
+    </div>
   </div>
 </template>
 
 <script>
 
+import 'img-comparison-slider';
+
 export default {
   components: {
     
   },
+  vue: {
+    config: {
+      productionTip: false,
+      ignoredElements: [/img-comparison-slider/]
+    }
+  }  ,
   data() {
     return {
-      example: 'color',
+      example: 'frog',
       examples: [
-        'Original',
-        'CMYK',        
         'Red Mono',
+         
         'Black & White',
+        'CMYK',  
         'Blue & Yellow',
-        'Gameboy',
-
+        'Gameboy'
       ],
       algoExamples: [
         'Floyd Steinberg',
@@ -113,13 +170,16 @@ export default {
         'TwoSierra',
         'SierraLite'
       ],
-      currentExample: 'Original'
+      currentExample: 'Red Mono'
     }
   },
   methods: {
     imgSrc(filename) {
       var file = filename
       return require('@/assets/examples/' + file)
+    },
+    console() {
+      console.log(window.top.scrollY)
     }
   }
 }
@@ -132,5 +192,16 @@ export default {
 .star::before {
   content: '✔️';
 }
+.img-slider {
+  --divider-color: rgb(0, 0, 0);
+  --default-handle-color: rgb(0, 0, 0);
+  --default-handle-width: 100px;
+  --divider-width: 4px;
+  @apply rounded-lg
+}
+.img-slider:focus {
+  outline: none;
+}
 
 </style>
+
