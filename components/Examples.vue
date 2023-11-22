@@ -8,15 +8,15 @@
       <img class="w-24" src="~/assets/examples/frog_icon.png" @click="example = 'frog';console()" width="200" height="200" />
       <img class="w-24" src="~/assets/examples/earth_icon.png" @click="example = 'earth';console()" width="200" height="198"  />
     </div>
-    <div class="flex flex-col checkers shadow-inner">
+    <div class="flex flex-col checkers shadow-inner p-8">
 
       <!-- Frog Examples  -->
       <div
-        class="flex flex-row items-start md:space-x-4 p-8 pb-4"
+        class="flex flex-col md:flex-row gap-8"
         v-if="example == 'frog'"
       >
         <!-- Bayer Examples -->
-        <div class="w-full flex flex-col justify-end items-center gap-4 order-2 md:order-1">
+        <div class="w-full flex flex-col items-center gap-4">
           Ordered (Bayer)
           <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
             <img slot="first" src="~/assets/examples/quantfrog.png" width="512" height="512" />
@@ -40,7 +40,7 @@
           </img-comparison-slider>          
         </div>
         <!-- Error Diffusion Exmaples -->
-        <div class="w-full flex flex-col items-center gap-4 order-1 md:order-2">    
+        <div class="w-full flex flex-col items-center gap-4">    
           Error Diffusion
           <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
             <img slot="first" src="~/assets/examples/quantfrog.png" width="512" height="512" />
@@ -65,13 +65,14 @@
           
         </div>
       </div>
-        <!-- Earth Examples  -->
+
+      <!-- Earth Examples  -->
       <div
-        class="flex flex-row items-start md:space-x-4 p-8 pb-4"
+        class="flex flex-col md:flex-row"
         v-if="example == 'earth'"
       >
         <!-- Bayer Examples -->
-        <div class="w-full flex flex-col justify-end items-center gap-4 order-2 md:order-1">
+        <div class="w-full flex flex-col itms-center gap-4">
           Ordered (Bayer)
           <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
             <img slot="first" src="~/assets/examples/earth.jpg" width="640" height="480" />
@@ -95,7 +96,7 @@
           </img-comparison-slider>          
         </div>
         <!-- Error Diffusion Exmaples -->
-        <div class="w-full flex flex-col items-center gap-4 order-1 md:order-2">    
+        <div class="w-full flex flex-col items-center gap-4">    
           Error Diffusion
           <img-comparison-slider v-if="currentExample == 'Red Mono'" class="img-slider">
             <img slot="first" src="~/assets/examples/earth.jpg" width="640" height="480" />
@@ -120,7 +121,7 @@
         </div>
       </div>      
       <!-- Example buttons -->
-      <div class="flex flex-row items-start gap-8 p-8 justify-center w-full" >
+      <div class="flex flex-row flex-wrap items-start gap-8 p-8 justify-center w-full" >
         <div
           class="btn-red-outline"
           :class="{ 'star': currentExample == example }"

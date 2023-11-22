@@ -5,7 +5,7 @@
     </div>
     <div v-show="!imageUploaded" class="flex flex-col items-center mt-4">
       <p class="mt-8 text-2xl">An image dithering tool 🏁</p>
-      <img class="mt-8 min-h-[328px]" src="~/assets/earth-dither.gif" width="600" height="328" />
+      <img class="mt-8" src="~/assets/earth-dither.gif" width="600" height="328" />
     </div>
     <div
       class="py-12 px-2 md:px-4 flex flex-col md:flex-row pt-8 w-full justify-center"
