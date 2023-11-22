@@ -12,7 +12,7 @@
         <a class="pt-4 border-b-1 border-red-700 hover:text-red-800 inline-block" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="track()">🌎 Check em out</a>
       </div>  
     </div>     -->
-    <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
+    <div class="md:w-2/3 lg:w-4/5 shadow-md border border-red-700 p-8 rounded-lg flex gap-8 flex-col sm:flex-row m-4">
       <a class="border-0 hover:border-0" href="https://www.figma.com/community/plugin/1141558599392169513/Dither-it!">
         <svg width="200" height="82" viewBox="0 0 200 82" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <path d="M27 41C27 33.5291 32.9826 27.4725 40.3626 27.4725C47.7424 27.4725 53.7251 33.5291 53.7251 41C53.7251 48.4711 47.7424 54.5275 40.3626 54.5275C32.9826 54.5275 27 48.4711 27 41Z" fill="#1ABCFE"/>
