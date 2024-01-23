@@ -464,14 +464,16 @@ export default {
       ],
       algorithmOptions: [
         'FloydSteinberg',
-        'FalseFloydSteinberg',
-        'Stucki',
         'Atkinson',
-        'Jarvis',
+        'Sierra24A',
+        'Fan',
+        'ShiauFan',
+        'ShiauFan2',
+        'JarvisJudiceNinke',
+        'Stucki',
         'Burkes',
-        'Sierra',
-        'TwoSierra',
-        'SierraLite'
+        'Sierra3',
+        'Sierra2'
       ],
       rgbQuantOptions: {
         // ---- Options ------
