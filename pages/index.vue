@@ -884,7 +884,6 @@ export default {
         imageData.data[currentPixel + 2] = closest_color[3]
       
 
-
       }
     
       // Put the new image data on the canvas
