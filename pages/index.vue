@@ -173,73 +173,17 @@
             </button>
           </div>
 
-          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full" v-show="ditherMode == 'Error Diffusion'">
+          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full">
             <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Advanced Options</h4>
-            <!-- Algorithm Selector -->
-            <div class="flex flex-row items-center justify-between mt-4 pb-2">
-              <label for="ditherAlgo" class="font-bold text-sm">Algorithm</label>
-              <span
-                class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
-                @click="showOptionsModalAlgo = !showOptionsModalAlgo"
-              >
-                <span v-if="!showOptionsModalAlgo">
-                  ?
-                </span>
-                <span v-else>
-                  X
-                </span>
-              </span>
-            </div>
-            <div
-              v-if="!showOptionsModalAlgo"
-              class="inline-block relative w-full"
-            >
-              <select
-                id="ditherAlgo"
-                v-model="rgbQuantOptions.dithKern"
-                class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
-              >
-                <template v-for="(v, i) in algorithmOptions">
-                  <option :id="v" :name="v" :value="v">{{ v }}</option>
-                </template>
-              </select>
-              <div
-                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
-              >
-                <svg
-                  class="fill-current h-4 w-4"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div v-else>
-              <div class="mt-2 bg-red-100 p-2 rounded">
-                These are different ways of spreading the quantization errors
-                around. Certain ones might work better than others depending on
-                the image.
-              </div>
-            </div>
-            <!-- End Algorithm Selector -->
-            <!-- Serpentine Dither -->
-            <div class="flex flex-col items-center justify-between mt-4">
-              <div class="inline-block relative w-full">
-                <input
-                  id="ditherSerp"
-                  v-model="rgbQuantOptions.dithSerp"
-                  type="checkbox"
-                  class="form-checkbox"
-                />
-                <label for="ditherSerp" class="ml-2 text-sm"><strong>Serpentine Dither</strong></label>
+            <div v-show="ditherMode == 'Error Diffusion'">
+              <!-- Algorithm Selector -->
+              <div class="flex flex-row items-center justify-between mt-4 pb-2">
+                <label for="ditherAlgo" class="font-bold text-sm">Algorithm</label>
                 <span
                   class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
-                  @click="showOptionsModalSerp = !showOptionsModalSerp"
+                  @click="showOptionsModalAlgo = !showOptionsModalAlgo"
                 >
-                  <span v-if="!showOptionsModalSerp">
+                  <span v-if="!showOptionsModalAlgo">
                     ?
                   </span>
                   <span v-else>
@@ -248,18 +192,125 @@
                 </span>
               </div>
               <div
-                v-if="showOptionsModalSerp"
+                v-if="!showOptionsModalAlgo"
                 class="inline-block relative w-full"
               >
-                <div class="mt-2 bg-red-100 p-2 rounded">
-                  <!-- This could be clarified. -->
-                  This determines if the dithering just goes left to right, top
-                  to bottom, or does a snake wiggle.
+                <select
+                  id="ditherAlgo"
+                  v-model="rgbQuantOptions.dithKern"
+                  class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <template v-for="(v, i) in algorithmOptions">
+                    <option :id="v" :name="v" :value="v">{{ v }}</option>
+                  </template>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                >
+                  <svg
+                    class="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                    />
+                  </svg>
                 </div>
               </div>
+              <div v-else>
+                <div class="mt-2 bg-red-100 p-2 rounded">
+                  These are different ways of spreading the quantization errors
+                  around. Certain ones might work better than others depending on
+                  the image.
+                </div>
+              </div>
+              <!-- End Algorithm Selector -->
+              <!-- Serpentine Dither -->
+              <div class="flex flex-col items-center justify-between mt-4">
+                <div class="inline-block relative w-full">
+                  <input
+                    id="ditherSerp"
+                    v-model="rgbQuantOptions.dithSerp"
+                    type="checkbox"
+                    class="form-checkbox"
+                  />
+                  <label for="ditherSerp" class="ml-2 text-sm"><strong>Serpentine Dither</strong></label>
+                  <span
+                    class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
+                    @click="showOptionsModalSerp = !showOptionsModalSerp"
+                  >
+                    <span v-if="!showOptionsModalSerp">
+                      ?
+                    </span>
+                    <span v-else>
+                      X
+                    </span>
+                  </span>
+                </div>
+                <div
+                  v-if="showOptionsModalSerp"
+                  class="inline-block relative w-full"
+                >
+                  <div class="mt-2 bg-red-100 p-2 rounded">
+                    <!-- This could be clarified. -->
+                    This determines if the dithering just goes left to right, top
+                    to bottom, or does a snake wiggle.
+                  </div>
+                </div>
+              </div>
+              <!-- End Serpentine Dither -->
             </div>
-
-            <!-- End Serpentine Dither -->
+            <div v-show="ditherMode == 'Bayer (Ordered)'">
+              <!-- Bayer Matrix Selector -->
+              <div class="flex flex-row items-center justify-between mt-4 pb-2">
+                <label for="bayerMatrix" class="font-bold text-sm">Bayer Matrix</label>
+                <span
+                  class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
+                  @click="showOptionsModalAlgo = !showOptionsModalAlgo"
+                >
+                  <span v-if="!showOptionsModalAlgo">
+                    ?
+                  </span>
+                  <span v-else>
+                    X
+                  </span>
+                </span>
+              </div>
+              <div
+                v-if="!showOptionsModalAlgo"
+                class="inline-block relative w-full"
+              >
+                <select
+                  id="bayerMatrix"
+                  v-model="bayerMatrixSelection"
+                  class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <template v-for="(v, i) in bayerMatrixOptions">
+                    <option :id="v" :name="v" :value="v">{{ v }}</option>
+                  </template>
+                </select>
+                <div
+                  class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
+                >
+                  <svg
+                    class="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div v-else>
+                <div class="mt-2 bg-red-100 p-2 rounded">
+                  Bayer Matrix stuff
+                </div>
+              </div>
+              <!-- End Bayer Matrix Selector -->              
+            </div>
           </div>
           
         </div>
@@ -457,7 +508,7 @@ export default {
       imageUploaded: false,
       showDitheredImage: false, // control if the dithered image is visible
       imageWidths: [320, 640, 1080, 1280],
-      ditherMode: 'Error Diffusion',
+      ditherMode: 'Bayer (Ordered)',
       ditherModeOptions: [
         'Error Diffusion',
         'Bayer (Ordered)'
@@ -509,49 +560,14 @@ export default {
       selectingImage: false,
       customWidth: false,
       isError: false,
-      baseColors: [ // this is from old bayer stuff and can prob be deleted
-        {
-          "hex": "#FFFFFF",
-          "name": "White",
-        },
-        {
-          "hex": "#000000",
-          "name": "Black",
-        },
-        {
-          "hex": "#808080",
-          "name": "Grey",
-        },
-        
-        {
-          "hex": "#ff0000",
-          "name": "Red",
-        },
-        {
-          "hex": "#ffa500",
-          "name": "Orange",
-        },
-        {
-          "hex": "#ffff00",
-          "name": "Yellow",
-        },
-        {
-          "hex": "#008000",
-          "name": "Green",
-        },
-        {
-          "hex": "#0000ff",
-          "name": "Blue",
-        },
-        {
-          "hex": "#4b0082",
-          "name": "Indigo",
-        },
-        {
-          "hex": "#ee82ee",
-          "name": "Violet",
-        },
-      ]      
+      bayerMatrixSelection: 'bayer2x2',   
+      bayerMatrixOptions: [
+        'bayer2x2',
+        'bayer4x4',
+        'bayer8x8',
+        'bayerClusterDot4x4',
+        'bayerClusterDot8x8'
+      ],
     }
   },
   computed: {
@@ -741,12 +757,44 @@ export default {
 
     bayerDither(ctx, imageData) {
 
-      var bayerThresholdMap = [
-        [  15, 135,  45, 165 ],
-        [ 195,  75, 225, 105 ],
-        [  60, 180,  30, 150 ],
-        [ 240, 120, 210,  90 ]
-      ];
+      var bayerMatrices = {
+        'bayer2x2' :[
+          [ 0, 2 ],
+          [ 3, 1 ]
+        ],
+        'bayer4x4' : [
+          [  15, 135,  45, 165 ],
+          [ 195,  75, 225, 105 ],
+          [  60, 180,  30, 150 ],
+          [ 240, 120, 210,  90 ]
+        ],
+        'bayer8x8' : [
+          [0, 32, 8, 40, 2, 34, 10, 42],
+          [48, 16, 56, 24, 50, 18, 58, 26],
+          [12, 44, 4, 36, 14, 46, 6, 38],
+          [60, 28, 52, 20, 62, 30, 54, 22],
+          [3, 35, 11, 43, 1, 33, 9, 41],
+          [51, 19, 59, 27, 49, 17, 57, 25],
+          [15, 47, 7, 39, 13, 45, 5, 37],
+          [63, 31, 55, 23, 61, 29, 53, 21]        
+        ],
+        'bayerClusterDot4x4' : [
+          [12, 5, 6, 13],
+          [4, 0 , 1 ,7],
+          [11, 3, 2, 8],
+          [15, 10, 9, 14]          
+        ],
+        'bayerClusterDot8x8' : [
+          [24, 10, 12, 26, 35, 47, 49, 37],
+          [8, 0 , 2, 14, 45, 59, 61, 51],
+          [22, 6, 4, 16, 43, 57, 63, 53],
+          [30, 20, 18, 28, 33, 41, 55, 39],
+          [34, 46, 48, 36, 25, 11, 13, 27],
+          [44, 58, 60, 50, 9, 1, 3, 15],
+          [42, 56, 62, 52, 23, 7, 5, 17],
+          [32, 40, 54, 38, 31, 21, 19, 29]          
+        ]
+      }
 
 
       var imageDataLength = imageData.data.length;
@@ -764,6 +812,7 @@ export default {
           newPalette.push(newColor)
         }
       )
+      
 
       // Go through the RGBA data, at every 4th value, each of which corresponds to a pixel
       for (var currentPixel = 0; currentPixel <= imageDataLength - 4; currentPixel+=4) {
@@ -805,19 +854,30 @@ export default {
         // Update 08/01/22
         // Now this uses the "getClosestColor" function and the preset ditherit palette to do cusotm color bayer dithers.
 
+        // imageData.data is the original image data
+        // currentpixel is a misnomer, it is actually the current pixel's color channel value, so go
+        // +0, +1, +2 to get RGB
+        // so take each color channel's value and add the bayer threshold map value for that pixel.
+        // In order to get the appropriate bayer matrix value,
+        // we take the x and y coordinates of the pixel and mod them by the row length of the bayer matrix
+        // so for instance of pixel at 0,0 will have bayer threshold map value of
+        // [0%2][0%2] which is [0][0] so in a 2x2 matrix such as:
+        // [ 0, 2 ],
+        // [ 3, 1 ]
+        // this value is 0, so we add 0 to that color channel value, and repeat for each channel
+        // this gets a new color, which then needs to be matched to the closest color in the given palette
 
-        var map = Math.floor( (imageData.data[currentPixel] + bayerThresholdMap[x%4][y%4]) / 2 );
-        // imageData.data[currentPixel] = (map < 129) ? 0 : 255;  
-        
-        var map2 = Math.floor( (imageData.data[currentPixel + 1] + bayerThresholdMap[x%4][y%4]) / 2 );    
-        // imageData.data[currentPixel + 1] = (map2 < 129) ? 0 : 255;  
-        
-        var map3 = Math.floor( (imageData.data[currentPixel + 2] + bayerThresholdMap[x%4][y%4]) / 2 );
-        // imageData.data[currentPixel + 2] = (map3 < 129) ? 0 : 255;  
-        
- 
 
-        const closest_color = this.getClosestColor(newPalette, [map, map2, map3]);
+        var currentBayerMatrix = bayerMatrices[this.bayerMatrixSelection]
+
+        var matrixLength = currentBayerMatrix[0].length
+
+        var red = Math.floor( (imageData.data[currentPixel] + currentBayerMatrix[x%matrixLength][y%matrixLength]) / 2 );
+        var green = Math.floor( (imageData.data[currentPixel + 1] + currentBayerMatrix[x%matrixLength][y%matrixLength]) / 2 );
+        var blue = Math.floor( (imageData.data[currentPixel + 2] + currentBayerMatrix[x%matrixLength][y%matrixLength]) / 2 );
+        // console.log('og: ', imageData.data[currentPixel], imageData.data[currentPixel+1], imageData.data[currentPixel+2])
+        // console.log('new: ', red, green, blue)
+        const closest_color = this.getClosestColor(newPalette, [red, green, blue]);
        
         imageData.data[currentPixel] = closest_color[1]
         imageData.data[currentPixel + 1] = closest_color[2]
