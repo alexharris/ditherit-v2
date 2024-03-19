@@ -1,7 +1,7 @@
 <template>
 
 <div class="w-full border-t border-b border-dashed border-red-500 flex flex-col items-center py-16">
-    <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
+    <!-- <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
       <a class="border-0 hover:border-0 w-[200px] shrink-0" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular"  @click="track()">
         <img src="~/assets/t-shirt.png" />   
       </a>
@@ -11,8 +11,9 @@
         <p>5% of proceeds go to the National Audubon Society. </p>
         <a class="pt-4 border-b-1 border-red-700 hover:text-red-800 inline-block" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="track()">🌎 Check em out</a>
       </div>  
-    </div>    
-    <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
+    </div>     -->
+    
+    <div class="md:w-2/3 lg:w-4/5 shadow-md m-4 md:m-0 p-8 rounded-lg flex gap-8 flex-col sm:flex-row">
       <a class="border-0 hover:border-0" href="https://www.figma.com/community/plugin/1141558599392169513/Dither-it!">
         <svg width="200" height="82" viewBox="0 0 200 82" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <path d="M27 41C27 33.5291 32.9826 27.4725 40.3626 27.4725C47.7424 27.4725 53.7251 33.5291 53.7251 41C53.7251 48.4711 47.7424 54.5275 40.3626 54.5275C32.9826 54.5275 27 48.4711 27 41Z" fill="#1ABCFE"/>
@@ -79,7 +80,7 @@
           <blockquote class="bg-gray-50">Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
           <p>For more information, see this list of dithering <a href="/resources">resources</a> from around the web: explainers, algorithms, examples, etc.</p>
           <h3 class="font-serif text-lg pt-8">About this site</h3>
-          <p>Dither it! is built by <a href="https://alexharris.online/">Alex Harris</a>, on twitter <a href="https://twitter.com/alexharris6">@alexharris6</a>.</p>
+          <p>Dither it! is built by <a href="https://alexharris.online/">Alex Harris</a>.</p>
 
           <p>It was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method discussed was to reduce full color images to dithered images with very few colors and subsequently smaller file sizes. Ensuing discussion clarified that there are other, more modern ways to compress images (try <a href="https://squoosh.app/">Squoosh</a>) which achieve reduced file sizes while maintaining color. Nonetheless, dithering is a fun technique that looks cool and is interesting to learn about.</p>
 
@@ -88,7 +89,7 @@
           <p>The Dither it! source code is freely available on the <a href="https://github.com/alexharris/ditherit-v2">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
 
           <p>Thanks to Leon Sorokin, for making <a href="https://github.com/leeoniya/RgbQuant.js">RgbQuant.js</a> and Don for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a>.</p>
-
+          <p>Image slider for examples: <a href="https://img-comparison-slider.sneas.io/examples.html">Img Comparison Slider</a></p>
         </div>  
       </div>
     </div>

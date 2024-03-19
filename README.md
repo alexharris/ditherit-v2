@@ -30,7 +30,7 @@ $ npm run test
 $ npm run generate
 ```
 
-In some cases (as of Node.js v17) it is necessary to run the command `export NODE_OPTIONS=--openssl-legacy-provider` for handling key size on OpenSSL v3.
+In some cases (as of Node.js v17) it is necessary to run the command `export NODE_OPTIONS=--openssl-legacy-provider` for handling key size on OpenSSL v3. Note that this needs to be run each time the terminal session is restarted.
 After that `$ npm run dev` works.
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
