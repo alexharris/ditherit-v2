@@ -67,9 +67,8 @@
         </p>
       </div>  
     </div>
-
-
     <Examples />
+    <ContactForm />
     <div class="flex flex-col items-center">
       <div class="my-24">
         <div class="md:flex-row  mx-4 md:mx-0 max-w-3xl ">
@@ -137,10 +136,12 @@
 <script>
 
 import Examples from '~/components/Examples.vue'
+import ContactForm from '~/components/ContactForm.vue'
 
 export default {
   components: {
     Examples,
+    ContactForm
   },     
   data() {
     return {
