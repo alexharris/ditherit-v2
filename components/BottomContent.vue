@@ -68,7 +68,7 @@
       </div>  
     </div>
     <Examples />
-    <ContactForm />
+    <!-- <ContactForm /> -->
     <div class="flex flex-col items-center">
       <div class="my-24">
         <div class="md:flex-row  mx-4 md:mx-0 max-w-3xl ">
