@@ -5,7 +5,8 @@
   >
     <h3 class="text-3xl w-full pb-8 font-serif text-center mx-0 px-0">Contact</h3>
     <p class="text-center pb-12">Say hello, report a bug, or make a feature request!</p>
-      <form name="contact" class="w-full md:w-4/5 mx-auto px-8" data-netlify="true">
+    <script data-letterbirduser="hello-900ea742" src="https://letterbird.co/embed/v1.js"></script>
+      <!-- <form name="contact" class="w-full md:w-4/5 mx-auto px-8" data-netlify="true">
         <div class="flex flex-col md:flex-row w-full justify-between md:gap-4">
           <label htmlFor="name" class="flex flex-col mb-4 w-full md:w-1/2">
             Name
@@ -21,7 +22,7 @@
           <textarea name="message" id="message" class="border-red-700"></textarea>      
         </label>
         <button type="submit" class="btn-red-outline">Submit Message</button>
-      </form>
+      </form> -->
   </div>
 </template>
 
