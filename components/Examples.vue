@@ -32,7 +32,7 @@
           </img-comparison-slider>    
           <img-comparison-slider v-if="currentExample == 'Gameboy'" class="img-slider">
             <img slot="first" src="~/assets/examples/quantfrog.png" width="512" height="512" />
-            <img slot="second" src="~/assets/examples/frog_bayer_bw.png" width="512" height="512" />
+            <img slot="second" src="~/assets/examples/frog_bayer_gameboy.png" width="512" height="512" />
           </img-comparison-slider>                                    
           <img-comparison-slider v-if="currentExample == 'CMYK'" class="img-slider">
             <img slot="first" src="~/assets/examples/quantfrog.png" width="512" height="512" />
@@ -56,7 +56,7 @@
           </img-comparison-slider>    
           <img-comparison-slider v-if="currentExample == 'Gameboy'" class="img-slider">
             <img slot="first" src="~/assets/examples/quantfrog.png" width="512" height="512" />
-            <img slot="second" src="~/assets/examples/frog_diffusion_bw.png" width="512" height="512" />
+            <img slot="second" src="~/assets/examples/frog_diffusion_gameboy.png" width="512" height="512" />
           </img-comparison-slider>                                    
           <img-comparison-slider v-if="currentExample == 'CMYK'" class="img-slider">
             <img slot="first" src="~/assets/examples/quantfrog.png" width="512" height="512" />
