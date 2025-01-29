@@ -278,9 +278,20 @@
         <div class="md:px-4 flex flex-col flex-1 items-center w-full">
           <!-- Begin Top Toolbar -->
           <div class="flex flex-row justify-between space-x-2 w-full items-center py-2 px-2 mb-4 shadow rounded bg-white" v-if="showDitheredImage && !dithering"> 
-            <Toggler class="flex-grow"
-            @view-original="viewOriginal = !viewOriginal"
-            >View Original</Toggler>  
+            <div class="flex-grow flex flex-col md:flex-row gap-4"> 
+              <Toggler
+              @view-original="viewOriginal = !viewOriginal"
+              customEvent="view-original"
+              >
+                View Original
+              </Toggler>
+              <Toggler v-if="customWidth && viewOriginal"
+              @view-full-width="viewFullWidth = !viewFullWidth"
+              customEvent="view-full-width"
+              >
+                Full Size
+              </Toggler>  
+            </div>
             <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ New"/>          
             <a
               class="btn-red-outline inline-block self-center"
@@ -288,8 +299,6 @@
               :href="downloadUrl"
               :download="'dither_it_' + selectedFile.name"
               @click="downloadImage"
-              
-              
               >💾 Save</a
             >  
           </div>   
@@ -324,7 +333,7 @@
           <div class="w-full flex flex-col ">
           
             <div v-if="numberOfImages > 0">
-              <img class="mx-auto max-w-full" :src="selectedImage.src" v-if="!showDitheredImage || viewOriginal"/>
+                <img :width="viewFullWidth ? null : ditheredWidth" class="mx-auto max-w-full" :src="selectedImage.src" v-if="!showDitheredImage || viewOriginal"/>
             </div>
             <div class="flex flex-row flex-wrap mt-4 justify-center">
               <div v-for="n in this.numberOfImages" v-show="numberOfImages > 1">
@@ -489,6 +498,7 @@ export default {
       ditheredWidth: '',
       ditheredHeight: '',
       viewOriginal: false,
+      viewFullWidth: false,
       selectingImage: false,
       customWidth: false,
       isError: false,
@@ -656,6 +666,9 @@ export default {
 
       // Dont show stats while dithering is happening
       this.selectingImage = true
+
+      // Reset image full width toggle
+      this.viewFullWidth = false
 
       setTimeout(() => {
 

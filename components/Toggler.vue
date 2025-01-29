@@ -3,13 +3,13 @@
   
   <!-- Toggle Button -->
   <label 
-    for="toogleA"
+    :for="'toggler-' + customEvent"
     class="flex items-center cursor-pointer"
   >
     <!-- toggle -->
     <div class="relative">
       <!-- input -->
-      <input id="toogleA" type="checkbox" class="hidden" @change="$emit('view-original')"/>
+      <input :id="'toggler-' + customEvent" type="checkbox" class="hidden" @change="toggle"/>
       <!-- line -->
       <div
         class="toggle__line w-10 h-4 bg-gray-400 rounded-full shadow-inner"
@@ -32,7 +32,20 @@
 </template>
 
 <script>
-
+export default {
+  props: {
+    customEvent: {
+      type: String,
+      required: true
+    }
+  },
+  methods: {
+    toggle() {
+      console.log(this.customEvent)
+      this.$emit(this.customEvent);
+    }
+  }
+}
 </script>
 
 <style>
