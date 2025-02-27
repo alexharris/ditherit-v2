@@ -30,20 +30,20 @@
       <img class="mt-8" src="~/assets/earth-dither.gif" width="600" height="328" />
     </div>
     <div
-      class="py-12 px-2 md:px-4 flex flex-col md:flex-row pt-8 w-full justify-center"
+      class="py-6 px-2 flex flex-col md:flex-row pt-4 w-full justify-center"
       :class="{ 'checkers shadow-inner': imageUploaded}"
     >
       <!-- Begin Main Toolbar -->
       <div
         v-show="imageUploaded"
-        class="w-full md:w-1/3 lg:w-2/5 order-last md:order-first p-4 pt-0 rounded"
+        class="w-full md:w-1/3 lg:w-2/5 order-last md:order-first p-2 pt-0 rounded"
       >
         <div class="flex flex-col items-center w-full">
-          <div class="shadow rounded py-2 px-4 mt-0 mb-2 bg-white w-full">
+          <div class="sidebar-section">
             
             <!-- Dither mode Selector -->
             <div class="flex flex-row items-center justify-between pb-2">
-              <label for="ditherMode" class="font-bold text-sm"><h4 class="text-sm font-bold mt-2 mb-2 uppercase">Dither Mode</h4></label>
+              <label for="ditherMode" class="font-bold text-sm"><h4 class="text-xs font-bold mt-1 mb-1 uppercase">Dither Mode</h4></label>
               <span
                 class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                 @click="showDitherModeModal = !showDitherModeModal"
@@ -82,10 +82,10 @@
             :initial-palette="rgbQuantOptions.palette"
             @update-palette="onUpdatePalette"
           />
-          <div class="shadow rounded p-3 bg-white w-full mt-2" v-if="selectedImage">
+          <div class="sidebar-section" v-if="selectedImage">
             <div class="flex flex-row items-center justify-between">
               
-              <label for="imageSize" h4 class="text-sm  uppercase font-bold mt-2 mb-2">Image Size</label>
+              <label for="imageSize" h4 class="text-xs  uppercase font-bold mt-1 mb-1">Image Size</label>
               <span
                 class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
                 @click="showOptionsModalSize = !showOptionsModalSize"
@@ -129,7 +129,8 @@
                       </template>               
                     </span>
                   </div>
-                </div>           
+                </div>  
+
               <!-- <select
                 id="imageSize"
                 v-model="canvasWidth"
@@ -159,18 +160,59 @@
               </div>
             </div>  
             <!-- Custom Width Form -->
-
-
+          </div>
+          <div class="sidebar-section " v-if="selectedImage">
+            
+            <div class="w-full">
+              <div class="flex flex-row items-center justify-between">              
+                <label for="blockSize">            
+                  <h4 class="text-xs font-bold mt-1 mb-1 uppercase">
+                    Pixeliness ⚠️</h4> 
+                </label>
                 
-          </div>
-          <div class="mt-4 text-center xl:w-64 shadow max-w-full">
-            <button class="btn-red text-lg w-full " @click="ditherImage()" :disabled="isError">
-              🏁 Dither
-            </button>
-          </div>
+                <span
+                  class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
+                  @click="showPixelinessModal = !showPixelinessModal"
+                >
+                  <span v-if="!showPixelinessModal">
+                    ?
+                  </span>
+                  <span v-else>
+                    X
+                  </span>
+                </span>                 
+            </div>
+              <div class="flex flex-row items-center gap-8" v-if="!showPixelinessModal">
+                <input
+                type="range"
+                id="blockSize"
+                v-model="blockSize"
+                min="1"
+                max="25"
+                class="grow"
+                />
+                <div class="w-12 text-left">{{ blockSize }}</div>   
+              </div>
+              <div v-else>
+                <div class="mt-2 bg-red-100 p-2 rounded">
+                  This is an experimental feature to make images more "pixely". I'm too scared to let it go over 25. Love it? Hate it? <a href="#contact">Let me know</a>.                
+                </div>
+              </div> 
+              
+            </div> 
+                      
+          </div>      
+          <div class="mb-4">
+            <div class="mt-4 text-center xl:w-64 shadow max-w-full">
+              <button class="btn-red text-lg w-full " @click="ditherImage()" :disabled="isError">
+                🏁 Dither
+              </button>
+            </div>
+          </div>    
 
-          <div class="shadow rounded py-2 px-4 my-4 bg-white w-full" v-show="ditherMode == 'Error Diffusion'">
-            <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Advanced Options</h4>
+          <div class="sidebar-section" v-show="ditherMode == 'Error Diffusion'">
+            <h4 class="text-xs font-bold mt-1 mb-1 uppercase">Advanced Options</h4>
+             
             <!-- Algorithm Selector -->
             <div class="flex flex-row items-center justify-between mt-4 pb-2">
               <label for="ditherAlgo" class="font-bold text-sm">Algorithm</label>
@@ -449,6 +491,7 @@ export default {
       imageUploaded: false,
       showDitheredImage: false, // control if the dithered image is visible
       imageWidths: [320, 640, 1080, 1280],
+      blockSize: 1,
       ditherMode: 'Error Diffusion',
       ditherModeOptions: [
         'Error Diffusion',
@@ -488,6 +531,7 @@ export default {
       showOptionsModalAlgo: false,
       showOptionsModalSerp: false,
       showDitherModeModal: false,
+      showPixelinessModal: false,
       downloadUrl: '', // the url src thing to download the image
       downloadFileSize: '50', // the filesize of the download
       originalFileSize: '', // filesize of the original
@@ -574,6 +618,24 @@ export default {
     }
   },
   methods: {
+    //
+    addPixelation(ctx, ditheredImageCanvas, width, height) {
+      // draw the original image at a fraction of the final size
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCanvas.width = width / this.blockSize;
+      tempCanvas.height = height / this.blockSize;
+      tempCtx.drawImage(ditheredImageCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+
+      // // turn off image aliasing
+      ctx.msImageSmoothingEnabled = false;
+      ctx.mozImageSmoothingEnabled = false;
+      ctx.webkitImageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = false;
+
+      // enlarge the minimized image to full size    
+      ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, width, height);
+    },
     // ---------------------------
     // Set the image id to the id of the currently selected image
     // ----------------------------    
@@ -712,15 +774,34 @@ export default {
             const q = new RgbQuant(this.rgbQuantOptions)
             // Analyze histograms to get colors
             q.sample(originalImage) 
+
             // Dither what is on the canvas
             const ditherResult = q.reduce(ditheredImageCanvas) 
             //console.log(ditherResult) // this is a Uint8Array of all of the pixels as RGB values where every 3 values is an RGB value like 255,0,0 etc.
+            
             // Get the newly dithered image data
             const imgData = ctx.getImageData(0, 0, width, height)
+
             // Set the value of imageData to the dithered image data
             imgData.data.set(ditherResult) 
             // Put the new image data on the canvas
-            ctx.putImageData(imgData, 0, 0)
+            ctx.putImageData(imgData, 0, 0)            
+            
+            // -----
+
+            
+            // draw the original image at a fraction of the final size
+            if(this.blockSize > 1) {
+                this.addPixelation(ctx, ditheredImageCanvas, width, height)
+            } 
+
+
+
+
+            // -----
+
+
+            
             // Set the data for the image download
             this.downloadImage()
           }
@@ -811,20 +892,19 @@ export default {
         var map3 = Math.floor( (imageData.data[currentPixel + 2] + bayerThresholdMap[x%4][y%4]) / 2 );
         // imageData.data[currentPixel + 2] = (map3 < 129) ? 0 : 255;  
         
- 
-
         const closest_color = this.getClosestColor(newPalette, [map, map2, map3]);
        
         imageData.data[currentPixel] = closest_color[1]
         imageData.data[currentPixel + 1] = closest_color[2]
         imageData.data[currentPixel + 2] = closest_color[3]
-      
-
-
       }
     
       // Put the new image data on the canvas
       ctx.putImageData(imageData, 0, 0)
+
+      if(this.blockSize > 1) {
+        this.addPixelation(ctx, ctx.canvas, imageData.width, imageData.height)
+      } 
 
     },
     // https://stackoverflow.com/a/69880443/2201446
@@ -907,39 +987,15 @@ export default {
         g: parseInt(result[2], 16),
         b: parseInt(result[3], 16)
       } : null;
-    },
-
-
-    // return nearest color from array
-    // nearestColor(colorRGB){
-    //   var lowest = Number.POSITIVE_INFINITY;
-    //   var tmp;
-    //   let index = 0;
-    //   this.baseColors.forEach( (el, i) => {
-    //     // console.log(colorRGB)
-    //       tmp = this.distance(colorRGB, this.hexToRgb(el.hex))
-    //       if (tmp < lowest) {
-    //         lowest = tmp;
-    //         index = i;
-    //       };
-          
-    //   })
-    //   // This is the palette as it is set in Dither it!
-    //   // console.log(this.rgbQuantOptions.palette)
-    //   // This is the default color list provided by the Gist answer being cribbed from 
-    //   // console.log(this.baseColors)
-    //   // This needs to be changed to search from the dither it palette
-    //   return this.baseColors[index];
-      
-    // }
+    }
   }
 }
 </script>
 
 <style >
   .checkers {
-    background-color: #fcfffb;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='p' width='100' height='100' patternUnits='userSpaceOnUse' patternTransform='scale(0.36)'%3E%3Cpath data-color='outline' fill='none' stroke='%239D9D9D' stroke-width='0.25' d='M50 0v100M100 50H0'%3E%3C/path%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23p)' width='100%25' height='100%25'%3E%3C/rect%3E%3C/svg%3E");
+    background-color: #f5f9fe;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25'%3E%3Cdefs%3E%3Cpattern id='p' width='100' height='100' patternUnits='userSpaceOnUse' patternTransform='scale(0.36)'%3E%3Cpath data-color='outline' fill='none' stroke='%23286323' stroke-width='0.25' d='M50 0v100M100 50H0'%3E%3C/path%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23p)' width='100%25' height='100%25'%3E%3C/rect%3E%3C/svg%3E");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

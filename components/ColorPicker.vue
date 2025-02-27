@@ -1,20 +1,20 @@
 <template>
   <div id="palette" class="w-full">
-    <div class="shadow rounded p-3 bg-white">
-      <h4 class="text-sm font-bold mt-2 mb-2 uppercase">Palette</h4>
+    <div class="sidebar-section">
+      <h4 class="text-xs font-bold mt-1 mb-1 uppercase">Palette</h4>
 
       <!-- Palette menu -->
       <div  v-if="!showModal">
         <div class="flex flex-wrap" v-if="palette.length > 0">
           <template v-for="(item, i) in palette">
             <div
-              class="w-10 h-10 m-1 border border-gray-700 rounded-full cursor-pointer swatch"
+              class="w-6 h-6 m-1 border border-gray-700 rounded-full cursor-pointer swatch"
               v-bind:style="{ backgroundColor: item['hex'] }"
               @click="makeActiveSwatch(i)"
             ></div>
           </template>
           <div
-            class="w-10 h-10 m-1  cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-700 hover:text-red-800"
+            class="w-6 h-6 ml-1 mb-1  cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-700 hover:text-red-800"
             @click="addNewSwatch()"
           >
             +
@@ -26,7 +26,7 @@
         </div>
         <!-- Preset Palette Selector -->
         <div class="mt-4">
-          <label for="presetPalettes" class="mt-4">Preset Palettes</label>
+          <label for="presetPalettes" class="mt-4 text-sm">Preset Palettes</label>
           <div class="inline-block relative w-full">
             <select
               id="presetPalettes"

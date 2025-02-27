@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col w-full container px-4 lg:px-16 lg:w-2/3 mx-auto text-red-700 mb-20 items-start">
-        <div class="flex flex-col md:flex-row items-center justify-between w-full">
-            <h1 class="text-3xl text-left uppercase order-2 md:order-1">
+        <div class="flex flex-col md:flex-row items-center justify-between w-full mt-4">
+            <h1 class="text-xl text-left uppercase order-2 md:order-1 ">
                 Dither Resources
             </h1>
             <div class="w-48 order-1 md:order-2">
@@ -29,11 +29,7 @@
         <h2><a href="https://github.com/makeworld-the-better-one/didder">Didder</a></h2>
         <p>A beefy looking command line interface for dithering images.</p>
         <h2><a href="https://hbfs.wordpress.com/2013/12/31/dithering/">Dithering.</a></h2>
-        <p>A nice little rundown of some error diffusion algorithms, including one developed by the author.</p>                        
-        <div class="my-12 bg-red-200 p-4 rounded shadow w-full flex flex-row items-center text-xl">
-            <svg class="pr-4 w-1/2 md:w-auto" xmlns="http://www.w3.org/2000/svg" width="47" height="47" viewBox="0 0 24 24" fill="none" stroke="#c53030" stroke-width="2" stroke-linecap="round" stroke-linejoin="bevel"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            <p>Something missing from this list? <a href="https://twitter.com/alexharris6"> Tweet me @alexharris6</a>.</p>
-        </div>                         
+        <p>A nice little rundown of some error diffusion algorithms, including one developed by the author.</p>                                               
     <!-- Fathom - simple website analytics - https://usefathom.com -->
     <script>
       ;(function(f, a, t, h, o, m) {

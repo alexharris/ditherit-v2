@@ -45,18 +45,21 @@
     </div>  
     <!-- begin three column -->
     <div
-      class="flex space-y-8 md:space-y-0 md:space-x-16 flex-col md:flex-row  pt-4 mt-8 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32 "
+      class="flex flex-wrap space-y-2 md:space-y-0 flex-col md:flex-row pt-4 mt-8 px-4 mx-2 sm:mx-8 md:mx-16 lg:mx-24 xl:mx-32 "
     >
-      <div class="w-full md:w-1/3">
-        <h3 class="text-lg font-serif">Open Source</h3>
-        <p>The Dither it! source code is available for your browsing pleasure on github.</p>
-        <p><a href="https://github.com/alexharris/ditherit-v2">Read more</a></p>        
+      <div class="w-full md:w-1/2 p-4">
+        <h3 class="text-lg font-serif">Source Code</h3>
+        <p>The Dither it! <a href="https://github.com/alexharris/ditherit-v2">source code</a> is available for your browsing pleasure on github. Feel free to report an issue or submit a pull request.</p>    
       </div>
-      <div class="w-full md:w-1/3">
+      <div class="w-full md:w-1/2 p-4">
         <h3 class="text-lg font-serif">Resources</h3>
         <p>A list of dithering <a href="/resources">resources</a> from around the web. Explainers, algorithms, examples, etc.</p>
       </div>      
-      <div class="w-full md:w-1/3">
+      <div class="w-full md:w-1/2 p-4">
+        <h3 class="text-lg font-serif">Privacy</h3>
+        <p>Nothing is uploaded, your images never leave your browser. Some basic usage data is collected using a privacy-focused analytics tool (<a href="https://usefathom.com/ref/L9TKU7">affiliate link</a> 🤑)</p>    
+      </div>      
+      <div class="w-full md:w-1/2 p-4">
         <h3 class="text-lg font-serif">Support</h3>
         <p>Support the continued existence of Dither it! with a small donation. Much appreciated.</p>
         <p><a

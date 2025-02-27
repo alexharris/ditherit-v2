@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 <template>
-  <div>
+  <div @paste="handlePaste">
     <div v-if="loading" class="loader"></div>
     <div class="flex flex-col md:flex-row items-center flex-wrap" v-if="duck == 'true'">
       <div
@@ -36,7 +36,8 @@
             No one knows what that is. Try using a jpg, png, or gif.
           </span>
           <span v-else>
-            or drop 'em here!
+            Drag and drop here <br />
+            or<br />click here to paste
           </span>
           
         </div>
@@ -199,6 +200,31 @@ export default {
       });   
 
       this.loading = false // for loading spinner 
+    },
+    // ---------------------------
+    // Handle pasted images
+    // ----------------------------
+    handlePaste(event) {
+      const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile();
+          const id = 'originalImage' + (this.images.length + 1);
+          this.images.push({
+            id: id,
+            type: file.type,
+            name: file.name,
+            size: file.size,
+          });
+          this.reportNumberOfImages(this.images.length);
+          setTimeout(() => {
+            this.createOriginalImage(file, this.images.length - 1);
+          }, 100);
+          setTimeout(() => {
+            this.$emit('image-upload', this.images);
+          }, 100);
+        }
+      }
     },
   
   }

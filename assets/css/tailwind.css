@@ -153,5 +153,14 @@ ul {
 #palette button {
   font-size: 14px;
 }
+
+.sidebar-section {
+  @apply p-2 pb-4 w-full mb-1 bg-white
+
+}
+
+.sidebar-section:last-of-type {
+  @apply border-b-0
+}
             
 

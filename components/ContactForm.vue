@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 <template>
   <div
+    id="contact"
     class="mt-8 w-full border-b border-dashed border-red-600 pb-16"
   >
     <h3 class="text-3xl w-full pb-8 font-serif text-center mx-0 px-0">Contact</h3>
