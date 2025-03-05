@@ -454,6 +454,9 @@
       fathom('trackPageview')
     </script>
     <!-- / Fathom -->
+    <script async data-id="101479686" src="//static.getclicky.com/js"></script>
+
+  
   </div>
 </template>
 
@@ -988,7 +991,7 @@ export default {
         b: parseInt(result[3], 16)
       } : null;
     }
-  }
+  },
 }
 </script>
 
