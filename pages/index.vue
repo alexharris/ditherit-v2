@@ -628,9 +628,16 @@ export default {
       const tempCtx = tempCanvas.getContext('2d');
       tempCanvas.width = width / this.blockSize;
       tempCanvas.height = height / this.blockSize;
+      
+      // Disable image smoothing on temp canvas to prevent color interpolation during downscaling
+      tempCtx.msImageSmoothingEnabled = false;
+      tempCtx.mozImageSmoothingEnabled = false;
+      tempCtx.webkitImageSmoothingEnabled = false;
+      tempCtx.imageSmoothingEnabled = false;
+      
       tempCtx.drawImage(ditheredImageCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
 
-      // // turn off image aliasing
+      // turn off image aliasing on main canvas for upscaling
       ctx.msImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;
       ctx.webkitImageSmoothingEnabled = false;
@@ -638,6 +645,7 @@ export default {
 
       // enlarge the minimized image to full size    
       ctx.drawImage(tempCanvas, 0, 0, tempCanvas.width, tempCanvas.height, 0, 0, width, height);
+      
     },
     // ---------------------------
     // Set the image id to the id of the currently selected image
@@ -1003,4 +1011,5 @@ export default {
     background-position: center;
     background-repeat: no-repeat;
   }
+
 </style>

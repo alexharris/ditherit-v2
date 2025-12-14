@@ -29,12 +29,25 @@
       </div>
       <div class="w-full md:w-1/2 shadow-md p-4 flex flex-col items-start overflow-scroll h-64">
         <h3 class="text-lg font-serif mt-0 mb-2">Updates</h3>
-        <div class="flex flex-row items-center gap-2 text-sm">
-            <span class="text-gray-400">03-12-25</span><h4 class=" inline m-0 text-sm"> – New Feature</h4>
-        </div>
+        <div class="mb-4">
+          <div class="flex flex-row items-center gap-2 text-sm">
+              <span class="text-gray-400">12-13-25</span><h4 class=" inline m-0 text-sm"> – Feature Update</h4>
+          </div>
+          <div>
+            <p class="mt-0">
+              After a little feedback, I have updated the "pixeliness" feature to strictly stick to the defined palette (except in firefox??). If it looks horrible, try adding another color or two.
+            </p>          
+          </div>
+        </div>        
         <div>
-          <p class="mt-0">Trying something new, a little development log just to keep track of news and new features. And the first annoucement is..the development log itself 😵‍💫</p>          
+          <div class="flex flex-row items-center gap-2 text-sm">
+              <span class="text-gray-400">03-12-25</span><h4 class=" inline m-0 text-sm"> – New Feature</h4>
+          </div>
+          <div>
+            <p class="mt-0">Trying something new, a little development log just to keep track of news and new features. And the first annoucement is..the development log itself 😵‍💫</p>          
+          </div>
         </div>
+
 
       </div>  
     </div> 
