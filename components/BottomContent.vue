@@ -31,6 +31,26 @@
         <h3 class="text-lg font-serif mt-0 mb-2">Updates</h3>
         <div class="mb-4">
           <div class="flex flex-row items-center gap-2 text-sm">
+              <span class="text-gray-400">12-14-25</span><h4 class=" inline m-0 text-sm"> – Feature Update</h4>
+          </div>
+          <div>
+            <p class="mt-0">
+              Wow, two days in a row, and this one is cool. You can now save a color palette to local storage in your browser, so you can make complex palettes and have access to them on future visits. But all will be lost if you clear your browsers local storage. Let me know if it is helpful, broken, can be improved, whatever. Let me know!
+            </p>          
+          </div>
+        </div>         
+        <div class="mb-4">
+          <div class="flex flex-row items-center gap-2 text-sm">
+              <span class="text-gray-400">12-13-25</span><h4 class=" inline m-0 text-sm"> – Feature Update</h4>
+          </div>
+          <div>
+            <p class="mt-0">
+              After a little feedback, I have updated the "pixeliness" feature to strictly stick to the defined palette (except in firefox??). If it looks horrible, try adding another color or two.
+            </p>          
+          </div>
+        </div>         
+        <div class="mb-4">
+          <div class="flex flex-row items-center gap-2 text-sm">
               <span class="text-gray-400">12-13-25</span><h4 class=" inline m-0 text-sm"> – Feature Update</h4>
           </div>
           <div>

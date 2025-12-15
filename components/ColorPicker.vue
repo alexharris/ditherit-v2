@@ -40,6 +40,11 @@
               <option id="custom" name="paletteColor" value="custom" disabled
                 >Custom</option
               >
+              <template v-for="(p, i) in customPalettes">
+                <option :id="'custom-' + i" name="paletteColor" :value="'custom-' + i">
+                  ⭐ {{ p.name }}
+                </option>
+              </template>
               <template v-for="(p, i) in presetPalettes">
                 <option :id="p.value" name="paletteColor" :value="p.value">{{
                   p.name
@@ -48,11 +53,13 @@
             </select>
           </div>
         </div>
+        <!-- Palette Toolbar -->
         <div class="mt-4">
           <div class="block flex flex-row items-center justify-between">
             <div>
-              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewExportPalette = !viewExportPalette; viewImportPalette = false; showOptionsPaletteImportExport = false;" :class=" viewExportPalette ? 'border-b-2 border-red-600': '' ">Export</span>
-              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewImportPalette = !viewImportPalette; viewExportPalette = false; showOptionsPaletteImportExport = false;" :class=" viewImportPalette ? 'border-b-2 border-red-600': ''" id="importPalette">Import</span>
+              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewSavePalette = !viewSavePalette; viewExportPalette = false; viewImportPalette = false; showOptionsPaletteImportExport = false;" :class="viewSavePalette ? 'border-b-2 border-red-600': ''">Save</span>
+              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewExportPalette = !viewExportPalette; viewImportPalette = false; viewSavePalette = false; showOptionsPaletteImportExport = false;" :class=" viewExportPalette ? 'border-b-2 border-red-600': '' ">Export</span>
+              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewImportPalette = !viewImportPalette; viewExportPalette = false; viewSavePalette = false; showOptionsPaletteImportExport = false;" :class=" viewImportPalette ? 'border-b-2 border-red-600': ''" id="importPalette">Import</span>
             </div>
             <span
               class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
@@ -67,7 +74,28 @@
             </span>
           </div>
           <div v-if="!showOptionsPaletteImportExport">
-            <div class="border border-dashed border-gray-400 p-2 rounded" v-if="viewExportPalette || viewImportPalette">
+            <div class="border border-dashed border-gray-400 p-2 rounded" v-if="viewSavePalette || viewExportPalette || viewImportPalette">
+              <div v-if="viewSavePalette">
+                <input 
+                  v-model="newPaletteName" 
+                  type="text" 
+                  placeholder="Enter palette name" 
+                  class="w-full border border-gray-400 p-2 text-xs mb-2"
+                  @keyup.enter="saveCustomPalette"
+                />
+                <div class="flex gap-2 items-start">
+                  <span class="btn-red-small-outline" @click="saveCustomPalette">
+                    Save
+                  </span>
+                  <span 
+                    v-if="isCustomPaletteSelected" 
+                    class="btn-red-small-outline"
+                    @click="deleteCurrentCustomPalette"
+                  >
+                    Delete Current
+                </span>
+                </div>
+              </div>
               <div v-show="viewExportPalette">
                 <textarea readonly v-model="palette2Export" rows="5" class="w-full border border-grey-400 p-2 text-xs"></textarea>
                 <div class="pt-2">
@@ -84,7 +112,7 @@
           </div>
           <div v-else>
               <div class="mt-2 bg-red-100 p-2 rounded">
-                Export palettes by copying the text or downloading a text file, import them by pasting and clicking import.
+                Save your custom palettes, or import/export using the code.
               </div>
           </div>
         </div>
@@ -143,6 +171,9 @@ export default {
       viewExportPalette: false,
       palette2Import: '',
       showOptionsPaletteImportExport: false,
+      viewSavePalette: false,
+      newPaletteName: '',
+      customPalettes: [],
       presetPalettes: [
         {
           name: 'Red',
@@ -267,6 +298,9 @@ export default {
   computed: {
     palette2Export() {
       return JSON.stringify(this.palette)
+    },
+    isCustomPaletteSelected() {
+      return this.presetPaletteSelection.startsWith('custom-')
     }
   },
   watch: {
@@ -277,7 +311,78 @@ export default {
       this.rgbToHex(newVal)
     }
   },
+  mounted() {
+    this.loadCustomPalettes()
+  },
   methods: {
+    // Load custom palettes from localStorage
+    loadCustomPalettes() {
+      if (typeof localStorage !== 'undefined') {
+        const stored = localStorage.getItem('ditherit_custom_palettes')
+        if (stored) {
+          try {
+            this.customPalettes = JSON.parse(stored)
+          } catch (e) {
+            console.error('Error loading custom palettes:', e)
+            this.customPalettes = []
+          }
+        }
+      }
+    },
+    // Save custom palettes to localStorage
+    saveCustomPalettes() {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('ditherit_custom_palettes', JSON.stringify(this.customPalettes))
+      }
+    },
+    // Save current palette as a custom palette
+    saveCustomPalette() {
+      if (!this.newPaletteName.trim()) {
+        alert('Please enter a name for the palette')
+        return
+      }
+      
+      const newPalette = {
+        name: this.newPaletteName.trim(),
+        colors: JSON.parse(JSON.stringify(this.palette)) // Deep copy
+      }
+      
+      this.customPalettes.push(newPalette)
+      this.saveCustomPalettes()
+      
+      // Select the newly saved palette
+      this.presetPaletteSelection = 'custom-' + (this.customPalettes.length - 1)
+      
+      // Clear the input and hide the save section
+      this.newPaletteName = ''
+      this.viewSavePalette = false
+      
+      alert('Palette saved successfully!')
+    },
+    // Delete the currently selected custom palette
+    deleteCurrentCustomPalette() {
+      if (!this.isCustomPaletteSelected) {
+        return
+      }
+      
+      const index = parseInt(this.presetPaletteSelection.replace('custom-', ''))
+      const paletteName = this.customPalettes[index].name
+      
+      if (confirm(`Are you sure you want to delete the palette "${paletteName}"?`)) {
+        this.customPalettes.splice(index, 1)
+        this.saveCustomPalettes()
+        
+        // Reset to original palette
+        this.presetPaletteSelection = 'original'
+        this.palette = []
+        this.originalInitialPalette.forEach((v) => {
+          this.palette.push(v)
+        })
+        this.updatePallete()
+        
+        alert('Palette deleted successfully!')
+      }
+    },
     // When a custom palette is selected
     presetPaletteSelected(e) {
       this.palette = []
@@ -286,6 +391,14 @@ export default {
         this.originalInitialPalette.forEach((v) => {
           this.palette.push(v)
         })
+      } else if (e.target.value.startsWith('custom-')) {
+        // Load custom palette
+        const index = parseInt(e.target.value.replace('custom-', ''))
+        if (this.customPalettes[index]) {
+          this.customPalettes[index].colors.forEach((c) => {
+            this.palette.push(c)
+          })
+        }
       } else {
         this.presetPalettes.forEach((v) => {
           if (e.target.value == v.value) {
