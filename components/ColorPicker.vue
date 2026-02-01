@@ -447,7 +447,6 @@ export default {
     },
     // Remove a swatch and update the palette
     removeSwatch(i) {
-      console.log(i)
       this.palette.splice(i, 1)
       this.updatePallete()
       this.showModal = false

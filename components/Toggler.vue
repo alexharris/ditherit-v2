@@ -41,7 +41,6 @@ export default {
   },
   methods: {
     toggle() {
-      console.log(this.customEvent)
       this.$emit(this.customEvent);
     }
   }

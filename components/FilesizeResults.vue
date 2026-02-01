@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template> 
   <div class="flex flex-col xl:flex-row xl:flex-col gap-4 items-center md:items-start p-4">  
     <h2 class="text-sm font-bold mt-2 mb-2 uppercase">Report Card</h2>

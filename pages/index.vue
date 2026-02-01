@@ -131,28 +131,6 @@
                   </div>
                 </div>  
 
-              <!-- <select
-                id="imageSize"
-                v-model="canvasWidth"
-                class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
-              >
-                <option
-                  id="originalSize"
-                  name="originalSize"
-                  :value="'original'"
-                  >Original ({{selectedImage.naturalWidth}}px)</option
-                >
-                <template v-for="(v, i) in imageWidths">
-                  <option :id="v" name="imageWidth" :value="v" @click="fathom('JN4RHD7N')">{{ v }}</option>
-                </template>
-                <option
-                  @click="fathom('trackGoal', 'MHEE0ZOY', 0)"
-                  id="customWidth"
-                  name="customWidth"
-                  :value="'custom'"
-                  >Custom</option
-                >                
-              </select> -->
             </div>
             <div v-else>
               <div class="mt-2 bg-red-100 p-2 rounded">
@@ -306,9 +284,6 @@
               :rgbquant="rgbQuantOptions"
             />
           </div>
-          <!-- <div class="shadow rounded xl:m-0 p-4 w-full xl:w-1/4 bg-white">
-            <Donate />
-          </div> -->
         </div>
       </div>
       <!-- End Toolbar -->
@@ -395,12 +370,6 @@
             class="flex flex-row justify-center"
             :class="{ 'w-full': imageUploaded, 'text-sm': imageUploaded }"
           >
-            <div
-              v-show="showDitheredImage && !dithering"
-              class="text-center mt-4 mr-2 justify-center "
-            >
-
-            </div>
             <ImageUpload @number-images="getNumberOfImages" @image-upload="onImageUpload" text="✨ Select images" duck="true" v-if="!imageUploaded" />
             
           </div>
@@ -425,12 +394,6 @@
             />
             
           </div>
-          <!-- <div 
-            
-            class="shadow rounded xl:m-0 bg-white w-full md:w-1/2 xl:w-full self-start"
-          >
-            <Donate />
-          </div> -->
         </div>
       </div>
     </div>
@@ -465,11 +428,9 @@ import RgbQuant from 'rgbquant'
 import Logo from '~/components/Logo.vue'
 import ImageUpload from '~/components/ImageUpload.vue'
 import ColorPicker from '~/components/ColorPicker.vue'
-import InputBlock from '~/components/InputBlock.vue'
 import BottomContent from '~/components/BottomContent.vue'
 import Toggler from '~/components/Toggler.vue'
 import FilesizeResults from '~/components/FilesizeResults.vue'
-import Donate from '~/components/Donate.vue'
 
 
 export default {
@@ -477,11 +438,9 @@ export default {
     ImageUpload,
     ColorPicker,
     Logo,
-    InputBlock,
     BottomContent,
     Toggler,
     FilesizeResults,
-    Donate
   },
   data() {
     return {
@@ -493,7 +452,6 @@ export default {
       specsCalculated: false, // for the specs
       imageUploaded: false,
       showDitheredImage: false, // control if the dithered image is visible
-      imageWidths: [320, 640, 1080, 1280],
       blockSize: 1,
       ditherMode: 'Error Diffusion',
       ditherModeOptions: [
@@ -548,50 +506,7 @@ export default {
       viewFullWidth: false,
       selectingImage: false,
       customWidth: false,
-      isError: false,
-      baseColors: [ // this is from old bayer stuff and can prob be deleted
-        {
-          "hex": "#FFFFFF",
-          "name": "White",
-        },
-        {
-          "hex": "#000000",
-          "name": "Black",
-        },
-        {
-          "hex": "#808080",
-          "name": "Grey",
-        },
-        
-        {
-          "hex": "#ff0000",
-          "name": "Red",
-        },
-        {
-          "hex": "#ffa500",
-          "name": "Orange",
-        },
-        {
-          "hex": "#ffff00",
-          "name": "Yellow",
-        },
-        {
-          "hex": "#008000",
-          "name": "Green",
-        },
-        {
-          "hex": "#0000ff",
-          "name": "Blue",
-        },
-        {
-          "hex": "#4b0082",
-          "name": "Indigo",
-        },
-        {
-          "hex": "#ee82ee",
-          "name": "Violet",
-        },
-      ]      
+      isError: false
     }
   },
   computed: {
@@ -606,18 +521,11 @@ export default {
       return this.images.find(this.getSelected)
     },
     computedHeight() {
-      console.log(this.selectedImage);
-      console.log(this.selectedImage.width);
-      console.log(this.selectedImage.height);
-      console.log(this.canvasWidth)
       if(this.canvasWidth === 'original') {
-        console.log('hello')
         return this.selectedImage.naturalHeight
       } else {
-        console.log('goodbye')
         return (this.selectedImage.naturalHeight / this.selectedImage.naturalWidth) * this.canvasWidth
       }
-      
     }
   },
   methods: {
@@ -651,14 +559,12 @@ export default {
     // Set the image id to the id of the currently selected image
     // ----------------------------    
     getSelected(image) {
-      console.log('Get selected image.')
       return image.id === this.selectedImage.id;
     },
     // ---------------------------
     // Get the number of images
     // ----------------------------        
     getNumberOfImages(number) {
-      console.log('Get the number of images.')
       this.numberOfImages = number
     },
     // ---------------------------
@@ -666,8 +572,6 @@ export default {
     // And get the new file specs
     // ----------------------------            
     downloadImage() {
-      console.log('Function downloadImage called')
-
       this.ditheredWidth = document.getElementById('dithered_' + this.selectedImage.id).width
       this.ditheredHeight = document.getElementById('dithered_' + this.selectedImage.id).height
 
@@ -682,8 +586,6 @@ export default {
     // This receives a palette from ColorPicker in the form of an array of hex values
     // ----------------------------        
     onUpdatePalette(palette) {
-      console.log('Color palette updating:')
-      console.log(palette.length)
       this.rgbQuantOptions.colors = palette.length
       this.rgbQuantOptions.palette = []
       palette.forEach((v, i) => {
@@ -694,7 +596,6 @@ export default {
     // When images get uploaded
     // ----------------------------       
     onImageUpload(images) {
-      console.log('Process the uploaded images.')
       this.images = images // load the image array into data
 
       fathom('trackGoal', 'HORTCOPW', 0)
@@ -722,7 +623,6 @@ export default {
     // Dither the images
     // ----------------------------
     ditherImage() {
-      console.log('Dither the images')
       fathom('trackGoal', 'SFMGAORY', 0)
 
       // When dithering starts, go back to the top
@@ -758,13 +658,11 @@ export default {
           // If the canvas width param is set to 'Original'
           if (this.canvasWidth === 'original') {
             // Set the canvas width to the original image width
-            // eslint-disable-next-line no-const-assign
             width = originalImage.naturalWidth
           } else if (this.canvasWidth === 'custom') { 
             width = this.customWidth
           } else {
             // Otherwise, set it to whatever is selected
-            // eslint-disable-next-line no-const-assign
             width = this.canvasWidth
           }
           // Set the height based on the original ratio and the determined width
@@ -787,8 +685,7 @@ export default {
             q.sample(originalImage) 
 
             // Dither what is on the canvas
-            const ditherResult = q.reduce(ditheredImageCanvas) 
-            //console.log(ditherResult) // this is a Uint8Array of all of the pixels as RGB values where every 3 values is an RGB value like 255,0,0 etc.
+            const ditherResult = q.reduce(ditheredImageCanvas)
             
             // Get the newly dithered image data
             const imgData = ctx.getImageData(0, 0, width, height)
@@ -856,8 +753,6 @@ export default {
       // Go through the RGBA data, at every 4th value, each of which corresponds to a pixel
       for (var currentPixel = 0; currentPixel <= imageDataLength - 4; currentPixel+=4) {
         
-        // console.log(currentPixel + ': ' + this.nearestColor({ r: imageData.data[currentPixel], g: imageData.data[currentPixel + 1], b: imageData.data[currentPixel + 2] }).name)
-
         // This tells what the curent x coordinate is
         var x = currentPixel/4 % w;
         // This tells what the current y coordinate is
@@ -895,13 +790,8 @@ export default {
 
 
         var map = Math.floor( (imageData.data[currentPixel] + bayerThresholdMap[x%4][y%4]) / 2 );
-        // imageData.data[currentPixel] = (map < 129) ? 0 : 255;  
-        
-        var map2 = Math.floor( (imageData.data[currentPixel + 1] + bayerThresholdMap[x%4][y%4]) / 2 );    
-        // imageData.data[currentPixel + 1] = (map2 < 129) ? 0 : 255;  
-        
+        var map2 = Math.floor( (imageData.data[currentPixel + 1] + bayerThresholdMap[x%4][y%4]) / 2 );
         var map3 = Math.floor( (imageData.data[currentPixel + 2] + bayerThresholdMap[x%4][y%4]) / 2 );
-        // imageData.data[currentPixel + 2] = (map3 < 129) ? 0 : 255;  
         
         const closest_color = this.getClosestColor(newPalette, [map, map2, map3]);
        
@@ -933,8 +823,6 @@ export default {
     // Analyze the image palette
     // ----------------------------    
     analyzeImagePalette(e) {
-      console.log('Analyze the image palette.')
-      console.log('New image selected.')
        this.selectingImage = true
        setTimeout(() => {
         this.selectedImage = e
@@ -963,14 +851,10 @@ export default {
         }
 
         this.$children[1]._data.presetPaletteSelection = 'original'
-        console.log('New image selected.')
         this.selectingImage = false
       }, 50)
       
     },
-    // fathom(id) {
-    //   fathom('trackGoal', id, 0)
-    // },
     focus() {
       
       this.canvasWidth = this.selectedImage.naturalWidth
@@ -983,21 +867,6 @@ export default {
       } else {
         this.isError = false
       }
-    },
-    // FROM https://gist.github.com/Ademking/560d541e87043bfff0eb8470d3ef4894
-    // from https://stackoverflow.com/a/5624139
-    hexToRgb(hex) {
-      var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
-        return r + r + g + g + b + b;
-      });
-
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-      return result ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
-      } : null;
     }
   },
 }

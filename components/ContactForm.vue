@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
   <div
     id="contact"

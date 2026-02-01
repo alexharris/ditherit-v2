@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 <template>
   <div @paste="handlePaste">
     <div v-if="loading" class="loader"></div>

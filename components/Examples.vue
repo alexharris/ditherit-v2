@@ -1,12 +1,11 @@
-/* eslint-disable no-console */
 <template>
   <div
     class="mt-16 w-full border-t border-b border-dashed border-red-500 md:items-start pt-8"
   >
     <h3 class="text-3xl w-full font-serif text-center mx-0 px-0">Examples</h3>
     <div class="flex flex-row gap-4 items-center justify-center p-8">
-      <img class="w-24" src="~/assets/examples/frog_icon.png" @click="example = 'frog';console()" width="200" height="200" />
-      <img class="w-24" src="~/assets/examples/earth_icon.png" @click="example = 'earth';console()" width="200" height="198"  />
+      <img class="w-24" src="~/assets/examples/frog_icon.png" @click="example = 'frog'" width="200" height="200" />
+      <img class="w-24" src="~/assets/examples/earth_icon.png" @click="example = 'earth'" width="200" height="198"  />
     </div>
     <div class="flex flex-col checkers shadow-inner p-8">
 
@@ -140,47 +139,23 @@
 import 'img-comparison-slider';
 
 export default {
-  components: {
-    
-  },
   vue: {
     config: {
       productionTip: false,
       ignoredElements: [/img-comparison-slider/]
     }
-  }  ,
+  },
   data() {
     return {
       example: 'frog',
       examples: [
         'Red Mono',
-         
         'Black & White',
-        'CMYK',  
+        'CMYK',
         'Blue & Yellow',
         'Gameboy'
       ],
-      algoExamples: [
-        'Floyd Steinberg',
-        'False Floyd Steinberg',
-        'Stucki',
-        'Atkinson',
-        'Jarvis',
-        'Burkes',
-        'Sierra',
-        'TwoSierra',
-        'SierraLite'
-      ],
       currentExample: 'Red Mono'
-    }
-  },
-  methods: {
-    imgSrc(filename) {
-      var file = filename
-      return require('@/assets/examples/' + file)
-    },
-    console() {
-      console.log(window.top.scrollY)
     }
   }
 }
