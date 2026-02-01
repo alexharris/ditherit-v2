@@ -315,6 +315,9 @@ export default {
     this.loadCustomPalettes()
   },
   methods: {
+    resetToOriginal() {
+      this.presetPaletteSelection = 'original'
+    },
     // Load custom palettes from localStorage
     loadCustomPalettes() {
       if (typeof localStorage !== 'undefined') {

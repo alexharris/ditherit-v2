@@ -78,7 +78,7 @@
             <!-- End Dither mode Selector -->            
           </div>          
           <ColorPicker
-    
+            ref="colorPicker"
             :initial-palette="rgbQuantOptions.palette"
             @update-palette="onUpdatePalette"
           />
@@ -612,7 +612,7 @@ export default {
       this.imageUploaded = true
 
       // Tell the palette selector to be set to original
-      this.$children[1]._data.presetPaletteSelection = 'original'
+      this.$refs.colorPicker.resetToOriginal()
 
       // Wait a second before analyzing the image palette (presumably to let the image load?)
       setTimeout(() => {
@@ -850,7 +850,7 @@ export default {
           this.downloadUrl = downloadUrl        
         }
 
-        this.$children[1]._data.presetPaletteSelection = 'original'
+        this.$refs.colorPicker.resetToOriginal()
         this.selectingImage = false
       }, 50)
       
