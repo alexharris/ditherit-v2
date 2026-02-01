@@ -10,6 +10,10 @@
         </div>
         <hr />
         <p class="text-lg my-8">A list of dithering resources from around the internet.</p>
+                <h2><a href="https://visualrambling.space/dithering-part-1/">Dithering: a visual dithering tutorial</a></h2>
+        <p>Amazing visual tutorial of how dithering works.</p>
+        <h2><a href="https://ditheringstudio.com/en/">Dithering Studio</a></h2>
+        <p>A cool dithering tool with a nice video mode.</p>
         <h2><a href="https://surma.dev/things/ditherpunk/index.html">Ditherpunk — The article I wish I had about monochrome image dithering</a></h2>
         <p>A great, comprehensive and technical run-down of many different dithering methods.</p>
         <h2><a href="https://solar.lowtechmagazine.com/about.html">Low-tech Magazine Solar Website</a></h2>
@@ -30,25 +34,6 @@
         <p>A beefy looking command line interface for dithering images.</p>
         <h2><a href="https://hbfs.wordpress.com/2013/12/31/dithering/">Dithering.</a></h2>
         <p>A nice little rundown of some error diffusion algorithms, including one developed by the author.</p>                                               
-    <!-- Fathom - simple website analytics - https://usefathom.com -->
-    <script>
-      ;(function(f, a, t, h, o, m) {
-        a[h] =
-          a[h] ||
-          function() {
-            ;(a[h].q = a[h].q || []).push(arguments)
-          }
-        ;(o = f.createElement('script')),
-          (m = f.getElementsByTagName('script')[0])
-        o.async = 1
-        o.src = t
-        o.id = 'fathom-script'
-        m.parentNode.insertBefore(o, m)
-      })(document, window, '//cdn.usefathom.com/tracker.js', 'fathom')
-      fathom('set', 'siteId', 'AHDLJXNJ')
-      fathom('trackPageview')
-    </script>
-    <!-- / Fathom -->
   </div>
 </template>
 

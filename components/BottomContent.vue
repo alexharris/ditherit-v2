@@ -31,6 +31,16 @@
         <h3 class="text-lg font-serif mt-0 mb-2">Updates</h3>
         <div class="mb-4">
           <div class="flex flex-row items-center gap-2 text-sm">
+              <span class="text-gray-400">12-14-25</span><h4 class=" inline m-0 text-sm"> – Cool Thing</h4>
+          </div>
+          <div>
+            <p class="mt-0">
+              Want to learn more about dithering? Check out this amazing animated tutorial thing: <a href="https://visualrambling.space/dithering-part-1/">Dithering Part 1: What is Dithering?</a> by Visual Rambling. It is the visual intro to dithering that I wish I would/could have made.
+            </p>          
+          </div>
+        </div>         
+        <div class="mb-4">
+          <div class="flex flex-row items-center gap-2 text-sm">
               <span class="text-gray-400">12-14-25</span><h4 class=" inline m-0 text-sm"> – Feature Update</h4>
           </div>
           <div>
