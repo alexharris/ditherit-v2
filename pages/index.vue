@@ -720,8 +720,6 @@ export default {
         // Show stats
         this.selectingImage = false
       }, 100)
-      // Set the data for the image download (again?)
-      this.downloadImage()
     },
 
     bayerDither(ctx, imageData) {

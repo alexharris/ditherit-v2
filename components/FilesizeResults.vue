@@ -71,7 +71,7 @@
 
 <script>
 export default {
-  props: ['ratioGood', 'downloadFileSize', 'selectedImage', 'ditheredHeight', 'ditheredWidth', 'downloadFileSize', 'rgbquant'],
+  props: ['ratioGood', 'downloadFileSize', 'selectedImage', 'ditheredHeight', 'ditheredWidth', 'rgbquant'],
     computed: {
     originalFileSize() {
       return (Math.round(((this.selectedImage.src.length) * 3) / 4) / 1000).toFixed(2);

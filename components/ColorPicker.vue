@@ -504,7 +504,12 @@ export default {
           exportPalette.setAttribute("download", "ditherit_palette.txt");
     },
     importPalette() {
-      this.palette = JSON.parse(this.palette2Import)
+      try {
+        this.palette = JSON.parse(this.palette2Import)
+      } catch (e) {
+        alert('Invalid palette format. Please paste valid JSON.')
+        return
+      }
       this.updatePallete();
       this.presetPaletteSelection = 'custom'
       fathom('trackGoal', 'QQLOUIS1', 0);
