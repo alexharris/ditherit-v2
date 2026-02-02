@@ -327,145 +327,138 @@ export default {
         this.rgbQuantOptions.palette.push(v)
       })
     },
-    onImageUpload(images) {
+    async onImageUpload(images) {
       this.images = images
 
       fathom('trackGoal', 'HORTCOPW', 0)
 
-      this.selectedImage = document.getElementById('originalImage1')
-
       this.showDitheredImage = false
-
       this.rgbQuantOptions.palette = []
-
       this.imageUploaded = true
 
-      setTimeout(() => {
-        const img = document.getElementById('originalImage1')
-        this.selectedImage = img
-        this.selectedImageSrc = img.src
-        this.analyzeImagePalette(img)
-      }, 100)
+      await this.$nextTick()
 
-      this.$nextTick(() => {
-        if (this.$refs.colorPicker) {
-          this.$refs.colorPicker.resetToOriginal()
-        }
-      })
+      const img = document.getElementById('originalImage1')
+      this.selectedImage = img
+      this.selectedImageSrc = img.src
+      this.analyzeImagePalette(img)
+
+      if (this.$refs.colorPicker) {
+        this.$refs.colorPicker.resetToOriginal()
+      }
     },
-    ditherImage() {
+    async ditherImage() {
       fathom('trackGoal', 'SFMGAORY', 0)
 
       window.scrollTo(0, 0)
 
       this.dithering = true
-
       this.viewOriginal = false
-
       this.showDitheredImage = true
-
       this.selectingImage = true
-
       this.viewFullWidth = false
 
-      setTimeout(() => {
-        for (let i = 1; i < this.numberOfImages + 1; i++) {
-          const originalImage = document.getElementById('originalImage' + i)
-          const ditheredImageCanvas = document.getElementById(
-            'dithered_originalImage' + i
-          )
-          const ctx = ditheredImageCanvas.getContext('2d')
-          let width = 1
-          if (this.canvasWidth === 'original') {
-            width = originalImage.naturalWidth
-          } else if (this.canvasWidth === 'custom') {
-            width = this.customWidth
-          } else {
-            width = this.canvasWidth
-          }
-          const height =
-            (originalImage.naturalHeight / originalImage.naturalWidth) * width
-          ctx.canvas.width = width
-          ctx.canvas.height = height
-          ctx.drawImage(originalImage, 0, 0, width, height)
+      // wait for Vue to update the DOM and the browser to paint the spinner
+      await this.$nextTick()
+      await new Promise((resolve) => requestAnimationFrame(resolve))
 
-          if (this.ditherMode != 'Error Diffusion') {
-            bayerDither(
+      for (let i = 1; i < this.numberOfImages + 1; i++) {
+        const originalImage = document.getElementById('originalImage' + i)
+        const ditheredImageCanvas = document.getElementById(
+          'dithered_originalImage' + i
+        )
+        const ctx = ditheredImageCanvas.getContext('2d')
+        let width = 1
+        if (this.canvasWidth === 'original') {
+          width = originalImage.naturalWidth
+        } else if (this.canvasWidth === 'custom') {
+          width = this.customWidth
+        } else {
+          width = this.canvasWidth
+        }
+        const height =
+          (originalImage.naturalHeight / originalImage.naturalWidth) * width
+        ctx.canvas.width = width
+        ctx.canvas.height = height
+        ctx.drawImage(originalImage, 0, 0, width, height)
+
+        if (this.ditherMode != 'Error Diffusion') {
+          bayerDither(
+            ctx,
+            ctx.getImageData(0, 0, width, height),
+            this.rgbQuantOptions.palette,
+            this.blockSize
+          )
+          fathom('trackGoal', 'Q3QWCGJU', 0)
+          this.downloadImage()
+        } else {
+          const q = new RgbQuant(this.rgbQuantOptions)
+          q.sample(originalImage)
+
+          const ditherResult = q.reduce(ditheredImageCanvas)
+
+          const imgData = ctx.getImageData(0, 0, width, height)
+
+          imgData.data.set(ditherResult)
+          ctx.putImageData(imgData, 0, 0)
+
+          if (this.blockSize > 1) {
+            addPixelation(
               ctx,
-              ctx.getImageData(0, 0, width, height),
-              this.rgbQuantOptions.palette,
+              ditheredImageCanvas,
+              width,
+              height,
               this.blockSize
             )
-            fathom('trackGoal', 'Q3QWCGJU', 0)
-            this.downloadImage()
-          } else {
-            const q = new RgbQuant(this.rgbQuantOptions)
-            q.sample(originalImage)
-
-            const ditherResult = q.reduce(ditheredImageCanvas)
-
-            const imgData = ctx.getImageData(0, 0, width, height)
-
-            imgData.data.set(ditherResult)
-            ctx.putImageData(imgData, 0, 0)
-
-            if (this.blockSize > 1) {
-              addPixelation(
-                ctx,
-                ditheredImageCanvas,
-                width,
-                height,
-                this.blockSize
-              )
-            }
-
-            this.downloadImage()
           }
+
+          this.downloadImage()
         }
-        this.dithering = false
-        this.selectingImage = false
-      }, 100)
+      }
+      this.dithering = false
+      this.selectingImage = false
     },
-    analyzeImagePalette(e) {
+    async analyzeImagePalette(e) {
       this.selectingImage = true
-      setTimeout(() => {
-        this.selectedImage = e
-        this.selectedImageSrc = e.src
 
-        this.rgbQuantOptions.palette = []
+      await this.$nextTick()
 
-        const q = new RgbQuant(this.rgbQuantOptions)
-        q.sample(e)
+      this.selectedImage = e
+      this.selectedImageSrc = e.src
 
-        this.rgbQuantOptions.palette = q.palette(true)
+      this.rgbQuantOptions.palette = []
 
-        this.specsCalculated = true
+      const q = new RgbQuant(this.rgbQuantOptions)
+      q.sample(e)
 
-        if (this.showDitheredImage) {
-          this.ditheredWidth = document.getElementById(
-            'dithered_' + this.selectedImage.id
-          ).width
-          this.ditheredHeight = document.getElementById(
-            'dithered_' + this.selectedImage.id
-          ).height
+      this.rgbQuantOptions.palette = q.palette(true)
 
-          const ditheredImageCanvas = document.getElementById(
-            'dithered_' + this.selectedImage.id
-          )
-          const downloadUrl = ditheredImageCanvas.toDataURL(
-            this.imageType,
-            0.72
-          )
-          this.downloadFileSize =
-            Math.round((downloadUrl.length * 3) / 4) / 1000
-          this.downloadUrl = downloadUrl
-        }
+      this.specsCalculated = true
 
-        if (this.$refs.colorPicker) {
-          this.$refs.colorPicker.resetToOriginal()
-        }
-        this.selectingImage = false
-      }, 50)
+      if (this.showDitheredImage) {
+        this.ditheredWidth = document.getElementById(
+          'dithered_' + this.selectedImage.id
+        ).width
+        this.ditheredHeight = document.getElementById(
+          'dithered_' + this.selectedImage.id
+        ).height
+
+        const ditheredImageCanvas = document.getElementById(
+          'dithered_' + this.selectedImage.id
+        )
+        const downloadUrl = ditheredImageCanvas.toDataURL(
+          this.imageType,
+          0.72
+        )
+        this.downloadFileSize =
+          Math.round((downloadUrl.length * 3) / 4) / 1000
+        this.downloadUrl = downloadUrl
+      }
+
+      if (this.$refs.colorPicker) {
+        this.$refs.colorPicker.resetToOriginal()
+      }
+      this.selectingImage = false
     }
   }
 }

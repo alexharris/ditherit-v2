@@ -1,6 +1,6 @@
 <template>
   <div @paste="handlePaste">
-    <div v-if="loading" class="loader"></div>
+    <div v-if="loading" class="text-center text-gray-500 py-4">Loading...</div>
     <div class="flex flex-col md:flex-row items-center flex-wrap" v-if="duck == 'true'">
       <div
         
@@ -79,7 +79,7 @@ export default {
     // ---------------------------
     // Get the uploaded images and create an initial array of the objects
     // ----------------------------
-    imageUploaded(e) {
+    async imageUploaded(e) {
       if(!e.target.files) {
         for (let i = 0; i < e.dataTransfer.files.length; i++) {
             if (
@@ -95,36 +95,33 @@ export default {
         }
         fathom('trackGoal', 'TG6BKJ0A', 0) // drag and dropped
         e.target.files = e.dataTransfer.files
-      } 
+      }
       this.reportNumberOfImages(e.target.files.length)
-      this.loading = true // for loading spinner
+      this.loading = true
 
-      // now go through the images that have been loaded
-      for (let i = 0; i < e.target.files.length; i++) { 
+      const files = e.target.files
 
-        const id = 'originalImage' + (i + 1) // the id for img tag
-
-        // console.log((i + 1) + ': ' + e.target.files[i].name)
-
-        // build an array of all the upload images and their details
+      // build an array of all the uploaded images and their details
+      for (let i = 0; i < files.length; i++) {
+        const id = 'originalImage' + (i + 1)
         this.images[i] = []
         this.images[i]['id'] = id
-        this.images[i]['type'] = e.target.files[i].type
-        this.images[i]['name'] = e.target.files[i].name
-        this.images[i]['size'] = e.target.files[i].size
-
-        // send the uploaded file to get turned into an img
-        // but we wait a second so that the originalImage img tags in index can load
-        setTimeout(() => {
-          this.createOriginalImage(e.target.files[i], i)
-        }, 100)
+        this.images[i]['type'] = files[i].type
+        this.images[i]['name'] = files[i].name
+        this.images[i]['size'] = files[i].size
       }
 
-      // tell the parent about the images
-      setTimeout(() => {
-        this.$emit('image-upload',this.images)
-      }, 100)
-      // Turn off loader
+      // wait for Vue to render the img tags in the parent
+      await this.$nextTick()
+
+      // load all images in parallel and wait for them to finish
+      const promises = []
+      for (let i = 0; i < files.length; i++) {
+        promises.push(this.createOriginalImage(files[i], i))
+      }
+      await Promise.all(promises)
+
+      this.$emit('image-upload', this.images)
       this.loading = false
     },
 
@@ -133,24 +130,21 @@ export default {
     // & add width/height to images array
     // ----------------------------
     createOriginalImage(file, i) {
-      // console.log('Create original images.')
       const id = i + 1 // id starts at 1
-      const tempImage = document.getElementById('originalImage' + id) // find the img tag already created in index.vue for this image
-      const reader = new FileReader() // this creates a new Reader
+      const tempImage = document.getElementById('originalImage' + id)
+      const reader = new FileReader()
 
-      // This doesnt get run until we give the reader something to read below
-      reader.onload = (event) => {
-        tempImage.src = event.target.result // replace the image source
-      }
-
-      // give the reader the file object
-      // console.log(file)
-      reader.readAsDataURL(file) // Read the data of the target as a data url
-
-      // add width and height of the new images to the images array
-      this.images[i]['width'] = tempImage.naturalWidth
-      this.images[i]['height'] = tempImage.naturalHeight
-
+      return new Promise((resolve) => {
+        reader.onload = (event) => {
+          tempImage.src = event.target.result
+          tempImage.onload = () => {
+            this.images[i]['width'] = tempImage.naturalWidth
+            this.images[i]['height'] = tempImage.naturalHeight
+            resolve()
+          }
+        }
+        reader.readAsDataURL(file)
+      })
     },
     // ---------------------------
     // Tell the parent how many images there are
@@ -161,49 +155,36 @@ export default {
     // ---------------------------
     // This does the same as imageUploaded but for the static duck image
     // ----------------------------    
-    startWithDuck() {
-      
+    async startWithDuck() {
       fathom('trackGoal', 'HJQ6OA1C', 0)
-      
-      this.loading = true // for loading spinner
 
-      // conver tot blob
-      var file;
+      this.loading = true
 
-      fetch(require('~/assets/examples/quantfrog.png'))
-      .then((response) => {
-        return response.blob()
-      })
-      .then((blob) => {
-        // here the image is a blob
-        file = new File([blob], "name");
-        this.reportNumberOfImages(1);
-        var i = 0;
-        const id = 'originalImage' + (i + 1) // the id for img ta
-        
+      const response = await fetch(require('~/assets/examples/quantfrog.png'))
+      const blob = await response.blob()
+      const file = new File([blob], 'name')
 
-        this.images[i] = []
-        this.images[i]['id'] = id
-        this.images[i]['type'] = 'png'
-        this.images[i]['name'] = 'Frog'
-        this.images[i]['size'] = file.size
+      this.reportNumberOfImages(1)
 
-        
-        setTimeout(() => {
-          this.createOriginalImage(file, i)
-        }, 100)
+      const i = 0
+      const id = 'originalImage' + (i + 1)
 
-        setTimeout(() => {
-            this.$emit('image-upload',this.images)
-          }, 100);           
-      });   
+      this.images[i] = []
+      this.images[i]['id'] = id
+      this.images[i]['type'] = 'png'
+      this.images[i]['name'] = 'Frog'
+      this.images[i]['size'] = file.size
 
-      this.loading = false // for loading spinner 
+      await this.$nextTick()
+      await this.createOriginalImage(file, i)
+
+      this.$emit('image-upload', this.images)
+      this.loading = false
     },
     // ---------------------------
     // Handle pasted images
     // ----------------------------
-    handlePaste(event) {
+    async handlePaste(event) {
       const items = (event.clipboardData || event.originalEvent.clipboardData).items;
       for (let i = 0; i < items.length; i++) {
         if (items[i].type.indexOf('image') !== -1) {
@@ -216,12 +197,11 @@ export default {
             size: file.size,
           });
           this.reportNumberOfImages(this.images.length);
-          setTimeout(() => {
-            this.createOriginalImage(file, this.images.length - 1);
-          }, 100);
-          setTimeout(() => {
-            this.$emit('image-upload', this.images);
-          }, 100);
+
+          await this.$nextTick()
+          await this.createOriginalImage(file, this.images.length - 1);
+
+          this.$emit('image-upload', this.images);
         }
       }
     },

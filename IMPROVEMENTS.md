@@ -33,12 +33,12 @@ this.$children[1]._data.presetPaletteSelection = 'original'
 - ~~Pass `presetPaletteSelection` as a prop to `ColorPicker`~~
 - ~~Use a ref (`this.$refs.colorPicker`) and expose a method like `resetPalette()`~~
 
-### 1e. Replace `setTimeout` coordination with proper async patterns
-Multiple places use `setTimeout` with arbitrary delays (50ms, 100ms) to wait for DOM updates or image loading:
-- `ImageUpload.vue`: 100ms delays for `createOriginalImage` and `$emit('image-upload')`
-- `index.vue`: 100ms delay in `onImageUpload` for `analyzeImagePalette`, 50ms in `analyzeImagePalette`, 100ms in `ditherImage`
+### ~~1e. Replace `setTimeout` coordination with proper async patterns~~ ✅
+~~Multiple places use `setTimeout` with arbitrary delays (50ms, 100ms) to wait for DOM updates or image loading:~~
+- ~~`ImageUpload.vue`: 100ms delays for `createOriginalImage` and `$emit('image-upload')`~~
+- ~~`index.vue`: 100ms delay in `onImageUpload` for `analyzeImagePalette`, 50ms in `analyzeImagePalette`, 100ms in `ditherImage`~~
 
-These should use `this.$nextTick()`, promises with `image.onload`, or `FileReader.onload` callbacks properly chained instead of hoping 100ms is long enough.
+~~Replaced with `async`/`await`, `this.$nextTick()`, `Promise` wrapping `FileReader.onload`/`image.onload`, and `requestAnimationFrame` for paint-dependent flows. Also fixed `loading = false` running before async work completed, and image width/height being read before the image loaded.~~
 
 ### ~~1f. Use proper data structures for `images` array~~ ✅
 ~~In `ImageUpload.vue`, images are stored as arrays with string keys:~~
