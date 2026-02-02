@@ -18,13 +18,13 @@
       />
     </div>
     <div
-      class="py-6 px-2 flex flex-col md:flex-row pt-4 w-full justify-center"
-      :class="{ 'checkers shadow-inner': imageUploaded }"
+      class="py-6 px-2 pt-4 w-full grid grid-cols-1"
+      :class="{ 'checkers shadow-inner': imageUploaded, 'md:grid-cols-[1fr_2fr] xl:grid-cols-[2fr_3fr_1fr]': imageUploaded }"
     >
       <!-- Begin Main Toolbar -->
       <div
         v-show="imageUploaded"
-        class="w-full md:w-1/3 lg:w-2/5 order-last md:order-first p-2 pt-0 rounded"
+        class="order-2 md:col-start-1 md:row-start-1 md:row-span-2 xl:row-span-1 p-2 pt-0 rounded"
       >
         <SidebarControls
           :dither-mode.sync="ditherMode"
@@ -46,27 +46,11 @@
             />
           </template>
         </SidebarControls>
-        <!-- This is the same as the other report block, this one is for mobile positioning -->
-        <div v-show="imageUploaded" class="md:hidden">
-          <div
-            v-if="showDitheredImage && !dithering"
-            class="shadow rounded xl:m-0 p-4 mb-4 w-full xl:w-1/4 bg-white "
-          >
-            <FilesizeResults
-              :ratio-good="ratioGood"
-              :download-file-size="downloadFileSize"
-              :selected-image="selectedImage"
-              :dithered-height="ditheredHeight"
-              :dithered-width="ditheredWidth"
-              :download-filesize="downloadFileSize.toFixed(2)"
-              :rgbquant="rgbQuantOptions"
-            />
-          </div>
-        </div>
       </div>
       <!-- End Toolbar -->
       <div
-        class="w-full md:w-2/3 lg:w-4/5 flex flex-col xl:flex-row order-first md:order-last items-stretch"
+        class="order-1 flex flex-col items-stretch"
+        :class="{ 'md:col-start-2 md:row-start-1': imageUploaded }"
       >
         <!-- Begin Main Display -->
         <div class="md:px-4 flex flex-col flex-1 items-center w-full">
@@ -155,27 +139,27 @@
           <!-- End Toolbar Stuff -->
         </div>
         <!-- End Main Display -->
-        <!-- Begin right sidebar -->
+      </div>
+      <!-- Begin FilesizeResults -->
+      <div
+        v-show="imageUploaded"
+        class="order-3 md:col-start-2 md:row-start-2 xl:col-start-3 xl:row-start-1 flex md:px-4 xl:px-0 md:justify-center xl:justify-start"
+      >
         <div
-          v-show="imageUploaded"
-          class="w-full xl:w-1/4 hidden md:flex flex-row xl:flex-col gap-4 px-4 xl:m-0 justify-center xl:justify-start"
+          v-if="showDitheredImage && !dithering"
+          class="shadow rounded bg-white p-4 md:p-0 mb-4 md:mb-0 w-full md:w-1/2 xl:w-full self-start"
         >
-          <div
-            v-if="showDitheredImage && !dithering"
-            class="shadow rounded bg-white self-start w-1/2 xl:w-full"
-          >
-            <FilesizeResults
-              :ratio-good="ratioGood"
-              :download-file-size="downloadFileSize"
-              :selected-image="selectedImage"
-              :dithered-height="ditheredHeight"
-              :dithered-width="ditheredWidth"
-              :download-filesize="downloadFileSize.toFixed(2)"
-              :rgbquant="rgbQuantOptions"
-            />
-          </div>
+          <FilesizeResults
+            :ratio-good="ratioGood"
+            :download-file-size="downloadFileSize"
+            :selected-image="selectedImage"
+            :dithered-height="ditheredHeight"
+            :dithered-width="ditheredWidth"
+            :rgbquant="rgbQuantOptions"
+          />
         </div>
       </div>
+      <!-- End FilesizeResults -->
     </div>
     <BottomContent />
     <!-- Fathom - simple website analytics - https://usefathom.com -->

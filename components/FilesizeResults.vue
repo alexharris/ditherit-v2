@@ -3,7 +3,6 @@
     <h2 class="text-sm font-bold mt-2 mb-2 uppercase">Report Card</h2>
     <div class="donutContainer w-2/3 self-center">
       <svg viewBox="0 0 42 42" class="donut">
-        <!-- <circle class="donut-hole" cx="21" cy="21" r="15.91549430918954" fill="#fff"></circle> -->
         <circle class="donut-ring" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#d2d3d4" stroke-width="3"></circle>
         <circle class="donut-segment" cx="21" cy="21" r="15.91549430918954" fill="transparent" stroke="#c53030" stroke-width="3" :stroke-dasharray="strokeDashArray" stroke-dashoffset="25"></circle>
       
@@ -18,34 +17,6 @@
       </svg>
   
     </div>
-    <!-- <div class="w-1/3 xl:w-full px-4 xl:p-0">
-      File Details
-      <div class="border-t border-dashed mt-2">
-        <h3 class="mt-2 text-sm">Original</h3>
-        <ul class="mt-1">
-          <li>
-            <strong>Size: </strong>{{ selectedImage.naturalWidth }}px x
-            {{ selectedImage.naturalHeight }}px
-          </li>
-          <li>
-            <strong>Filesize: </strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb
-          </li>
-        </ul>
-      </div>
-      <div class="border-t border-dashed mt-2">
-        <h3 class="mt-2 text-sm">Dithered</h3>
-        <ul class="mt-1">
-          <li>
-            <strong>Size: </strong>{{ ditheredWidth }}px x
-            {{ ditheredHeight }}px 
-          </li>
-          <li>
-            <strong>Filesize: </strong>
-            {{ downloadFileSize.toFixed(2) }}kb
-          </li>
-        </ul>  
-      </div>    
-    </div>   -->
     <div class="w-full">
       <p class="mt-1">
         The file size is
@@ -58,13 +29,6 @@
         <p>The original was <strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb</strong>, and the dithered one is <strong>{{ downloadFileSize.toFixed(2) }}kb</strong>. 
       </p> 
     </div>   
-    <!-- <div class="w-full md:w-1/3 xl:w-full border-t border-dashed pt-2">
-      <ul>
-        <li><strong>Size:</strong> {{ditheredWidth}}px x {{ditheredHeight}}px</li>
-        <li><strong>Colors:</strong> {{rgbquant.colors}}</li>
-        <li><strong>Algorithm:</strong> {{rgbquant.dithKern}}</li>
-      </ul>
-    </div>     -->
   </div>
 
 </template>
@@ -81,17 +45,6 @@ export default {
       return ((this.downloadFileSize / this.originalFileSize) * 100) + ' ' + (100 - ((this.downloadFileSize / this.originalFileSize) * 100));
     }
   },
-  data() {
-    return {
-      
-    }
-  },
-  methods: {
-
-
-
-
-  }
 }
 </script>
 

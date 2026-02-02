@@ -1,17 +1,6 @@
 <template>
 
 <div class="w-full border-t border-b border-dashed border-red-500 flex flex-col items-center py-16">
-    <!-- <div class="md:w-2/3 lg:w-4/5 shadow-md p-8 rounded flex gap-8 flex-col sm:flex-row m-4">
-      <a class="border-0 hover:border-0 w-[200px] shrink-0" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular"  @click="track()">
-        <img src="~/assets/t-shirt.png" />   
-      </a>
-      <div class="flex-shrink"> 
-        <h3 class="text-lg font-serif mt-0">Dither it! t-shirts</h3>
-        <p>Idk maybe this is a bad idea but let's try it. Here are some Dither it! t-shirts. Confuse your friends, confuse your enemies. Interested but hate the design? Let me know, I have other ideas, too.</p>
-        <p>5% of proceeds go to the National Audubon Society. </p>
-        <a class="pt-4 border-b-1 border-red-700 hover:text-red-800 inline-block" href="https://ditherit.threadless.com/designs/dithered-earth/mens/t-shirt/regular" @click="track()">🌎 Check em out</a>
-      </div>  
-    </div>     -->
     <div class="w-full lg:w-11/12 flex flex-col md:flex-row items-stretch gap-4 p-4">
       <div class="w-full md:w-1/2 shadow-md p-4 rounded">
       
@@ -126,40 +115,7 @@
 
 
     
-    <!-- <div class="mt-32 px-4 border-t border-dashed border-red-500 pt-16 flex mx-2 sm:mx-8 md:mx-16 lg:mx-32 xl:mx-64 flex-col md:flex-row">
-      
-      <div class="w-full md:w-1/2 p-4">
-        <h4>About Dithering</h4>
-        <p> Dithering is essentially a method for trying to make an image look good while reducing the number of colors it uses, or as <a href="https://en.wikipedia.org/wiki/Dither">wikipedia puts it:</a></p>
-        <blockquote>Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette - a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it (see color vision). Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance. </blockquote>
-        <p>I'm no scientist, but I think basically what that means is: When reducing an image from many colors to fewer colors you can't get every pixel exactly right, but you can spread that error around to neighboring pixels which helps it look more like the original. The various wasy to spread that error around are the various dithering algorithms.</p>
-        <p>Is this wrong? <a href="https://twitter.com/alexharris6">Tweet at me</a>.</p>
 
-      </div>
-      <div class="w-full md:w-1/2 p-4">
-      
-      <h4>About Dither it!</h4>
-      <p class="text-xl">Built by <a href="https://alexharris.online/">Alex Harris</a>, on twitter <a href="https://twitter.com/alexharris6">@alexharris6</a>. Show me what you've dithered!</p>
-      <p>Dither it! was inspired by a <a href="https://solar.lowtechmagazine.com/2018/09/how-to-build-a-lowtech-website/">blog post from a site called Low-tech Magazine</a> about how to reduce the energy usage associated with running websites. One method they discussed was to reduce full color images to dithered images with very few colors. Ensuing comments clarified that there are other, more modern ways to compress images which achieve small file sizes while maintaining color, but I still think it is a fun technique that looks cool and is interesting to learn about.</p>
-
-
-
-      <h4>Source code</h4>
-      <p>The Dither it! source code is available on the <a href="https://github.com/alexharris/ditherit-v2">Dither it! Github page</a>. Please feel free to contribute, share or pilfer.</p>
-
-      <h4>Thanks</h4>
-
-      <ul>
-      <li>Leon Sorokin, for making <a href="https://github.com/leeoniya/RgbQuant.js">RgbQuant.js</a></li>
-      <li>Don, for making <a href="https://xiaokaike.github.io/vue-color/">vue-color</a></li>
-      <li><a href="https://lowtechmagazine.com">Low-tech Magazine</a></li>
-      </ul>
-
-    
-
-  </div>
-          
-      </div> -->
 </div>
 </template>
 
@@ -174,11 +130,6 @@ export default {
     Examples,
     ContactForm
   },     
-  data() {
-    return {
-    }
-  },
-  
   methods: {
     track() {
       fathom('trackGoal', 'GAHXDKWX', 0)
