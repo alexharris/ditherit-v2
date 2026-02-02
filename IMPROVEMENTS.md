@@ -48,8 +48,8 @@ this.images[i]['id'] = id
 ```
 ~~This treats arrays as objects. They should be plain objects: `this.images[i] = { id, type, name, size }`. The `handlePaste` method already does this correctly — the other methods should match.~~
 
-### 1g. Consistent use of `var` vs `let`/`const`
-The code mixes `var`, `let`, and `const` inconsistently (e.g., `bayerDither` uses `var` throughout while newer code uses `const`/`let`). Standardize on `const`/`let`.
+### ~~1g. Consistent use of `var` vs `let`/`const`~~ ✅
+~~The code mixes `var`, `let`, and `const` inconsistently (e.g., `bayerDither` uses `var` throughout while newer code uses `const`/`let`). Standardize on `const`/`let`.~~ All `var` declarations in `ColorPicker.vue` replaced with `const`. `utils/dithering.js` (including `bayerDither`) was already converted in prior refactoring.
 
 ## 2. Front End / UI
 

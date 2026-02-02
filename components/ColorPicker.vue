@@ -459,7 +459,7 @@ export default {
     // Requires an array of hex colors in the format [{hex: '#ff000'},{hex: '#ff0ff'}]
     updatePallete() {
       // update the colors, requires an array of
-      var colorTuplesArray = []
+      const colorTuplesArray = []
       this.palette.forEach((v) => {
         colorTuplesArray.push(this.hexToRgb(v['hex']))
       })
@@ -468,7 +468,7 @@ export default {
     //Convert Hex to RGB
     // Given a hex value, return the RGB tuple
     hexToRgb(hex) {
-      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
       return result
         ? [
             parseInt(result[1], 16),
@@ -481,12 +481,12 @@ export default {
     // this converts an array of tupes into hex values
     rgbToHex() {
       this.palette = []
-      var pal = this.initialPalette
+      const pal = this.initialPalette
       for (let i = 0; i < pal.length; i++) {
-        var r = pal[i][0]
-        var g = pal[i][1]
-        var b = pal[i][2]
-        var hex =
+        const r = pal[i][0]
+        const g = pal[i][1]
+        const b = pal[i][2]
+        const hex =
           '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
         this.palette.push({ hex })
 
@@ -497,9 +497,9 @@ export default {
       }
     },
     exportPalette() {
-      var palJSON = "data:text/txt;charset=utf-8," + encodeURIComponent(JSON.stringify(this.palette));
+      const palJSON = "data:text/txt;charset=utf-8," + encodeURIComponent(JSON.stringify(this.palette));
 
-      var exportPalette = document.getElementById('exportPalette');
+      const exportPalette = document.getElementById('exportPalette');
           exportPalette.setAttribute("href", palJSON);
           exportPalette.setAttribute("download", "ditherit_palette.txt");
     },
