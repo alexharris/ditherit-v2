@@ -35,7 +35,14 @@
 
 <script>
 export default {
-  props: ['ratioGood', 'downloadFileSize', 'selectedImage', 'ditheredHeight', 'ditheredWidth', 'rgbquant'],
+  props: {
+    ratioGood: { type: Boolean, required: true },
+    downloadFileSize: { type: Number, required: true },
+    selectedImage: { type: Object, required: true },
+    ditheredHeight: { type: [Number, String], default: '' },
+    ditheredWidth: { type: [Number, String], default: '' },
+    rgbquant: { type: Object, required: true }
+  },
     computed: {
     originalFileSize() {
       return (Math.round(((this.selectedImage.src.length) * 3) / 4) / 1000).toFixed(2);

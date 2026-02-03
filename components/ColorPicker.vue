@@ -155,7 +155,9 @@ export default {
   components: {
     'sketch-picker': Sketch
   },
-  props: ['initialPalette'],
+  props: {
+    initialPalette: { type: Array, default: () => [] }
+  },
   data() {
     return {
       // numberOfColors: 4,

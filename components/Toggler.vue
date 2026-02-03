@@ -47,7 +47,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .toggle__dot {
   top: -.25rem;
   left: -.25rem;
@@ -56,8 +56,7 @@ export default {
 
 input:checked ~ .toggle__dot {
   transform: translateX(100%);
-  @apply bg-red-600
-  /* background-color: #48bb78; */
+  @apply bg-red-600;
 }
 
 

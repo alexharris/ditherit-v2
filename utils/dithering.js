@@ -1,12 +1,15 @@
-// https://stackoverflow.com/a/69880443/2201446
 export function getClosestColor(colors, [r2, g2, b2]) {
-  const [[closest_color_id]] = colors
-    .map(([id, r1, g1, b1]) => [
-      id,
-      Math.sqrt((r2 - r1) ** 2 + (g2 - g1) ** 2 + (b2 - b1) ** 2)
-    ])
-    .sort(([, d1], [, d2]) => d1 - d2)
-  return colors.find(([id]) => id == closest_color_id)
+  let minDist = Infinity
+  let closest = colors[0]
+  for (let i = 0; i < colors.length; i++) {
+    const [, r1, g1, b1] = colors[i]
+    const dist = (r2 - r1) ** 2 + (g2 - g1) ** 2 + (b2 - b1) ** 2
+    if (dist < minDist) {
+      minDist = dist
+      closest = colors[i]
+    }
+  }
+  return closest
 }
 
 export function addPixelation(ctx, sourceCanvas, width, height, blockSize) {

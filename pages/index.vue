@@ -134,7 +134,7 @@
             <ImageUpload
               v-if="!imageUploaded"
               text="✨ Select images"
-              duck="true"
+              duck
               @number-images="getNumberOfImages"
               @image-upload="onImageUpload"
             />
@@ -165,26 +165,6 @@
       <!-- End FilesizeResults -->
     </div>
     <BottomContent />
-    <!-- Fathom - simple website analytics - https://usefathom.com -->
-    <script>
-      ;(function(f, a, t, h, o, m) {
-        a[h] =
-          a[h] ||
-          function() {
-            ;(a[h].q = a[h].q || []).push(arguments)
-          }
-        ;(o = f.createElement('script')),
-          (m = f.getElementsByTagName('script')[0])
-        o.async = 1
-        o.src = t
-        o.id = 'fathom-script'
-        m.parentNode.insertBefore(o, m)
-      })(document, window, '//cdn.usefathom.com/tracker.js', 'fathom')
-      fathom('set', 'siteId', 'AHDLJXNJ')
-      fathom('trackPageview')
-    </script>
-    <!-- / Fathom -->
-    <script async data-id="101479686" src="//static.getclicky.com/js"></script>
   </div>
 </template>
 

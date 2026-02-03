@@ -1,7 +1,7 @@
 <template>
   <div @paste="handlePaste">
     <div v-if="loading" class="text-center text-gray-500 py-4">Loading...</div>
-    <div class="flex flex-col md:flex-row items-center flex-wrap" v-if="duck == 'true'">
+    <div class="flex flex-col md:flex-row items-center flex-wrap" v-if="duck">
       <div
         
         class="border-0 md:border border-gray-200 border-dashed md:p-16 md:mt-8 text-center text-gray-400 rounded-lg flex flex-col md:flex-row flex-wrap items-center justify-center"
@@ -74,7 +74,10 @@ export default {
       images: []
     }
   },
-  props: ['text', 'duck'],
+  props: {
+    text: { type: String, required: true },
+    duck: { type: Boolean, default: false }
+  },
   methods: {
     // ---------------------------
     // Get the uploaded images and create an initial array of the objects
