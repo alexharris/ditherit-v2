@@ -8,7 +8,7 @@
       
         <g class="chart-text">
           <text x="50%" y="50%" class="chart-number">
-            {{((this.downloadFileSize / this.originalFileSize) * 100).toFixed(2)}}%
+            {{ originalFileSize ? ((downloadFileSize / originalFileSize) * 100).toFixed(2) : 0 }}%
           </text>
             <text x="50%" y="50%" class="chart-label">
               
@@ -20,14 +20,10 @@
     <div class="w-full">
       <p class="mt-1">
         The file size is
-        <strong
-          >{{
-            (( downloadFileSize / (Math.round(((this.selectedImage.src.length) * 3) / 4) / 1000)) * 100).toFixed(2)
-          }}%</strong
-        >
+        <strong>{{ originalFileSize ? ((downloadFileSize / originalFileSize) * 100).toFixed(2) : 0 }}%</strong>
         of the original file's size.</p>
-        <p>The original was <strong>{{ (Math.round(((selectedImage.src.length) * 3) / 4) / 1000).toFixed(2) }}kb</strong>, and the dithered one is <strong>{{ downloadFileSize.toFixed(2) }}kb</strong>. 
-      </p> 
+        <p>The original was <strong>{{ originalFileSize.toFixed(2) }}kb</strong>, and the dithered one is <strong>{{ downloadFileSize.toFixed(2) }}kb</strong>.
+      </p>
     </div>   
   </div>
 
@@ -38,18 +34,15 @@ export default {
   props: {
     ratioGood: { type: Boolean, required: true },
     downloadFileSize: { type: Number, required: true },
-    selectedImage: { type: Object, required: true },
+    originalFileSize: { type: Number, required: true },
     ditheredHeight: { type: [Number, String], default: '' },
-    ditheredWidth: { type: [Number, String], default: '' },
-    rgbquant: { type: Object, required: true }
+    ditheredWidth: { type: [Number, String], default: '' }
   },
-    computed: {
-    originalFileSize() {
-      return (Math.round(((this.selectedImage.src.length) * 3) / 4) / 1000).toFixed(2);
-    },
+  computed: {
     strokeDashArray() {
-
-      return ((this.downloadFileSize / this.originalFileSize) * 100) + ' ' + (100 - ((this.downloadFileSize / this.originalFileSize) * 100));
+      if (!this.originalFileSize) return '0 100'
+      const pct = (this.downloadFileSize / this.originalFileSize) * 100
+      return pct + ' ' + (100 - pct)
     }
   },
 }

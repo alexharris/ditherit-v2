@@ -155,10 +155,9 @@
           <FilesizeResults
             :ratio-good="ratioGood"
             :download-file-size="downloadFileSize"
-            :selected-image="selectedImage"
+            :original-file-size="selectedFile ? selectedFile.size / 1000 : 0"
             :dithered-height="ditheredHeight"
             :dithered-width="ditheredWidth"
-            :rgbquant="rgbQuantOptions"
           />
         </div>
       </div>
@@ -236,15 +235,8 @@ export default {
   },
   computed: {
     ratioGood() {
-      if (
-        this.downloadFileSize /
-          (Math.round((this.selectedImageSrc.length * 3) / 4) / 1000) <
-        1
-      ) {
-        return true
-      } else {
-        return false
-      }
+      if (!this.selectedFile) return false
+      return this.downloadFileSize / (this.selectedFile.size / 1000) < 1
     },
     selectedFile() {
       return this.images.find(this.getSelected)
