@@ -135,9 +135,9 @@ describe('ColorPicker', () => {
     })
   })
 
-  // ── updatePallete event emission ─────────────────────────────────
+  // ── updatePalette event emission ─────────────────────────────────
 
-  describe('updatePallete', () => {
+  describe('updatePalette', () => {
     test('emits update-palette with correct RGB tuples', () => {
       const wrapper = mount(ColorPicker, {
         propsData: { initialPalette: [] },
@@ -145,7 +145,7 @@ describe('ColorPicker', () => {
       })
 
       wrapper.vm.palette = [{ hex: '#ff0000' }, { hex: '#00ff00' }]
-      wrapper.vm.updatePallete()
+      wrapper.vm.updatePalette()
 
       expect(wrapper.emitted()['update-palette']).toBeTruthy()
       expect(wrapper.emitted()['update-palette'][0][0]).toEqual([

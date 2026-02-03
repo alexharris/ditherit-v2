@@ -93,7 +93,7 @@ export default {
               return
             }
         }
-        fathom('trackGoal', 'TG6BKJ0A', 0) // drag and dropped
+        typeof fathom !== 'undefined' && fathom('trackGoal', 'TG6BKJ0A', 0) // drag and dropped
         e.target.files = e.dataTransfer.files
       }
       this.reportNumberOfImages(e.target.files.length)
@@ -156,7 +156,7 @@ export default {
     // This does the same as imageUploaded but for the static duck image
     // ----------------------------    
     async startWithDuck() {
-      fathom('trackGoal', 'HJQ6OA1C', 0)
+      typeof fathom !== 'undefined' && fathom('trackGoal', 'HJQ6OA1C', 0)
 
       this.loading = true
 

@@ -3,6 +3,7 @@
     class="fixed top-0 right-0 w-24 h-24 border-0 hover:border-0 z-50"
     href="https://ko-fi.com/alexharris6"
     target="_blank"
+    aria-label="Support Dither it! on Ko-fi"
   >
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g filter="url(#filter0_d_297_3)">

@@ -13,6 +13,7 @@
       <img
         class="mt-8"
         src="~/assets/earth-dither.gif"
+        alt="Dithered image of Earth"
         width="600"
         height="328"
       />
@@ -109,6 +110,7 @@
                 :width="viewFullWidth ? null : ditheredWidth"
                 class="mx-auto max-w-full"
                 :src="selectedImageSrc"
+                alt="Original uploaded image"
               />
             </div>
             <div class="flex flex-row flex-wrap mt-4 justify-center">
@@ -117,6 +119,7 @@
                   :id="'originalImage' + n"
                   class="max-w-full m-4 shadow cursor-pointer"
                   width="75"
+                  :alt="'Uploaded image ' + n"
                   @click="analyzeImagePalette($event.target)"
                 />
               </div>
@@ -302,7 +305,7 @@ export default {
       this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
       this.downloadUrl = downloadUrl
 
-      fathom('trackGoal', 'UAT4LRNZ', 0)
+      typeof fathom !== 'undefined' && fathom('trackGoal', 'UAT4LRNZ', 0)
     },
     onUpdatePalette(palette) {
       this.rgbQuantOptions.colors = palette.length
@@ -314,7 +317,7 @@ export default {
     async onImageUpload(images) {
       this.images = images
 
-      fathom('trackGoal', 'HORTCOPW', 0)
+      typeof fathom !== 'undefined' && fathom('trackGoal', 'HORTCOPW', 0)
 
       this.showDitheredImage = false
       this.rgbQuantOptions.palette = []
@@ -332,7 +335,7 @@ export default {
       }
     },
     async ditherImage() {
-      fathom('trackGoal', 'SFMGAORY', 0)
+      typeof fathom !== 'undefined' && fathom('trackGoal', 'SFMGAORY', 0)
 
       window.scrollTo(0, 0)
 
@@ -373,7 +376,7 @@ export default {
             this.rgbQuantOptions.palette,
             this.blockSize
           )
-          fathom('trackGoal', 'Q3QWCGJU', 0)
+          typeof fathom !== 'undefined' && fathom('trackGoal', 'Q3QWCGJU', 0)
           this.downloadImage()
         } else {
           const q = new RgbQuant(this.rgbQuantOptions)

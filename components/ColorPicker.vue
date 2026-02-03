@@ -381,7 +381,7 @@ export default {
         this.originalInitialPalette.forEach((v) => {
           this.palette.push(v)
         })
-        this.updatePallete()
+        this.updatePalette()
         
         alert('Palette deleted successfully!')
       }
@@ -412,12 +412,12 @@ export default {
         })
       }
 
-      this.updatePallete()
+      this.updatePalette()
     },
     // When the user selects the color from the modal
     selectColor() {
       this.palette[this.activeSwatch] = { hex: this.currentColor['hex'] }
-      this.updatePallete()
+      this.updatePalette()
       this.showModal = false
     },
     // This holds the selected color until user hits Select in the color modal
@@ -446,18 +446,18 @@ export default {
       this.palette.push({ hex: '#ffffff' })
       this.activeSwatch = this.palette.length
       this.presetPaletteSelection = 'custom'
-      this.updatePallete()
+      this.updatePalette()
     },
     // Remove a swatch and update the palette
     removeSwatch(i) {
       this.palette.splice(i, 1)
-      this.updatePallete()
+      this.updatePalette()
       this.showModal = false
     },
     // Update Colors
     // This updates the colors that are used by the actual ditherer
     // Requires an array of hex colors in the format [{hex: '#ff000'},{hex: '#ff0ff'}]
-    updatePallete() {
+    updatePalette() {
       // update the colors, requires an array of
       const colorTuplesArray = []
       this.palette.forEach((v) => {
@@ -490,7 +490,7 @@ export default {
           '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
         this.palette.push({ hex })
 
-        if (this.originalInitialPalette.length < i) {
+        if (this.originalInitialPalette.length <= i) {
           //if there are less values in originalInitialPalette than colors processed, it means we need to store it
           this.originalInitialPalette.push({ hex })
         }
@@ -510,9 +510,9 @@ export default {
         alert('Invalid palette format. Please paste valid JSON.')
         return
       }
-      this.updatePallete();
+      this.updatePalette();
       this.presetPaletteSelection = 'custom'
-      fathom('trackGoal', 'QQLOUIS1', 0);
+      typeof fathom !== 'undefined' && fathom('trackGoal', 'QQLOUIS1', 0);
     },
   }
 }
