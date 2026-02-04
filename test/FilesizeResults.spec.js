@@ -2,49 +2,36 @@ import { mount } from '@vue/test-utils'
 import FilesizeResults from '@/components/FilesizeResults.vue'
 
 describe('FilesizeResults', () => {
-  function createWrapper(downloadFileSize, srcLength) {
+  function createWrapper(downloadFileSize, originalFileSize) {
     return mount(FilesizeResults, {
       propsData: {
         ratioGood: true,
         downloadFileSize,
-        selectedImage: { src: 'x'.repeat(srcLength) },
+        originalFileSize,
         ditheredHeight: 100,
-        ditheredWidth: 100,
-        rgbquant: {}
+        ditheredWidth: 100
       }
     })
   }
-
-  // ── originalFileSize computed ────────────────────────────────────
-
-  describe('originalFileSize', () => {
-    test('estimates base64 size from src length', () => {
-      // src length 4000 → (round(4000 * 3 / 4)) / 1000 = 3.00
-      const wrapper = createWrapper(1.5, 4000)
-      expect(parseFloat(wrapper.vm.originalFileSize)).toBeCloseTo(3.0, 1)
-    })
-
-    test('returns string with 2 decimal places', () => {
-      const wrapper = createWrapper(1, 5000)
-      expect(wrapper.vm.originalFileSize).toMatch(/^\d+\.\d{2}$/)
-    })
-  })
 
   // ── strokeDashArray computed ─────────────────────────────────────
 
   describe('strokeDashArray', () => {
     test('calculates SVG donut stroke-dasharray', () => {
-      // originalFileSize = (round(4000*3/4))/1000 = 3.00
       // percentage = (1.5 / 3.00) * 100 = 50
       // dasharray = "50 50"
-      const wrapper = createWrapper(1.5, 4000)
+      const wrapper = createWrapper(1.5, 3.0)
       expect(wrapper.vm.strokeDashArray).toBe('50 50')
     })
 
     test('returns 100 0 when files are same size', () => {
-      // originalFileSize = 3.00, downloadFileSize = 3.00
-      const wrapper = createWrapper(3.0, 4000)
+      const wrapper = createWrapper(3.0, 3.0)
       expect(wrapper.vm.strokeDashArray).toBe('100 0')
+    })
+
+    test('returns 0 100 when originalFileSize is 0', () => {
+      const wrapper = createWrapper(1.5, 0)
+      expect(wrapper.vm.strokeDashArray).toBe('0 100')
     })
   })
 
@@ -52,9 +39,26 @@ describe('FilesizeResults', () => {
 
   describe('percentage display', () => {
     test('shows correct percentage in template', () => {
-      const wrapper = createWrapper(1.5, 4000)
+      const wrapper = createWrapper(1.5, 3.0)
       const text = wrapper.text()
       expect(text).toContain('50.00%')
+    })
+
+    test('shows 0 when originalFileSize is 0', () => {
+      const wrapper = createWrapper(1.5, 0)
+      const text = wrapper.text()
+      expect(text).toContain('0%')
+    })
+  })
+
+  // ── file size display ────────────────────────────────────────────
+
+  describe('file size display', () => {
+    test('displays original and dithered file sizes', () => {
+      const wrapper = createWrapper(1.5, 3.0)
+      const text = wrapper.text()
+      expect(text).toContain('3.00kb')
+      expect(text).toContain('1.50kb')
     })
   })
 })

@@ -93,8 +93,8 @@ All interactive elements now use proper `<button>` elements with appropriate ari
 ### 3d. Color contrast
 The red (`#C53030`) on white may not meet WCAG AA contrast for smaller text sizes. The help tooltip circles (red background, white text) at `h-4 w-4` size are very small.
 
-### 3e. No keyboard handling for custom interactive elements
-The color swatches, example palette buttons, and various `<span>`/`<div>` click handlers don't have `tabindex`, `role`, or keyboard event listeners.
+### ~~3e. No keyboard handling for custom interactive elements~~ ✅
+~~The color swatches, example palette buttons, and various `<span>`/`<div>` click handlers don't have `tabindex`, `role`, or keyboard event listeners.~~ Resolved by converting to native `<button>` elements (3b) which are keyboard accessible by default.
 
 ## 4. Bugs & Correctness
 
@@ -145,8 +145,8 @@ if (this.originalInitialPalette.length < i) {
 ### ~~6b. `fathom()` called as a global without safety check~~ ✅
 ~~Multiple components call `fathom('trackGoal', ...)` as a global function. If the Fathom script fails to load (ad blocker, network issue), these calls will throw `ReferenceError`. Should be wrapped in a check like `if (typeof fathom !== 'undefined')` or use optional chaining via a helper.~~ All calls now use `typeof fathom !== 'undefined' && fathom(...)`.
 
-### 6c. No test coverage
-`package.json` has Jest configured but there don't appear to be any test files. The dithering logic (especially `getClosestColor`, `bayerDither`, hex/RGB conversions) would benefit from unit tests since it's pure computation.
+### ~~6c. No test coverage~~ ✅
+~~`package.json` has Jest configured but there don't appear to be any test files. The dithering logic (especially `getClosestColor`, `bayerDither`, hex/RGB conversions) would benefit from unit tests since it's pure computation.~~ Test suite added with 34 passing tests covering `dithering.js`, `ColorPicker.vue`, `ImageUpload.vue`, and `FilesizeResults.vue`.
 
 ### ~~6d. `eslint-disable` comments~~ ✅
 ~~Several files start with `/* eslint-disable no-console */` as a blanket override. Once the console.log cleanup (1c) is done, these can be removed.~~

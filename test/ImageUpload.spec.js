@@ -4,12 +4,23 @@ import ImageUpload from '@/components/ImageUpload.vue'
 // Suppress fathom analytics calls in tests
 global.fathom = jest.fn()
 
+// Mock FileReader
+class MockFileReader {
+  readAsDataURL() {
+    setTimeout(() => {
+      this.result = 'data:image/png;base64,fakedata'
+      if (this.onload) this.onload()
+    }, 0)
+  }
+}
+global.FileReader = MockFileReader
+
 describe('ImageUpload', () => {
   let wrapper
 
   beforeEach(() => {
     wrapper = mount(ImageUpload, {
-      propsData: { text: 'Upload Image', duck: 'true' }
+      propsData: { text: 'Upload Image', duck: true }
     })
   })
 
@@ -35,10 +46,18 @@ describe('ImageUpload', () => {
         naturalHeight: 100
       }))
 
+      // Create a mock file object with required properties
+      const file = {
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+        size: 1024,
+        slice: () => new Blob(['fake'])
+      }
+
       const event = {
         target: { files: null },
         dataTransfer: {
-          files: [{ type: 'image/jpeg', name: 'photo.jpg', size: 1024 }]
+          files: [file]
         }
       }
 
@@ -53,10 +72,18 @@ describe('ImageUpload', () => {
         naturalHeight: 100
       }))
 
+      // Create a mock file object with required properties
+      const file = {
+        type: 'image/png',
+        name: 'photo.png',
+        size: 2048,
+        slice: () => new Blob(['fake'])
+      }
+
       const event = {
         target: { files: null },
         dataTransfer: {
-          files: [{ type: 'image/png', name: 'photo.png', size: 2048 }]
+          files: [file]
         }
       }
 
@@ -83,18 +110,14 @@ describe('ImageUpload', () => {
     })
 
     test('dragging toggles on dragover', async () => {
-      const dropZone = wrapper.find(
-        '.border-0'
-      )
+      const dropZone = wrapper.find('.border-0')
       await dropZone.trigger('dragover')
       expect(wrapper.vm.dragging).toBe(true)
     })
 
     test('dragging resets on dragleave', async () => {
       wrapper.vm.dragging = true
-      const dropZone = wrapper.find(
-        '.border-0'
-      )
+      const dropZone = wrapper.find('.border-0')
       await dropZone.trigger('dragleave')
       expect(wrapper.vm.dragging).toBe(false)
     })
