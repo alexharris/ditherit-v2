@@ -10,16 +10,16 @@
 - ~~**`components/KofiButton.vue`** — Ko-fi SVG badge~~
 - ~~`pages/index.vue` reduced from ~880 lines to ~470 lines~~
 
-### 1b. Remove dead code
+### ~~1b. Remove dead code~~ ✅
 - ~~`baseColors` array in `data()` (line 552) — has a comment saying "this is from old bayer stuff and can prob be deleted"~~ ✅
 - ~~`imageWidths` array (line 496) — the dropdown that used it is commented out~~ ✅
 - ~~`hexToRgb` method in `index.vue` (line 989) — duplicate of the one in `ColorPicker.vue`, and it's not called anywhere in `index.vue`~~ ✅
 - ~~`InputBlock.vue` — imported in `index.vue` but never used in the template~~ ✅
 - ~~`Donate.vue` — imported in `index.vue` but only appears in commented-out template blocks~~ ✅
-- Large blocks of commented-out HTML throughout `index.vue`, `BottomContent.vue`, and `FilesizeResults.vue`
+- ~~Large blocks of commented-out HTML throughout `index.vue`, `BottomContent.vue`, and `FilesizeResults.vue`~~ ✅ (cleaned up, only useful section markers remain)
 - ~~`algoExamples` data in `Examples.vue` — declared but never used~~ ✅
 - ~~`imgSrc` and `console` methods in `Examples.vue` — unused or debugging only~~ ✅
-- Empty `data()`, `methods`, `components`, and `<style>` blocks in several components (`ContactForm`, `Donate`, etc.)
+- ~~Empty `data()`, `methods`, `components`, and `<style>` blocks in several components (`ContactForm`, `Donate`, etc.)~~ ✅ Deleted unused files: `old_Examples.vue`, `InputBlock.vue`, `Donate.vue`
 
 ### ~~1c. Remove `console.log` statements~~ ✅
 ~~There are `console.log` calls scattered throughout the codebase for debugging — in `index.vue` (`computedHeight`, `getSelected`, `getNumberOfImages`, `downloadImage`, `onUpdatePalette`, `onImageUpload`, `ditherImage`, `analyzeImagePalette`), `Toggler.vue`, `ColorPicker.vue`, `Examples.vue`. These should all be removed.~~
