@@ -56,8 +56,8 @@ this.images[i]['id'] = id
 ### ~~2a. Inline SVG in template~~ ✅
 ~~The Ko-fi support badge in `index.vue` was a massive inline SVG path embedded directly in the template.~~ Extracted to `components/KofiButton.vue`.
 
-### 2b. Duplicate `FilesizeResults` rendering
-The `FilesizeResults` component is rendered twice in `index.vue` — once for mobile (line 299, `md:hidden`) and once for desktop (line 417, `hidden md:flex`). Instead, render it once and use CSS to reposition it at different breakpoints, or use a portal/teleport pattern.
+### ~~2b. Duplicate `FilesizeResults` rendering~~ ✅
+~~The `FilesizeResults` component is rendered twice in `index.vue` — once for mobile (line 299, `md:hidden`) and once for desktop (line 417, `hidden md:flex`). Instead, render it once and use CSS to reposition it at different breakpoints, or use a portal/teleport pattern.~~ Now rendered once with CSS grid for responsive positioning.
 
 ### ~~2c. Help tooltip pattern is repeated 5 times~~ ✅
 ~~The "?" circle button that toggles an explanation modal is copy-pasted for: dither mode, image size, pixeliness, algorithm, serpentine, and palette import/export. Each one has its own boolean (`showDitherModeModal`, `showOptionsModalSize`, `showPixelinessModal`, `showOptionsModalAlgo`, `showOptionsModalSerp`, `showOptionsPaletteImportExport`). This should be a reusable `<HelpTooltip>` component.~~ Extracted to `components/HelpTooltip.vue`.
@@ -68,16 +68,16 @@ The `FilesizeResults` component is rendered twice in `index.vue` — once for mo
 ### 2e. Global element styles may cause unintended side effects
 In `tailwind.css`, base styles are applied to bare HTML elements (`a`, `p`, `h3`, `h4`, `blockquote`, `ul`). For example, every `<a>` gets `text-red-700 border-b border-red-700` and every `<p>` gets `mt-4`. This makes it hard to use these elements without the opinionated styles and can cause surprises in new pages or components.
 
-### 2f. Non-scoped component styles
-`ColorPicker.vue` and `Toggler.vue` use non-scoped `<style>` blocks. The ColorPicker styles override `.vc-sketch` globally, which is fine for that specific library, but the toggle styles in `Toggler.vue` should be scoped.
+### ~~2f. Non-scoped component styles~~ ✅
+~~`ColorPicker.vue` and `Toggler.vue` use non-scoped `<style>` blocks. The ColorPicker styles override `.vc-sketch` globally, which is fine for that specific library, but the toggle styles in `Toggler.vue` should be scoped.~~ Toggler.vue now uses `<style scoped>`. ColorPicker.vue intentionally global for vue-color overrides.
 
 ## 3. Accessibility
 
-### 3a. Missing `alt` attributes on images
-- `index.vue` line 30: `<img src="~/assets/earth-dither.gif">` — no alt text
-- `index.vue` line 378: original image display `<img :src="selectedImage.src">` — no alt
-- `index.vue` line 383-388: thumbnail images — no alt
-- `Examples.vue`: all example images lack meaningful alt text
+### ~~3a. Missing `alt` attributes on images~~ ✅
+- ~~`index.vue` line 30: `<img src="~/assets/earth-dither.gif">` — no alt text~~ ✅
+- ~~`index.vue` line 378: original image display `<img :src="selectedImage.src">` — no alt~~ ✅
+- ~~`index.vue` line 383-388: thumbnail images — no alt~~ ✅
+- ~~`Examples.vue`: all example images lack meaningful alt text~~ ✅ All images now have descriptive alt attributes.
 
 ### 3b. Non-semantic interactive elements
 - Color swatches in `ColorPicker.vue` are `<div>` elements with `@click` handlers — should be `<button>` elements
@@ -130,8 +130,8 @@ if (this.originalInitialPalette.length < i) {
 ### ~~5a. `getClosestColor` sorts the entire palette for every pixel~~ ✅
 ~~In the Bayer dither path, `getClosestColor` is called once per pixel. It maps and sorts the full palette array each time. For a 640x480 image that's 307,200 sort operations. A simple linear scan for the minimum distance would be faster, or precompute a color lookup table.~~ Refactored to use a simple O(n) linear scan instead of O(n log n) sort per pixel.
 
-### 5b. Example images are all loaded regardless of which example is selected
-`Examples.vue` uses `v-if` on the `img-comparison-slider` components, but the images inside are static `<img>` tags with `src` attributes — the browser may still download them. Lazy loading (`loading="lazy"`) would help.
+### ~~5b. Example images are all loaded regardless of which example is selected~~ ✅
+~~`Examples.vue` uses `v-if` on the `img-comparison-slider` components, but the images inside are static `<img>` tags with `src` attributes — the browser may still download them. Lazy loading (`loading="lazy"`) would help.~~ All example images now have `loading="lazy"` attribute.
 
 ### ~~5c. Analytics scripts loaded inline in template~~ ✅
 ~~The Fathom and Clicky analytics scripts are embedded directly in the `index.vue` template (lines 439-457). These should be in `nuxt.config.js` head scripts to be loaded properly and cached.~~ Moved to `nuxt.config.js` head scripts.
