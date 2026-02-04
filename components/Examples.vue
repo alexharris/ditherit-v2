@@ -4,8 +4,12 @@
   >
     <h3 class="text-3xl w-full font-serif text-center mx-0 px-0">Examples</h3>
     <div class="flex flex-row gap-4 items-center justify-center p-8">
-      <img class="w-24" src="~/assets/examples/frog_icon.png" alt="Frog example" @click="example = 'frog'" width="200" height="200" />
-      <img class="w-24" src="~/assets/examples/earth_icon.png" alt="Earth example" @click="example = 'earth'" width="200" height="198"  />
+      <button type="button" class="w-24 p-0 border-0 bg-transparent cursor-pointer" @click="example = 'frog'" aria-label="View frog examples">
+        <img class="w-full" src="~/assets/examples/frog_icon.png" alt="Frog example" width="200" height="200" />
+      </button>
+      <button type="button" class="w-24 p-0 border-0 bg-transparent cursor-pointer" @click="example = 'earth'" aria-label="View Earth examples">
+        <img class="w-full" src="~/assets/examples/earth_icon.png" alt="Earth example" width="200" height="198" />
+      </button>
     </div>
     <div class="flex flex-col checkers shadow-inner p-8">
 
@@ -121,14 +125,15 @@
       </div>      
       <!-- Example buttons -->
       <div class="flex flex-row flex-wrap items-start gap-8 p-8 justify-center w-full" >
-        <div
+        <button
+          type="button"
           class="btn-red-outline"
           :class="{ 'star': currentExample == example }"
           @click="currentExample = example"
           v-for="example in examples"
         >
           {{ example }}
-        </div>
+        </button>
       </div>       
     </div>
   </div>

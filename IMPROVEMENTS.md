@@ -79,12 +79,13 @@ In `tailwind.css`, base styles are applied to bare HTML elements (`a`, `p`, `h3`
 - ~~`index.vue` line 383-388: thumbnail images — no alt~~ ✅
 - ~~`Examples.vue`: all example images lack meaningful alt text~~ ✅ All images now have descriptive alt attributes.
 
-### 3b. Non-semantic interactive elements
-- Color swatches in `ColorPicker.vue` are `<div>` elements with `@click` handlers — should be `<button>` elements
-- The "+" to add a new swatch is a `<div>` — should be a `<button>`
-- "Save", "Export", "Import" tabs in `ColorPicker.vue` are `<span>` elements with `@click` — should be `<button>` elements
-- Example palette buttons in `Examples.vue` are `<div>` elements — should be `<button>` elements
-- The "Start with a frog" trigger is a `<span>` — should be `<button>`
+### ~~3b. Non-semantic interactive elements~~ ✅
+- ~~Color swatches in `ColorPicker.vue` are `<div>` elements with `@click` handlers — should be `<button>` elements~~ ✅
+- ~~The "+" to add a new swatch is a `<div>` — should be a `<button>`~~ ✅
+- ~~"Save", "Export", "Import" tabs in `ColorPicker.vue` are `<span>` elements with `@click` — should be `<button>` elements~~ ✅
+- ~~Example palette buttons in `Examples.vue` are `<div>` elements — should be `<button>` elements~~ ✅
+- ~~The "Start with a frog" trigger is a `<span>` — should be `<button>`~~ ✅
+All interactive elements now use proper `<button>` elements with appropriate aria-labels.
 
 ### ~~3c. Ko-fi link has no accessible label~~ ✅
 ~~The Ko-fi badge link (line 4 of `index.vue`) contains only an SVG with no `aria-label`, `title`, or visible text. Screen readers would announce it as an empty link.~~ Added `aria-label="Support Dither it! on Ko-fi"` to `KofiButton.vue`.

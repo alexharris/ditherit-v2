@@ -7,18 +7,22 @@
       <div  v-if="!showModal">
         <div class="flex flex-wrap" v-if="palette.length > 0">
           <template v-for="(item, i) in palette">
-            <div
+            <button
+              type="button"
               class="w-6 h-6 m-1 border border-gray-700 rounded-full cursor-pointer swatch"
               v-bind:style="{ backgroundColor: item['hex'] }"
+              :aria-label="'Edit color ' + item['hex']"
               @click="makeActiveSwatch(i)"
-            ></div>
+            ></button>
           </template>
-          <div
-            class="w-6 h-6 ml-1 mb-1  cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-700 hover:text-red-800"
+          <button
+            type="button"
+            class="w-6 h-6 ml-1 mb-1 cursor-pointer rounded-full flex items-center justify-center font-bold text-4xl text-red-700 hover:text-red-800"
+            aria-label="Add new color"
             @click="addNewSwatch()"
           >
             +
-          </div>
+          </button>
         </div>
         <div v-else class="block w-full">
           <span class="loader h-8 w-8 float-left mr-2"></span>Analyzing
@@ -57,12 +61,14 @@
         <div class="mt-4">
           <div class="block flex flex-row items-center justify-between">
             <div>
-              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewSavePalette = !viewSavePalette; viewExportPalette = false; viewImportPalette = false; showOptionsPaletteImportExport = false;" :class="viewSavePalette ? 'border-b-2 border-red-600': ''">Save</span>
-              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewExportPalette = !viewExportPalette; viewImportPalette = false; viewSavePalette = false; showOptionsPaletteImportExport = false;" :class=" viewExportPalette ? 'border-b-2 border-red-600': '' ">Export</span>
-              <span class="text-xs inline-block p-1 cursor-pointer" @click="viewImportPalette = !viewImportPalette; viewExportPalette = false; viewSavePalette = false; showOptionsPaletteImportExport = false;" :class=" viewImportPalette ? 'border-b-2 border-red-600': ''" id="importPalette">Import</span>
+              <button type="button" class="text-xs inline-block p-1 cursor-pointer" @click="viewSavePalette = !viewSavePalette; viewExportPalette = false; viewImportPalette = false; showOptionsPaletteImportExport = false;" :class="viewSavePalette ? 'border-b-2 border-red-600': ''">Save</button>
+              <button type="button" class="text-xs inline-block p-1 cursor-pointer" @click="viewExportPalette = !viewExportPalette; viewImportPalette = false; viewSavePalette = false; showOptionsPaletteImportExport = false;" :class=" viewExportPalette ? 'border-b-2 border-red-600': '' ">Export</button>
+              <button type="button" class="text-xs inline-block p-1 cursor-pointer" @click="viewImportPalette = !viewImportPalette; viewExportPalette = false; viewSavePalette = false; showOptionsPaletteImportExport = false;" :class=" viewImportPalette ? 'border-b-2 border-red-600': ''" id="importPalette">Import</button>
             </div>
-            <span
+            <button
+              type="button"
               class="rounded-full h-4 w-4 bg-red-700 text-white flex items-center justify-center float-right text-sm cursor-pointer"
+              :aria-label="showOptionsPaletteImportExport ? 'Close help' : 'Show help'"
               @click="showOptionsPaletteImportExport = !showOptionsPaletteImportExport"
             >
               <span v-if="!showOptionsPaletteImportExport">
@@ -71,7 +77,7 @@
               <span v-else>
                 X
               </span>
-            </span>
+            </button>
           </div>
           <div v-if="!showOptionsPaletteImportExport">
             <div class="border border-dashed border-gray-400 p-2 rounded" v-if="viewSavePalette || viewExportPalette || viewImportPalette">
@@ -84,16 +90,17 @@
                   @keyup.enter="saveCustomPalette"
                 />
                 <div class="flex gap-2 items-start">
-                  <span class="btn-red-small-outline" @click="saveCustomPalette">
+                  <button type="button" class="btn-red-small-outline" @click="saveCustomPalette">
                     Save
-                  </span>
-                  <span 
-                    v-if="isCustomPaletteSelected" 
+                  </button>
+                  <button
+                    v-if="isCustomPaletteSelected"
+                    type="button"
                     class="btn-red-small-outline"
                     @click="deleteCurrentCustomPalette"
                   >
                     Delete Current
-                </span>
+                  </button>
                 </div>
               </div>
               <div v-show="viewExportPalette">
@@ -105,7 +112,7 @@
               <div v-if="viewImportPalette">
                 <textarea v-model="palette2Import" placeholder="Enter a palette here" rows="5" class="w-full border border-gray-400 p-2 text-xs">{{palette2Import}}</textarea>
                 <div class="pt-2">
-                  <span class="btn-red-small-outline" @click="importPalette">Import</span>
+                  <button type="button" class="btn-red-small-outline" @click="importPalette">Import</button>
                 </div>
               </div>
             </div>

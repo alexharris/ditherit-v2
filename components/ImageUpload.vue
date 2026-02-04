@@ -27,9 +27,9 @@
         </label>
 
         <span class="py-4 px-4" v-if="duck">or</span>
-        <span class="btn-red-outline text-center inline-block bg-white cursor-pointer"  @click="startWithDuck" >
+        <button type="button" class="btn-red-outline text-center inline-block bg-white cursor-pointer" @click="startWithDuck">
           🐸 Start with a frog
-        </span>        
+        </button>        
         <div class="invisible md:visible h-0 md:h-16 pt-8 w-full">
           <span v-if="notAnImage" class="text-red-700 bg-red-200 rounded p-4">
             No one knows what that is. Try using a jpg, png, or gif.
