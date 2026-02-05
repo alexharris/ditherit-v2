@@ -65,6 +65,8 @@
 </template>
 
 <script>
+import quantfrogImg from '~/assets/examples/quantfrog.png'
+
 export default {
   data() {
     return {
@@ -163,7 +165,7 @@ export default {
 
       this.loading = true
 
-      const response = await fetch(require('~/assets/examples/quantfrog.png'))
+      const response = await fetch(quantfrogImg)
       const blob = await response.blob()
       const file = new File([blob], 'name')
 

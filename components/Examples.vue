@@ -131,6 +131,7 @@
           :class="{ 'star': currentExample == example }"
           @click="currentExample = example"
           v-for="example in examples"
+          :key="example"
         >
           {{ example }}
         </button>
@@ -144,12 +145,6 @@
 import 'img-comparison-slider';
 
 export default {
-  vue: {
-    config: {
-      productionTip: false,
-      ignoredElements: [/img-comparison-slider/]
-    }
-  },
   data() {
     return {
       example: 'frog',

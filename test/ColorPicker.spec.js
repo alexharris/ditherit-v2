@@ -1,9 +1,11 @@
 import { mount } from '@vue/test-utils'
 import ColorPicker from '@/components/ColorPicker.vue'
 
-// Stub the vue-color Sketch component
-const stubs = {
-  'sketch-picker': { template: '<div />' }
+// Global stub for the ColorPicker component from vue3-colorpicker
+const global = {
+  stubs: {
+    ColorPicker: { template: '<div />' }
+  }
 }
 
 describe('ColorPicker', () => {
@@ -14,8 +16,8 @@ describe('ColorPicker', () => {
 
     beforeEach(() => {
       wrapper = mount(ColorPicker, {
-        propsData: { initialPalette: [] },
-        stubs
+        props: { initialPalette: [] },
+        global
       })
     })
 
@@ -54,8 +56,8 @@ describe('ColorPicker', () => {
       )
 
       const wrapper = mount(ColorPicker, {
-        propsData: { initialPalette: [] },
-        stubs
+        props: { initialPalette: [] },
+        global
       })
 
       expect(wrapper.vm.customPalettes).toEqual(palettes)
@@ -63,8 +65,8 @@ describe('ColorPicker', () => {
 
     test('saves custom palettes to localStorage', () => {
       const wrapper = mount(ColorPicker, {
-        propsData: { initialPalette: [] },
-        stubs
+        props: { initialPalette: [] },
+        global
       })
 
       wrapper.vm.palette = [{ hex: '#00ff00' }]
@@ -86,8 +88,8 @@ describe('ColorPicker', () => {
       localStorage.setItem('ditherit_custom_palettes', 'not valid json')
 
       const wrapper = mount(ColorPicker, {
-        propsData: { initialPalette: [] },
-        stubs
+        props: { initialPalette: [] },
+        global
       })
 
       expect(wrapper.vm.customPalettes).toEqual([])
@@ -99,8 +101,8 @@ describe('ColorPicker', () => {
   describe('palette selection', () => {
     test('selects a preset palette', () => {
       const wrapper = mount(ColorPicker, {
-        propsData: { initialPalette: [] },
-        stubs
+        props: { initialPalette: [] },
+        global
       })
 
       wrapper.vm.presetPaletteSelected({
@@ -115,8 +117,8 @@ describe('ColorPicker', () => {
 
     test('selects original palette', () => {
       const wrapper = mount(ColorPicker, {
-        propsData: { initialPalette: [] },
-        stubs
+        props: { initialPalette: [] },
+        global
       })
 
       wrapper.vm.originalInitialPalette = [
@@ -140,8 +142,8 @@ describe('ColorPicker', () => {
   describe('updatePalette', () => {
     test('emits update-palette with correct RGB tuples', () => {
       const wrapper = mount(ColorPicker, {
-        propsData: { initialPalette: [] },
-        stubs
+        props: { initialPalette: [] },
+        global
       })
 
       wrapper.vm.palette = [{ hex: '#ff0000' }, { hex: '#00ff00' }]

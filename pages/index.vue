@@ -28,11 +28,11 @@
         class="order-2 md:col-start-1 md:row-start-1 md:row-span-2 xl:row-span-1 p-2 pt-0 rounded"
       >
         <SidebarControls
-          :dither-mode.sync="ditherMode"
+          v-model:dither-mode="ditherMode"
           :rgb-quant-options="rgbQuantOptions"
           :selected-image="selectedImage"
-          :canvas-width.sync="canvasWidth"
-          :block-size.sync="blockSize"
+          v-model:canvas-width="canvasWidth"
+          v-model:block-size="blockSize"
           :show-dithered-image="showDitheredImage"
           :dithering="dithering"
           @dither="ditherImage()"
@@ -59,8 +59,8 @@
           <TopToolbar
             :show-dithered-image="showDitheredImage"
             :dithering="dithering"
-            :view-original.sync="viewOriginal"
-            :view-full-width.sync="viewFullWidth"
+            v-model:view-original="viewOriginal"
+            v-model:view-full-width="viewFullWidth"
             :custom-width="customWidth"
             :download-url="downloadUrl"
             :selected-file="selectedFile"
@@ -89,6 +89,7 @@
             >
               <div
                 v-for="n in numberOfImages"
+                :key="'dithered-' + n"
                 v-show="selectedImage.id == 'originalImage' + n"
                 class="max-w-full "
               >
@@ -114,7 +115,7 @@
               />
             </div>
             <div class="flex flex-row flex-wrap mt-4 justify-center">
-              <div v-for="n in numberOfImages" v-show="numberOfImages > 1">
+              <div v-for="n in numberOfImages" :key="'original-' + n" v-show="numberOfImages > 1">
                 <img
                   :id="'originalImage' + n"
                   class="max-w-full m-4 shadow cursor-pointer"

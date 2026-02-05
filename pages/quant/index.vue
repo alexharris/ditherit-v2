@@ -218,26 +218,13 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Logo from '~/components/Logo.vue'
+import BottomContent from '~/components/BottomContent.vue'
 
-export default {
-  components: {
-    Logo,
-  },
-  data() {
-    return {
-
-    }
-  },
-  computed: {
-
-  },
-  methods: {
-
-
-  }
-}
+useHead({
+  title: 'Quant Error - The Dither it! Blog'
+})
 </script>
 
 <style scoped>

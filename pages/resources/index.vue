@@ -37,39 +37,18 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Logo from '~/components/Logo.vue'
 
-export default {
- head: {
-    title: 'Dithering Resources - Dither it!',
-    meta: [
-      { charset: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      {
-        hid: 'Dither resources',
-        name: 'Resources about dithering',
-        content: 'Links to various pages on the internet dealing with dithering'
-      }
-    ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
-  },    
-  components: {
-    Logo,
-  },
-  data() {
-    return {
-
+useHead({
+  title: 'Dithering Resources - Dither it!',
+  meta: [
+    {
+      name: 'description',
+      content: 'Links to various pages on the internet dealing with dithering'
     }
-  },
-  computed: {
-
-  },
-  methods: {
-
-
-  }
-}
+  ]
+})
 </script>
 
 <style scoped>

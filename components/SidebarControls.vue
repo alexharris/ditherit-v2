@@ -18,9 +18,9 @@
             id="ditherMode"
             :value="ditherMode"
             class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
-            @input="$emit('update:dither-mode', $event.target.value)"
+            @input="$emit('update:ditherMode', $event.target.value)"
           >
-            <template v-for="(v, i) in ditherModeOptions">
+            <template v-for="(v, i) in ditherModeOptions" :key="v">
               <option :id="v" :name="v" :value="v">{{ v }}</option>
             </template>
           </select>
@@ -63,7 +63,7 @@
                 max="5000"
                 :value="canvasWidth"
                 @change="validateWidth()"
-                @input="$emit('update:canvas-width', $event.target.value)"
+                @input="$emit('update:canvasWidth', $event.target.value)"
               />
             </div>
             <div class="w-1/2">
@@ -103,7 +103,7 @@
             min="1"
             max="25"
             class="grow"
-            @input="$emit('update:block-size', $event.target.value)"
+            @input="$emit('update:blockSize', $event.target.value)"
           />
           <div class="w-12 text-left">{{ blockSize }}</div>
         </div>
@@ -140,7 +140,7 @@
             class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline"
             @input="$emit('update:dithKern', $event.target.value)"
           >
-            <template v-for="(v, i) in algorithmOptions">
+            <template v-for="(v, i) in algorithmOptions" :key="v">
               <option :id="v" :name="v" :value="v">{{ v }}</option>
             </template>
           </select>
@@ -234,7 +234,7 @@ export default {
   methods: {
     enableCustomWidth() {
       this.customWidth = true
-      this.$emit('update:canvas-width', this.selectedImage.naturalWidth)
+      this.$emit('update:canvasWidth', this.selectedImage.naturalWidth)
       this.$nextTick(() => this.$refs.customWidthField.focus())
     },
     validateWidth() {

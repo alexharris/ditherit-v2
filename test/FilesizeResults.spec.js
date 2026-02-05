@@ -4,7 +4,7 @@ import FilesizeResults from '@/components/FilesizeResults.vue'
 describe('FilesizeResults', () => {
   function createWrapper(downloadFileSize, originalFileSize) {
     return mount(FilesizeResults, {
-      propsData: {
+      props: {
         ratioGood: true,
         downloadFileSize,
         originalFileSize,

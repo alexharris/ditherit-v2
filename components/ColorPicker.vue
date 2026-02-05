@@ -6,7 +6,7 @@
       <!-- Palette menu -->
       <div  v-if="!showModal">
         <div class="flex flex-wrap" v-if="palette.length > 0">
-          <template v-for="(item, i) in palette">
+          <template v-for="(item, i) in palette" :key="i">
             <button
               type="button"
               class="w-6 h-6 m-1 border border-gray-700 rounded-full cursor-pointer swatch"
@@ -44,12 +44,12 @@
               <option id="custom" name="paletteColor" value="custom" disabled
                 >Custom</option
               >
-              <template v-for="(p, i) in customPalettes">
+              <template v-for="(p, i) in customPalettes" :key="'custom-' + i">
                 <option :id="'custom-' + i" name="paletteColor" :value="'custom-' + i">
-                  ⭐ {{ p.name }}
+                  {{ p.name }}
                 </option>
               </template>
-              <template v-for="(p, i) in presetPalettes">
+              <template v-for="(p, i) in presetPalettes" :key="p.value">
                 <option :id="p.value" name="paletteColor" :value="p.value">{{
                   p.name
                 }}</option>
@@ -82,10 +82,10 @@
           <div v-if="!showOptionsPaletteImportExport">
             <div class="border border-dashed border-gray-400 p-2 rounded" v-if="viewSavePalette || viewExportPalette || viewImportPalette">
               <div v-if="viewSavePalette">
-                <input 
-                  v-model="newPaletteName" 
-                  type="text" 
-                  placeholder="Enter palette name" 
+                <input
+                  v-model="newPaletteName"
+                  type="text"
+                  placeholder="Enter palette name"
                   class="w-full border border-gray-400 p-2 text-xs mb-2"
                   @keyup.enter="saveCustomPalette"
                 />
@@ -106,7 +106,7 @@
               <div v-show="viewExportPalette">
                 <textarea readonly v-model="palette2Export" rows="5" class="w-full border border-grey-400 p-2 text-xs"></textarea>
                 <div class="pt-2">
-                  <a id="exportPalette" class="btn-red-small-outline text-xs" download="ditherit_palette.txt" :href="'data:text/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.palette))">Export</a>
+                  <a id="exportPalette" class="btn-red-small-outline text-xs" download="ditherit_palette.txt" :href="'data:text/txt;charset=utf-8,' + encodeURIComponent(JSON.stringify(palette))">Export</a>
                 </div>
               </div>
               <div v-if="viewImportPalette">
@@ -127,9 +127,11 @@
       <!-- Colorpicker Modal -->
       <div v-else>
         <div class="color-modal">
-          <sketch-picker
-            :value="palette[activeSwatch]"
-            @input="storeCurrentColor"
+          <ColorPicker
+            v-model:pureColor="currentColor"
+            :disable-alpha="true"
+            shape="circle"
+            format="hex"
           />
         </div>
         <div class="mt-2">
@@ -156,25 +158,24 @@
 </template>
 
 <script>
-import { Sketch } from 'vue-color'
+import { ColorPicker } from 'vue3-colorpicker'
+import 'vue3-colorpicker/style.css'
 
 export default {
   components: {
-    'sketch-picker': Sketch
+    ColorPicker
   },
   props: {
     initialPalette: { type: Array, default: () => [] }
   },
   data() {
     return {
-      // numberOfColors: 4,
-
-      currentColor: '', // for temporary holding swatch value from color-picker
+      currentColor: '#ffffff',
       showModal: false,
       activeSwatch: 0,
-      palette: [], // the colors as they are created by the color pickers
-      convertedColorArray: [], // the colors as they are sent to the ditherer ([0,0,0])
-      originalInitialPalette: [], //this holds the first initial palette loaded
+      palette: [],
+      convertedColorArray: [],
+      originalInitialPalette: [],
       presetPaletteSelection: 'original',
       viewImportPalette: false,
       viewExportPalette: false,
@@ -314,9 +315,6 @@ export default {
   },
   watch: {
     initialPalette: function(newVal, oldVal) {
-      // watch it
-      // console.log('Prop changed: ', newVal, ' | was: ', oldVal)
-
       this.rgbToHex(newVal)
     }
   },
@@ -327,7 +325,6 @@ export default {
     resetToOriginal() {
       this.presetPaletteSelection = 'original'
     },
-    // Load custom palettes from localStorage
     loadCustomPalettes() {
       if (typeof localStorage !== 'undefined') {
         const stored = localStorage.getItem('ditherit_custom_palettes')
@@ -341,61 +338,54 @@ export default {
         }
       }
     },
-    // Save custom palettes to localStorage
     saveCustomPalettes() {
       if (typeof localStorage !== 'undefined') {
         localStorage.setItem('ditherit_custom_palettes', JSON.stringify(this.customPalettes))
       }
     },
-    // Save current palette as a custom palette
     saveCustomPalette() {
       if (!this.newPaletteName.trim()) {
         alert('Please enter a name for the palette')
         return
       }
-      
+
       const newPalette = {
         name: this.newPaletteName.trim(),
-        colors: JSON.parse(JSON.stringify(this.palette)) // Deep copy
+        colors: JSON.parse(JSON.stringify(this.palette))
       }
-      
+
       this.customPalettes.push(newPalette)
       this.saveCustomPalettes()
-      
-      // Select the newly saved palette
+
       this.presetPaletteSelection = 'custom-' + (this.customPalettes.length - 1)
-      
-      // Clear the input and hide the save section
+
       this.newPaletteName = ''
       this.viewSavePalette = false
-      
+
       alert('Palette saved successfully!')
     },
-    // Delete the currently selected custom palette
     deleteCurrentCustomPalette() {
       if (!this.isCustomPaletteSelected) {
         return
       }
-      
+
       const index = parseInt(this.presetPaletteSelection.replace('custom-', ''))
       const paletteName = this.customPalettes[index].name
-      
+
       if (confirm(`Are you sure you want to delete the palette "${paletteName}"?`)) {
         this.customPalettes.splice(index, 1)
         this.saveCustomPalettes()
-        
-        // Reset to original palette
+
         this.presetPaletteSelection = 'original'
         this.palette = []
         this.originalInitialPalette.forEach((v) => {
           this.palette.push(v)
         })
         this.updatePalette()
-        
+
         alert('Palette deleted successfully!')
       }
     },
-    // When a custom palette is selected
     presetPaletteSelected(e) {
       this.palette = []
 
@@ -404,7 +394,6 @@ export default {
           this.palette.push(v)
         })
       } else if (e.target.value.startsWith('custom-')) {
-        // Load custom palette
         const index = parseInt(e.target.value.replace('custom-', ''))
         if (this.customPalettes[index]) {
           this.customPalettes[index].colors.forEach((c) => {
@@ -423,17 +412,16 @@ export default {
 
       this.updatePalette()
     },
-    // When the user selects the color from the modal
     selectColor() {
-      this.palette[this.activeSwatch] = { hex: this.currentColor['hex'] }
+      // vue3-colorpicker returns color as string (hex)
+      let hexValue = this.currentColor
+      if (typeof hexValue === 'object' && hexValue.hex) {
+        hexValue = hexValue.hex
+      }
+      this.palette[this.activeSwatch] = { hex: hexValue }
       this.updatePalette()
       this.showModal = false
     },
-    // This holds the selected color until user hits Select in the color modal
-    storeCurrentColor(color) {
-      this.currentColor = color
-    },
-    // Determine if a swatch is the active one, this controls which classes display on that swatch when selected
     isActiveSwatch(i) {
       if (this.activeSwatch === i) {
         return true
@@ -441,41 +429,31 @@ export default {
         return false
       }
     },
-    // Make Active Swatch
-    // When a swatch is clicked on, make it active and open the color picker
     makeActiveSwatch(i) {
-      this.activeSwatch = i //tells the picker which swatch is being updated
+      this.activeSwatch = i
+      this.currentColor = this.palette[i].hex
       this.showModal = true
 
       this.presetPaletteSelection = 'custom'
     },
-    // Add New Swatch
-    // This adds a new color to the colors
     addNewSwatch() {
       this.palette.push({ hex: '#ffffff' })
       this.activeSwatch = this.palette.length
       this.presetPaletteSelection = 'custom'
       this.updatePalette()
     },
-    // Remove a swatch and update the palette
     removeSwatch(i) {
       this.palette.splice(i, 1)
       this.updatePalette()
       this.showModal = false
     },
-    // Update Colors
-    // This updates the colors that are used by the actual ditherer
-    // Requires an array of hex colors in the format [{hex: '#ff000'},{hex: '#ff0ff'}]
     updatePalette() {
-      // update the colors, requires an array of
       const colorTuplesArray = []
       this.palette.forEach((v) => {
         colorTuplesArray.push(this.hexToRgb(v['hex']))
       })
       this.$emit('update-palette', colorTuplesArray)
     },
-    //Convert Hex to RGB
-    // Given a hex value, return the RGB tuple
     hexToRgb(hex) {
       const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
       return result
@@ -486,8 +464,6 @@ export default {
           ]
         : null
     },
-    // Convert RGB To Hex
-    // this converts an array of tupes into hex values
     rgbToHex() {
       this.palette = []
       const pal = this.initialPalette
@@ -500,7 +476,6 @@ export default {
         this.palette.push({ hex })
 
         if (this.originalInitialPalette.length <= i) {
-          //if there are less values in originalInitialPalette than colors processed, it means we need to store it
           this.originalInitialPalette.push({ hex })
         }
       }
@@ -528,28 +503,7 @@ export default {
 </script>
 
 <style>
-.vc-sketch {
-  width: auto !important;
-  box-shadow: none !important;
-}
-
-.vc-sketch-alpha-wrap {
-  display: none;
-}
-
-.vc-sketch-field--single:last-of-type {
-  display: none;
-}
-
-.vc-sketch-presets {
-  display: none;
-}
-.vc-sketch-hue-wrap {
-  height: 24px !important;
-}
-
-.vc-hue-picker {
-  margin-top: 0 !important;
-  height: 24px !important;
+.vc-color-wrap {
+  width: 100% !important;
 }
 </style>

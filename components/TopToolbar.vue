@@ -6,14 +6,14 @@
     <div class="flex-grow flex flex-col md:flex-row gap-4">
       <Toggler
         custom-event="view-original"
-        @view-original="$emit('update:view-original', !viewOriginal)"
+        @view-original="$emit('update:viewOriginal', !viewOriginal)"
       >
         View Original
       </Toggler>
       <Toggler
         v-if="customWidth && viewOriginal"
         custom-event="view-full-width"
-        @view-full-width="$emit('update:view-full-width', !viewFullWidth)"
+        @view-full-width="$emit('update:viewFullWidth', !viewFullWidth)"
       >
         Full Size
       </Toggler>

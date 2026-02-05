@@ -20,7 +20,7 @@ describe('ImageUpload', () => {
 
   beforeEach(() => {
     wrapper = mount(ImageUpload, {
-      propsData: { text: 'Upload Image', duck: true }
+      props: { text: 'Upload Image', duck: true }
     })
   })
 
