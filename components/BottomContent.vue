@@ -20,12 +20,26 @@
         <h3 class="text-lg font-serif mt-0 mb-2">Updates</h3>
         <div class="mb-4">
           <div class="flex flex-row items-center gap-2 text-sm">
-              <span class="text-gray-400">02-01-25</span><h4 class=" inline m-0 text-sm"> – Cool Thing</h4>
+              <span class="text-gray-400">02-10-26</span><h4 class=" inline m-0 text-sm"> – Dither it! v3</h4>
+          </div>
+          <div>
+            <p class="mt-0">
+              I am almost done with a entire re-write of Dither it!, located here:
+            </p>
+            <p><a href="https://ditheritv3.netlify.app/">Dither it! v3</a></p>
+            <p>
+              So far it has feature parity with the current version with a few extras like improved "pixeliness" (now pixel scale), more bayer matrix options, and bulk download of multiple images at once. I would love to get any feedback.
+            </p>
+          </div>
+        </div>
+        <div class="mb-4">
+          <div class="flex flex-row items-center gap-2 text-sm">
+              <span class="text-gray-400">02-01-26</span><h4 class=" inline m-0 text-sm"> – Cool Thing</h4>
           </div>
           <div>
             <p class="mt-0">
               Want to learn more about dithering? Check out this amazing animated tutorial thing: <a href="https://visualrambling.space/dithering-part-1/">Dithering Part 1: What is Dithering?</a> by Visual Rambling. It is the visual intro to dithering that I wish I would/could have made.
-            </p>          
+            </p>
           </div>
         </div>         
         <div class="mb-4">
