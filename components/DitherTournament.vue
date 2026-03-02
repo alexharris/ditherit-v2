@@ -219,6 +219,7 @@
         </div>
         <div class="winner-actions">
           <a :href="winner.dataUrl" :download="'dither_winner_' + (winner.config.algorithm || 'bayer') + '.png'" class="wiz-btn-primary">💾 Download</a>
+          <button class="wiz-btn-blur" @click="sendToBlur(winner.dataUrl)">🔍 Blur this image</button>
           <button class="wiz-btn-ghost" @click="reset">🔁 Try again</button>
           <nuxt-link to="/" class="wiz-btn-ghost">← Main menu</nuxt-link>
         </div>
@@ -246,7 +247,10 @@
             <div class="lb-info">
               <div class="lb-name">{{ entry.label }}</div>
               <div class="lb-rounds">Survived {{ entry.roundsSurvived }} round{{ entry.roundsSurvived !== 1 ? 's' : '' }}</div>
-              <a v-if="entry.dataUrl" :href="entry.dataUrl" :download="'dither_' + (entry.config.algorithm || 'bayer') + '_rank' + (i+1) + '.png'" class="lb-dl-link">💾 Download</a>
+              <div class="lb-action-row">
+                <a v-if="entry.dataUrl" :href="entry.dataUrl" :download="'dither_' + (entry.config.algorithm || 'bayer') + '_rank' + (i+1) + '.png'" class="lb-dl-link">💾 Download</a>
+                <button v-if="entry.dataUrl" class="lb-blur-link" @click="sendToBlur(entry.dataUrl)">🔍 Blur</button>
+              </div>
             </div>
             <div class="lb-bar-wrap">
               <div class="lb-bar" :style="{ width: (entry.roundsSurvived / totalRounds * 100) + '%' }"></div>
@@ -273,6 +277,7 @@
         </div>
         <div class="winner-actions">
           <a :href="winner.dataUrl" :download="'dither_' + (winner.config.algorithm || 'bayer') + '.png'" class="wiz-btn-primary">💾 Download</a>
+          <button class="wiz-btn-blur" @click="sendToBlur(winner.dataUrl)">🔍 Blur this image</button>
           <button class="wiz-btn-ghost" @click="reset">🔁 Try again</button>
           <nuxt-link to="/" class="wiz-btn-ghost">← Main menu</nuxt-link>
         </div>
@@ -625,6 +630,14 @@ export default {
       }
       this.previewSrc = null
     },
+    sendToBlur(dataUrl) {
+      try {
+        sessionStorage.setItem('blurStudio_image', dataUrl)
+      } catch(e) {
+        // sessionStorage full or unavailable — navigate anyway, blur studio will handle it
+      }
+      this.$router.push('/blur')
+    },
     reset() {
       this.purgeAll()
       this.phase = 'wizard'
@@ -833,8 +846,17 @@ export default {
 .lb-thumb-dl { position: absolute; bottom: 2px; right: 2px; font-size: 0.7rem; background: rgba(0,0,0,0.6); color: #fff; border-radius: 2px; padding: 1px 3px; opacity: 0; transition: opacity 0.15s; }
 .lb-thumb-link:hover .lb-thumb-dl { opacity: 1; }
 .lb-thumb-empty { width: 64px; height: 64px; background: #f0f0f0; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #aaa; }
-.lb-dl-link { font-size: 0.75rem; color: #c53030; font-weight: 700; text-decoration: none; margin-top: 0.25rem; display: inline-block; }
+.lb-action-row { display: flex; gap: 0.75rem; align-items: center; margin-top: 0.25rem; flex-wrap: wrap; }
+.lb-dl-link { font-size: 0.75rem; color: #c53030; font-weight: 700; text-decoration: none; }
 .lb-dl-link:hover { text-decoration: underline; }
+.lb-blur-link { font-size: 0.75rem; color: #1a6b8a; font-weight: 700; background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; }
+.lb-blur-link:hover { text-decoration: underline; }
+.wiz-btn-blur {
+  display: inline-block; background: #1a6b8a; color: #fff; border: 2px solid #1a6b8a;
+  padding: 0.6rem 1.5rem; font-size: 1rem; font-weight: 700; font-family: inherit;
+  cursor: pointer; border-radius: 2px; transition: all 0.15s; text-decoration: none; text-align: center;
+}
+.wiz-btn-blur:hover { background: #155a75; border-color: #155a75; transform: translateY(-1px); }
 .lb-bar-wrap { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
 .lb-bar { height: 100%; background: #c53030; border-radius: 3px; }
 

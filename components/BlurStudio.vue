@@ -404,6 +404,20 @@ export default {
       }
       return new ImageData(dst, w, h)
     },
+  },
+  mounted() {
+    try {
+      const stored = sessionStorage.getItem('blurStudio_image')
+      if (stored) {
+        this.previewSrc = stored
+        this.uploadedFile = { name: 'from_tournament.png' }
+        this.fileName = 'from_tournament.png'
+        sessionStorage.removeItem('blurStudio_image')
+        this.phase = 'editor'
+      }
+    } catch(e) {
+      // sessionStorage unavailable, ignore
+    }
   }
 }
 </script>
