@@ -522,8 +522,8 @@ export default {
   padding: 0.4rem 0.75rem;
   text-transform: uppercase; letter-spacing: 0.5px;
 }
-.canvas-wrap { position: relative; min-height: 200px; overflow: auto; display: flex; align-items: flex-start; justify-content: flex-start; }
-.preview-canvas { display: block; image-rendering: pixelated; transition: width 0.2s; min-width: 100%; }
+.canvas-wrap { position: relative; min-height: 200px; }
+.preview-canvas { width: 100%; max-width: 100%; height: auto; display: block; image-rendering: pixelated; }
 .preview-canvas.hidden { display: none; }
 
 

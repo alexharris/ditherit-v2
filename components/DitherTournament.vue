@@ -703,7 +703,7 @@ export default {
 .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
 .upload-hint { font-size: 1rem; font-weight: 600; margin: 0; color: #1a1a1a; }
 .upload-sub { font-size: 0.8rem; color: #888; margin: 0.25rem 0 0; }
-.upload-preview { max-width: 100%; max-height: 220px; object-fit: contain; display: block; margin: 0 auto; }
+.upload-preview { width: 100%; height: auto; display: block; image-rendering: pixelated; }
 .upload-change { font-size: 0.8rem; color: #888; margin: 0.5rem 0 0; }
 
 .mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
@@ -783,8 +783,7 @@ export default {
 }
 .match-card:hover { border-color: #c53030; box-shadow: 4px 4px 0 #c53030; transform: translateY(-3px); }
 .match-label { font-size: 0.78rem; font-weight: 700; padding: 0.5rem 0.75rem; background: #1a1a1a; color: #fff; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.match-img { display: block; object-fit: contain; max-height: 420px; image-rendering: pixelated; transition: width 0.2s; }
-.match-card { overflow: auto; }
+.match-img { width: 100%; height: auto; display: block; image-rendering: pixelated; }
 .match-pick-btn { padding: 0.6rem; text-align: center; font-size: 0.85rem; font-weight: 700; color: #c53030; border-top: 1px solid #eee; transition: all 0.15s; }
 .match-card:hover .match-pick-btn { background: #c53030; color: #fff; border-color: #c53030; }
 .vs-badge {
@@ -802,7 +801,7 @@ export default {
 .winner-crown { font-size: 3rem; margin-bottom: 0.5rem; }
 .winner-title { font-size: 2.5rem; font-weight: 900; margin: 0 0 0.25rem; color: #c53030; letter-spacing: -1px; }
 .winner-label { font-size: 1.1rem; font-weight: 700; color: #1a1a1a; margin: 0 0 1.5rem; }
-.winner-img { max-width: 100%; max-height: 360px; object-fit: contain; display: block; margin: 0 auto 1.5rem; border: 2px solid #eee; image-rendering: pixelated; }
+.winner-img { width: 100%; height: auto; display: block; margin: 0 auto 1.5rem; border: 2px solid #eee; image-rendering: pixelated; }
 .winner-settings-head { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #999; margin: 0 0 0.75rem; }
 .winner-settings { text-align: left; background: #faf8f5; border: 1px solid #eee; border-radius: 4px; padding: 0.75rem 1rem; margin-bottom: 1.5rem; }
 .setting-row { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid #eee; font-size: 0.88rem; }
