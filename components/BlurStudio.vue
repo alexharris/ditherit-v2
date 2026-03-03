@@ -33,6 +33,7 @@
           <button class="btn-primary mt-6" :disabled="!uploadedFile" @click="goToEditor">✨ Manual blur →</button>
           <button class="btn-tournament mt-6" :disabled="!uploadedFile" @click="goToTournament">🏆 Blur Tournament →</button>
         </div>
+        <p class="tour-note">💡 Blur Tournament works best with lower resolution images (e.g. 64×64px). High resolution images may take a long time to process, especially with Lens blur at larger radius values.</p>
       </div>
     </div>
 
@@ -712,6 +713,7 @@ export default {
 .upload-sub { font-size: 0.8rem; color: #888; margin: 0.25rem 0 0; }
 .upload-preview { width: 100%; height: auto; display: block; image-rendering: pixelated; }
 .upload-change { font-size: 0.8rem; color: #888; margin: 0.5rem 0 0; }
+.tour-note { font-size: 0.8rem; color: #888; margin: 0.75rem 0 0; line-height: 1.5; border-left: 3px solid #f0ad4e; padding-left: 0.6rem; }
 .upload-btns { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
 .upload-btns .btn-primary, .upload-btns .btn-tournament { flex: 1; }
 
