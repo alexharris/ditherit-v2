@@ -107,6 +107,25 @@
                 </div>
                 <div class="palette-chip-label">{{ p.name }}</div>
               </div>
+              <div
+                v-if="customGplPalette"
+                class="palette-chip"
+                :class="{ selected: manualSettings.palette === 'custom-gpl' }"
+                @click="manualSettings.palette = 'custom-gpl'"
+              >
+                <div class="palette-swatches">
+                  <div v-for="c in customGplPalette.colors.slice(0,5)" :key="c" class="palette-swatch" :style="{ background: c }"></div>
+                </div>
+                <div class="palette-chip-label">📄 {{ customGplPalette.name }}</div>
+              </div>
+            </div>
+            <div class="gpl-upload-row">
+              <label class="gpl-upload-btn">
+                📂 Upload GIMP .gpl palette
+                <input type="file" accept=".gpl" class="hidden" @change="loadGplPalette" />
+              </label>
+              <span v-if="gplError" class="gpl-error">{{ gplError }}</span>
+              <span v-if="gplSuccess" class="gpl-success">{{ gplSuccess }}</span>
             </div>
           </div>
         </div>
@@ -295,6 +314,9 @@ export default {
 
       errorAlgorithms: ERROR_ALGORITHMS,
       presetPalettes: PRESET_PALETTES,
+      customGplPalette: null,
+      gplError: '',
+      gplSuccess: '',
     }
   },
   computed: {
@@ -353,7 +375,9 @@ export default {
 
     startBatchRender(settings) {
       // Normalise settings into appliedSettings
-      const paletteName = PRESET_PALETTES.find(p => p.value === settings.palette)?.name || 'Original'
+      const paletteName = settings.palette === 'custom-gpl' && this.customGplPalette
+        ? this.customGplPalette.name
+        : (PRESET_PALETTES.find(p => p.value === settings.palette)?.name || 'Original')
       this.appliedSettings = {
         mode: settings.mode,
         modeName: settings.mode === 'error' ? 'Error Diffusion' : 'Bayer (Ordered)',
@@ -369,7 +393,9 @@ export default {
     },
 
     async runBatchRender() {
-      const paletteRgb = getPaletteRgb(this.appliedSettings.palette)
+      const paletteRgb = this.appliedSettings.palette === 'custom-gpl' && this.customGplPalette
+        ? this.customGplPalette.rgb
+        : getPaletteRgb(this.appliedSettings.palette)
       const canvas = this.$refs.batchCanvas
 
       for (let i = 0; i < this.uploadedFiles.length; i++) {
@@ -466,6 +492,52 @@ export default {
       })
     },
 
+    loadGplPalette(e) {
+      this.gplError = ''
+      this.gplSuccess = ''
+      const file = e.target.files[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        const result = this.parseGpl(ev.target.result)
+        if (result.error) { this.gplError = result.error; return }
+        if (result.colors.length === 0) { this.gplError = 'No colours found in this .gpl file.'; return }
+        if (result.colors.length > 256) { this.gplError = `This palette has ${result.colors.length} colours — maximum is 256.`; return }
+        this.customGplPalette = {
+          name: result.name,
+          colors: result.colors,
+          rgb: result.colors.map(h => {
+            const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h)
+            return r ? [parseInt(r[1], 16), parseInt(r[2], 16), parseInt(r[3], 16)] : null
+          }).filter(Boolean)
+        }
+        this.manualSettings.palette = 'custom-gpl'
+        this.gplSuccess = `Loaded "${result.name}" — ${result.colors.length} colours`
+      }
+      reader.onerror = () => { this.gplError = 'Could not read the file.' }
+      reader.readAsText(file)
+      e.target.value = ''
+    },
+    parseGpl(text) {
+      const lines = text.split(/?
+/)
+      if (!lines[0] || lines[0].trim() !== 'GIMP Palette') return { error: 'Not a valid GIMP .gpl file.' }
+      let name = 'Custom GPL'
+      const colors = []
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim()
+        if (!line || line.startsWith('#')) continue
+        if (line.startsWith('Name:')) { name = line.replace('Name:', '').trim(); continue }
+        if (line.startsWith('Columns:')) continue
+        const match = line.match(/^\s*(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})/)
+        if (match) {
+          const r = parseInt(match[1]), g = parseInt(match[2]), b = parseInt(match[3])
+          if (r > 255 || g > 255 || b > 255) continue
+          colors.push('#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join(''))
+        }
+      }
+      return { name, colors }
+    },
     reset() {
       this.phase = 'setup'
       this.uploadedFiles = []
@@ -476,6 +548,9 @@ export default {
       this.renderDone = 0
       this.renderedImages = []
       this.manualSettings = { mode: 'error', algorithm: 'FloydSteinberg', serpentine: false, palette: 'original' }
+      this.customGplPalette = null
+      this.gplError = ''
+      this.gplSuccess = ''
     }
   }
 }
@@ -593,6 +668,11 @@ export default {
 .w-full { width: 100%; box-sizing: border-box; }
 .mt-4 { margin-top: 1rem; }
 
+.gpl-upload-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.6rem; flex-wrap: wrap; }
+.gpl-upload-btn { font-size: 0.8rem; font-weight: 700; color: #1a1a1a; border: 2px solid #1a1a1a; border-radius: 2px; padding: 0.3rem 0.75rem; cursor: pointer; transition: all 0.15s; background: #fff; font-family: inherit; }
+.gpl-upload-btn:hover { background: #1a1a1a; color: #fff; }
+.gpl-error { font-size: 0.78rem; color: #c53030; font-weight: 600; }
+.gpl-success { font-size: 0.78rem; color: #2d7a2d; font-weight: 600; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 600px) {

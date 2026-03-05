@@ -51,6 +51,18 @@
               <div class="palette-swatches"><div v-for="c in p.colors.slice(0,5)" :key="c" class="palette-swatch" :style="{ background: c }"></div></div>
               <div class="palette-label">{{ p.name }}</div>
             </div>
+            <div v-if="customGplPalette" class="palette-chip" :class="{ selected: options.palette === 'custom-gpl' }" @click="options.palette = 'custom-gpl'">
+              <div class="palette-swatches"><div v-for="c in customGplPalette.colors.slice(0,5)" :key="c" class="palette-swatch" :style="{ background: c }"></div></div>
+              <div class="palette-label">📄 {{ customGplPalette.name }}</div>
+            </div>
+          </div>
+          <div class="gpl-upload-row">
+            <label class="gpl-upload-btn">
+              📂 Upload .gpl palette
+              <input type="file" accept=".gpl" class="hidden" @change="loadGplPalette" />
+            </label>
+            <span v-if="gplError" class="gpl-error">{{ gplError }}</span>
+            <span v-if="gplSuccess" class="gpl-success">{{ gplSuccess }}</span>
           </div>
           <div class="wiz-btn-row">
             <button class="btn-ghost" @click="wizardStep = 2">← Back</button>
@@ -167,6 +179,9 @@ export default {
     return {
       phase: 'wizard', wizardStep: 1, showLabels: null,
       options: { mode: null, palette: null, serpentine: null },
+      customGplPalette: null,
+      gplError: '',
+      gplSuccess: '',
       variants: [], contestants: [], bracket: [], winners: [], currentPairs: [],
       matchIndex: 0, currentRound: 1, totalRounds: 1,
       doneCount: 0, totalCount: 0, rendering: false,
@@ -191,7 +206,8 @@ export default {
     async startProcessing() {
       this.phase='processing'; this.rendering=false
       this.variants=buildVariants(this.options.mode, this.options.serpentine)
-      this.variants.forEach(v=>{v.config.paletteName=PRESET_PALETTES.find(p=>p.value===this.options.palette)?.name||'Original'})
+      const paletteName=this.options.palette==='custom-gpl'&&this.customGplPalette?this.customGplPalette.name:(PRESET_PALETTES.find(p=>p.value===this.options.palette)?.name||'Original')
+      this.variants.forEach(v=>{v.config.paletteName=paletteName})
       this.totalCount=this.variants.length; this.doneCount=0
       await this.$nextTick()
       if(this.$refs.sourceImg&&this.$refs.sourceImg.complete) await this.renderAll()
@@ -201,7 +217,8 @@ export default {
       if(this.rendering) return; this.rendering=true
       const img=this.$refs.sourceImg; const w=img.naturalWidth; const h=img.naturalHeight
       let paletteRgb=null
-      if(this.options.palette!=='original'){const hx=PALETTE_COLORS[this.options.palette];if(hx)paletteRgb=hx.map(c=>hexToRgb(c)).filter(Boolean)}
+      if(this.options.palette==='custom-gpl'&&this.customGplPalette){paletteRgb=this.customGplPalette.rgb}
+      else if(this.options.palette!=='original'){const hx=PALETTE_COLORS[this.options.palette];if(hx)paletteRgb=hx.map(c=>hexToRgb(c)).filter(Boolean)}
       const contestants=[]
       for(const v of this.variants){
         await new Promise(r=>setTimeout(r,10))
@@ -217,6 +234,44 @@ export default {
       }
       this.contestants=shuffle(contestants); this.setupRound(this.contestants)
       this.totalRounds=Math.ceil(Math.log2(this.contestants.length)); this.phase='tournament'
+    },
+    loadGplPalette(e) {
+      this.gplError = ''; this.gplSuccess = ''
+      const file = e.target.files[0]; if (!file) return
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        const result = this.parseGpl(ev.target.result)
+        if (result.error) { this.gplError = result.error; return }
+        if (result.colors.length === 0) { this.gplError = 'No colours found in this .gpl file.'; return }
+        if (result.colors.length > 256) { this.gplError = `This palette has ${result.colors.length} colours — maximum is 256.`; return }
+        this.customGplPalette = {
+          name: result.name, colors: result.colors,
+          rgb: result.colors.map(h => { const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h); return r?[parseInt(r[1],16),parseInt(r[2],16),parseInt(r[3],16)]:null }).filter(Boolean)
+        }
+        this.options.palette = 'custom-gpl'
+        this.gplSuccess = `Loaded "${result.name}" — ${result.colors.length} colours`
+      }
+      reader.onerror = () => { this.gplError = 'Could not read the file.' }
+      reader.readAsText(file); e.target.value = ''
+    },
+    parseGpl(text) {
+      const lines = text.split(/?
+/)
+      if (!lines[0] || lines[0].trim() !== 'GIMP Palette') return { error: 'Not a valid GIMP .gpl file.' }
+      let name = 'Custom GPL'; const colors = []
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim()
+        if (!line || line.startsWith('#')) continue
+        if (line.startsWith('Name:')) { name = line.replace('Name:', '').trim(); continue }
+        if (line.startsWith('Columns:')) continue
+        const match = line.match(/^\s*(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})/)
+        if (match) {
+          const r=parseInt(match[1]),g=parseInt(match[2]),b=parseInt(match[3])
+          if(r>255||g>255||b>255) continue
+          colors.push('#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join(''))
+        }
+      }
+      return { name, colors }
     },
     autoSample(img){const c=document.createElement('canvas');c.width=16;c.height=16;const ctx=c.getContext('2d');ctx.drawImage(img,0,0,16,16);const d=ctx.getImageData(0,0,16,16).data;const col=[];for(let i=0;i<d.length;i+=64)col.push([d[i],d[i+1],d[i+2]]);return col.slice(0,16)},
     setupRound(pool){
@@ -235,7 +290,7 @@ export default {
       }
     },
     applyToBatch() {
-      const paletteName = PRESET_PALETTES.find(p=>p.value===this.options.palette)?.name||'Original'
+      const paletteName = this.options.palette==='custom-gpl'&&this.customGplPalette ? this.customGplPalette.name : (PRESET_PALETTES.find(p=>p.value===this.options.palette)?.name||'Original')
       this.$emit('tournament-complete', {
         mode: this.winner.config.mode === 'Error Diffusion' ? 'error' : 'bayer',
         algorithm: this.winner.config.algorithm || null,
@@ -317,6 +372,11 @@ export default {
 .btn-ghost.small { font-size: 0.8rem; padding: 0.4rem 0.9rem; }
 .mt-2 { margin-top: 0.5rem; width: 100%; box-sizing: border-box; }
 
+.gpl-upload-row { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.gpl-upload-btn { font-size: 0.75rem; font-weight: 700; color: #1a1a1a; border: 2px solid #1a1a1a; border-radius: 2px; padding: 0.25rem 0.6rem; cursor: pointer; transition: all 0.15s; background: #fff; font-family: inherit; }
+.gpl-upload-btn:hover { background: #1a1a1a; color: #fff; }
+.gpl-error { font-size: 0.75rem; color: #c53030; font-weight: 600; }
+.gpl-success { font-size: 0.75rem; color: #2d7a2d; font-weight: 600; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 600px) { .match-arena { grid-template-columns: 1fr; } .vs-badge { margin: 0 auto; } }
 </style>
