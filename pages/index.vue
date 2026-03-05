@@ -152,6 +152,13 @@
             >
               🔍 Blur Studio — soften your dithered image
             </nuxt-link>
+            <nuxt-link
+              v-if="!imageUploaded"
+              to="/batch"
+              class="btn-red-outline inline-block text-center"
+            >
+              📦 Batch Dither — dither multiple images at once
+            </nuxt-link>
           </div>
           <!-- End Toolbar Stuff -->
         </div>
