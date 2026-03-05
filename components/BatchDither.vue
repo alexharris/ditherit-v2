@@ -279,7 +279,7 @@ const PALETTE_COLORS = {
 }
 
 function hexToRgb(hex) {
-  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  const r = new RegExp('^#?([a-f0-9]{2})([a-f0-9]{2})([a-f0-9]{2})$', 'i').exec(hex)
   return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : null
 }
 
@@ -527,7 +527,7 @@ export default {
         if (!line || line.startsWith('#')) continue
         if (line.startsWith('Name:')) { name = line.replace('Name:', '').trim(); continue }
         if (line.startsWith('Columns:')) continue
-        const match = line.match(/^\s*(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})/)
+        const match = line.match(new RegExp('^\\s*(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})'))
         if (match) {
           const r = parseInt(match[1]), g = parseInt(match[2]), b = parseInt(match[3])
           if (r > 255 || g > 255 || b > 255) continue
