@@ -382,7 +382,10 @@ export default {
     },
 
     onTournamentComplete(winnerConfig) {
-      // winnerConfig: { mode, algorithm, serpentine, palette (value), paletteName }
+      // If tournament used a custom GPL palette, store it in BatchDither before rendering
+      if (winnerConfig.customGplPalette) {
+        this.customGplPalette = winnerConfig.customGplPalette
+      }
       this.startBatchRender(winnerConfig)
     },
 

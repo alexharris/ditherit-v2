@@ -133,8 +133,11 @@
     <!-- Winner — emit and show apply button -->
     <div v-if="phase === 'winner'" class="winner-wrap">
       <div class="winner-card">
+        <div v-if="singleVariant" class="single-variant-notice">
+          ℹ️ Your settings only produced one possible result — no bracket needed. These settings will be applied to all images.
+        </div>
         <div class="winner-crown">👑</div>
-        <h2 class="winner-title">Winner!</h2>
+        <h2 class="winner-title">{{ singleVariant ? 'Only option!' : 'Winner!' }}</h2>
         <p class="winner-label">{{ winner.label }}</p>
         <img :src="winner.dataUrl" class="winner-img" :alt="winner.label" />
         <div class="winner-settings">
@@ -198,7 +201,7 @@ export default {
       variants: [], contestants: [], bracket: [], winners: [], currentPairs: [],
       matchIndex: 0, currentRound: 1, totalRounds: 1,
       doneCount: 0, totalCount: 0, rendering: false,
-      winner: null,
+      winner: null, singleVariant: false,
     }
   },
   computed: {
@@ -244,6 +247,17 @@ export default {
         }catch(e){}
         contestants.push({...v,dataUrl:canvas.toDataURL('image/png'),roundsSurvived:0})
         canvas.width=1;canvas.height=1;this.doneCount++
+      }
+      // If only one variant rendered, skip bracket and go straight to winner
+      if (contestants.length === 1) {
+        this.winner = contestants[0]
+        this.singleVariant = true
+        this.phase = 'winner'
+        return
+      }
+      if (contestants.length === 0) {
+        this.phase = 'wizard'
+        return
       }
       this.contestants=shuffle(contestants); this.setupRound(this.contestants)
       this.totalRounds=Math.ceil(Math.log2(this.contestants.length)); this.phase='tournament'
@@ -326,6 +340,7 @@ export default {
         serpentine: this.winner.config.serpentine !== undefined ? this.winner.config.serpentine : false,
         palette: this.options.palette,
         paletteName,
+        customGplPalette: this.options.palette === 'custom-gpl' ? this.customGplPalette : null,
       })
     }
   }
@@ -383,6 +398,7 @@ export default {
 
 .winner-wrap { display: flex; justify-content: center; }
 .winner-card { background: #fff; border: 2px solid #1a1a1a; box-shadow: 6px 6px 0 #1a1a1a; border-radius: 4px; padding: 2rem; text-align: center; max-width: 480px; width: 100%; }
+.single-variant-notice { background: #fff8e1; border: 2px solid #f0ad4e; border-radius: 4px; padding: 0.75rem; font-size: 0.85rem; color: #856404; margin-bottom: 1rem; text-align: left; line-height: 1.4; }
 .winner-crown { font-size: 2.5rem; }
 .winner-title { font-size: 2rem; font-weight: 900; color: #c53030; margin: 0 0 0.25rem; }
 .winner-label { font-size: 1rem; font-weight: 700; margin: 0 0 1rem; color: #1a1a1a; }
