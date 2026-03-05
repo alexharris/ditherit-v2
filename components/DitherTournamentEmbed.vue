@@ -246,7 +246,7 @@ export default {
         if (result.colors.length > 256) { this.gplError = `This palette has ${result.colors.length} colours — maximum is 256.`; return }
         this.customGplPalette = {
           name: result.name, colors: result.colors,
-          rgb: result.colors.map(h => { const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h); return r?[parseInt(r[1],16),parseInt(r[2],16),parseInt(r[3],16)]:null }).filter(Boolean)
+          rgb: result.colors.map(h => hexToRgb(h)).filter(Boolean)
         }
         this.options.palette = 'custom-gpl'
         this.gplSuccess = `Loaded "${result.name}" — ${result.colors.length} colours`
@@ -255,7 +255,8 @@ export default {
       reader.readAsText(file); e.target.value = ''
     },
     parseGpl(text) {
-      const lines = text.split(/?
+      const lines = text.split(/
+?
 /)
       if (!lines[0] || lines[0].trim() !== 'GIMP Palette') return { error: 'Not a valid GIMP .gpl file.' }
       let name = 'Custom GPL'; const colors = []
