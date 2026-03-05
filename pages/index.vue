@@ -128,7 +128,7 @@
           <!-- End Original Image Display -->
           <!-- Toolbar Stuff -->
           <div
-            class="flex flex-row justify-center"
+            class="flex flex-col items-center gap-4"
             :class="{ 'w-full': imageUploaded, 'text-sm': imageUploaded }"
           >
             <ImageUpload
@@ -138,6 +138,27 @@
               @number-images="getNumberOfImages"
               @image-upload="onImageUpload"
             />
+            <nuxt-link
+              v-if="!imageUploaded"
+              to="/tournament"
+              class="btn-red-outline inline-block text-center"
+            >
+              🏆 Dither Tournament — let the algorithms fight it out
+            </nuxt-link>
+            <nuxt-link
+              v-if="!imageUploaded"
+              to="/blur"
+              class="btn-red-outline inline-block text-center"
+            >
+              🔍 Blur Studio — soften your dithered image
+            </nuxt-link>
+            <nuxt-link
+              v-if="!imageUploaded"
+              to="/batch"
+              class="btn-red-outline inline-block text-center"
+            >
+              📦 Batch Dither — dither multiple images at once
+            </nuxt-link>
           </div>
           <!-- End Toolbar Stuff -->
         </div>
