@@ -255,21 +255,21 @@ export default {
       reader.readAsText(file); e.target.value = ''
     },
     parseGpl(text) {
-      const lines = text.split(/
-?
-/)
+      const lines = text.split('\n').map(l => l.charAt(l.length-1)==='\r' ? l.slice(0,-1) : l)
       if (!lines[0] || lines[0].trim() !== 'GIMP Palette') return { error: 'Not a valid GIMP .gpl file.' }
-      let name = 'Custom GPL'; const colors = []
+      let name = 'Custom GPL'
+      const colors = []
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim()
         if (!line || line.startsWith('#')) continue
         if (line.startsWith('Name:')) { name = line.replace('Name:', '').trim(); continue }
         if (line.startsWith('Columns:')) continue
-        const match = line.match(new RegExp('^\\s*(\\d{1,3})\\s+(\\d{1,3})\\s+(\\d{1,3})'))
-        if (match) {
-          const r=parseInt(match[1]),g=parseInt(match[2]),b=parseInt(match[3])
-          if(r>255||g>255||b>255) continue
-          colors.push('#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join(''))
+        const parts = line.split(' ').join('\t').split('\t').filter(s => s.length > 0)
+        if (parts.length >= 3) {
+          const r = parseInt(parts[0]), g = parseInt(parts[1]), b = parseInt(parts[2])
+          if (!isNaN(r) && !isNaN(g) && !isNaN(b) && r <= 255 && g <= 255 && b <= 255) {
+            colors.push('#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join(''))
+          }
         }
       }
       return { name, colors }
