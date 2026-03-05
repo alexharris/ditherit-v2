@@ -108,7 +108,29 @@
               </div>
               <div class="palette-label">{{ p.name }}</div>
             </div>
-          </div>
+              <div v-if="customGplPalette" class="palette-chip" :class="{ selected: options.palette === 'custom-gpl' }" @click="options.palette = 'custom-gpl'">
+                <div class="palette-swatches"><div v-for="c in customGplPalette.colors.slice(0,5)" :key="c" class="palette-swatch" :style="{ background: c }"></div></div>
+                <div class="palette-label">📄 {{ customGplPalette.name }}</div>
+              </div>
+            </div>
+            <div class="pal-import-wrap">
+              <div class="pal-import-col">
+                <p class="pal-import-label">Paste JSON palette:</p>
+                <textarea v-model="paletteJsonImport" rows="3" placeholder='[{"hex":"#ff0000"},{"hex":"#000000"}]' class="pal-import-textarea"></textarea>
+                <button class="pal-import-btn" @click="importJsonPalette">Import JSON</button>
+                <span v-if="paletteImportError" class="pal-import-error">{{ paletteImportError }}</span>
+                <span v-if="paletteImportSuccess" class="pal-import-success">{{ paletteImportSuccess }}</span>
+              </div>
+              <div class="pal-import-col">
+                <p class="pal-import-label">Upload GIMP .gpl file:</p>
+                <label class="pal-import-btn file-btn">
+                  📂 Upload .gpl
+                  <input type="file" accept=".gpl" class="hidden" @change="loadGplPalette" />
+                </label>
+                <span v-if="gplError" class="pal-import-error">{{ gplError }}</span>
+                <span v-if="gplSuccess" class="pal-import-success">{{ gplSuccess }}</span>
+              </div>
+            </div>
           <div class="wiz-btn-row">
             <button class="wiz-btn-ghost" @click="wizardStep = 3">← Back</button>
             <button class="wiz-btn-primary" :disabled="!options.palette" @click="onPaletteNext">Next →</button>
@@ -375,6 +397,12 @@ export default {
       options: {
         mode: null,
         palette: null,
+      customGplPalette: null,
+      gplError: '',
+      gplSuccess: '',
+      paletteJsonImport: '',
+      paletteImportError: '',
+      paletteImportSuccess: '',
         serpentine: null,
         showLabels: null,
       },
@@ -438,6 +466,57 @@ export default {
       reader.onload = (ev) => { this.previewSrc = ev.target.result }
       reader.readAsDataURL(file)
     },
+    importJsonPalette() {
+      this.paletteImportError = ''
+      this.paletteImportSuccess = ''
+      try {
+        const parsed = JSON.parse(this.paletteJsonImport)
+        if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('empty')
+        if (parsed.length > 256) { this.paletteImportError = 'Maximum 256 colours allowed.'; return }
+        const colors = parsed.map(e => typeof e === 'string' ? e : e.hex).filter(Boolean)
+        this.customGplPalette = { name: 'JSON Import', colors, rgb: colors.map(h => hexToRgb(h)).filter(Boolean) }
+        this.options.palette = 'custom-gpl'
+        this.paletteJsonImport = ''
+        this.paletteImportSuccess = 'Loaded ' + colors.length + ' colours'
+      } catch(e) {
+        this.paletteImportError = 'Invalid JSON. Expected: [{"hex":"#ff0000"},...]'
+      }
+    },
+    loadGplPalette(e) {
+      this.gplError = ''; this.gplSuccess = ''
+      const file = e.target.files[0]; if (!file) return
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        const result = this.parseGpl(ev.target.result)
+        if (result.error) { this.gplError = result.error; return }
+        if (result.colors.length === 0) { this.gplError = 'No colours found.'; return }
+        if (result.colors.length > 256) { this.gplError = 'Maximum 256 colours allowed.'; return }
+        this.customGplPalette = { name: result.name, colors: result.colors, rgb: result.colors.map(h => hexToRgb(h)).filter(Boolean) }
+        this.options.palette = 'custom-gpl'
+        this.gplSuccess = 'Loaded "' + result.name + '" — ' + result.colors.length + ' colours'
+      }
+      reader.onerror = () => { this.gplError = 'Could not read file.' }
+      reader.readAsText(file); e.target.value = ''
+    },
+    parseGpl(text) {
+      const lines = text.split('\n').map(l => l.charAt(l.length - 1) === '\r' ? l.slice(0, -1) : l)
+      if (!lines[0] || lines[0].trim() !== 'GIMP Palette') return { error: 'Not a valid GIMP .gpl file.' }
+      let name = 'Custom GPL'; const colors = []
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim()
+        if (!line || line.charAt(0) === '#') continue
+        if (line.indexOf('Name:') === 0) { name = line.slice(5).trim(); continue }
+        if (line.indexOf('Columns:') === 0) continue
+        const parts = line.split(' ').join('\t').split('\t').filter(s => s.length > 0)
+        if (parts.length >= 3) {
+          const r = parseInt(parts[0]), g = parseInt(parts[1]), b = parseInt(parts[2])
+          if (!isNaN(r) && !isNaN(g) && !isNaN(b) && r <= 255 && g <= 255 && b <= 255) {
+            colors.push('#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join(''))
+          }
+        }
+      }
+      return { name, colors }
+    },
     onPaletteNext() {
       if (this.options.mode === 'bayer') {
         this.options.serpentine = false
@@ -451,7 +530,7 @@ export default {
       this.rendering = false
       this.variants = buildVariants(this.options.mode, this.options.serpentine)
       this.variants.forEach(v => {
-        v.config.paletteName = PRESET_PALETTES.find(p => p.value === this.options.palette)?.name || 'Original'
+        v.config.paletteName = this.options.palette === 'custom-gpl' && this.customGplPalette ? this.customGplPalette.name : (PRESET_PALETTES.find(p => p.value === this.options.palette)?.name || 'Original')
       })
       this.totalCount = this.variants.length
       this.doneCount = 0
@@ -474,7 +553,9 @@ export default {
       const h = img.naturalHeight
 
       let paletteRgb = null
-      if (this.options.palette !== 'original') {
+      if (this.options.palette === 'custom-gpl' && this.customGplPalette) {
+        paletteRgb = this.customGplPalette.rgb
+      } else if (this.options.palette !== 'original') {
         const hexColors = PALETTE_COLORS[this.options.palette]
         if (hexColors) {
           paletteRgb = hexColors.map(c => hexToRgb(Array.isArray(c) ? c[0] : c)).filter(Boolean)
@@ -740,6 +821,14 @@ export default {
 .palette-swatches { display: flex; height: 20px; border-radius: 2px; overflow: hidden; margin-bottom: 0.4rem; }
 .palette-swatch { flex: 1; }
 .palette-label { font-size: 0.75rem; font-weight: 600; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pal-import-wrap { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #eee; }
+.pal-import-col { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 180px; }
+.pal-import-label { font-size: 0.75rem; font-weight: 700; color: #555; margin: 0; }
+.pal-import-textarea { font-size: 0.75rem; border: 1px solid #ccc; border-radius: 2px; padding: 0.4rem; font-family: monospace; resize: vertical; }
+.pal-import-btn { font-size: 0.78rem; font-weight: 700; font-family: inherit; border: 2px solid #1a1a1a; background: #fff; color: #1a1a1a; padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; transition: all 0.15s; display: inline-block; }
+.pal-import-btn:hover { background: #1a1a1a; color: #fff; }
+.pal-import-error { font-size: 0.75rem; color: #c53030; font-weight: 600; }
+.pal-import-success { font-size: 0.75rem; color: #2d7a2d; font-weight: 600; }
 
 .single-warning {
   background: #fff3cd; border: 2px solid #f0ad4e; border-radius: 4px;

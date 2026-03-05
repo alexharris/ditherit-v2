@@ -120,12 +120,22 @@
               </div>
             </div>
             <div class="gpl-upload-row">
-              <label class="gpl-upload-btn">
-                📂 Upload GIMP .gpl palette
-                <input type="file" accept=".gpl" class="hidden" @change="loadGplPalette" />
-              </label>
-              <span v-if="gplError" class="gpl-error">{{ gplError }}</span>
-              <span v-if="gplSuccess" class="gpl-success">{{ gplSuccess }}</span>
+              <div class="pal-import-col">
+                <p class="pal-import-label">Paste JSON palette:</p>
+                <textarea v-model="paletteJsonImport" rows="3" placeholder='[{"hex":"#ff0000"},{"hex":"#000000"}]' class="pal-import-textarea"></textarea>
+                <button class="pal-import-btn" @click="importJsonPalette">Import JSON</button>
+                <span v-if="paletteImportError" class="pal-import-error">{{ paletteImportError }}</span>
+                <span v-if="paletteImportSuccess" class="pal-import-success">{{ paletteImportSuccess }}</span>
+              </div>
+              <div class="pal-import-col">
+                <p class="pal-import-label">Upload GIMP .gpl file:</p>
+                <label class="pal-import-btn">
+                  📂 Upload GIMP .gpl palette
+                  <input type="file" accept=".gpl" class="hidden" @change="loadGplPalette" />
+                </label>
+                <span v-if="gplError" class="pal-import-error">{{ gplError }}</span>
+                <span v-if="gplSuccess" class="pal-import-success">{{ gplSuccess }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -317,6 +327,9 @@ export default {
       customGplPalette: null,
       gplError: '',
       gplSuccess: '',
+      paletteJsonImport: '',
+      paletteImportError: '',
+      paletteImportSuccess: '',
     }
   },
   computed: {
@@ -493,6 +506,21 @@ export default {
       })
     },
 
+    importJsonPalette() {
+      this.paletteImportError = ''; this.paletteImportSuccess = ''
+      try {
+        const parsed = JSON.parse(this.paletteJsonImport)
+        if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('empty')
+        if (parsed.length > 256) { this.paletteImportError = 'Maximum 256 colours allowed.'; return }
+        const colors = parsed.map(e => typeof e === 'string' ? e : e.hex).filter(Boolean)
+        this.customGplPalette = { name: 'JSON Import', colors, rgb: colors.map(h => hexToRgb(h)).filter(Boolean) }
+        this.manualSettings.palette = 'custom-gpl'
+        this.paletteJsonImport = ''
+        this.paletteImportSuccess = 'Loaded ' + colors.length + ' colours'
+      } catch(e) {
+        this.paletteImportError = 'Invalid JSON. Expected: [{"hex":"#ff0000"},...]'
+      }
+    },
     loadGplPalette(e) {
       this.gplError = ''
       this.gplSuccess = ''
@@ -549,6 +577,9 @@ export default {
       this.customGplPalette = null
       this.gplError = ''
       this.gplSuccess = ''
+      this.paletteJsonImport = ''
+      this.paletteImportError = ''
+      this.paletteImportSuccess = ''
     }
   }
 }
@@ -666,11 +697,14 @@ export default {
 .w-full { width: 100%; box-sizing: border-box; }
 .mt-4 { margin-top: 1rem; }
 
-.gpl-upload-row { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.6rem; flex-wrap: wrap; }
-.gpl-upload-btn { font-size: 0.8rem; font-weight: 700; color: #1a1a1a; border: 2px solid #1a1a1a; border-radius: 2px; padding: 0.3rem 0.75rem; cursor: pointer; transition: all 0.15s; background: #fff; font-family: inherit; }
-.gpl-upload-btn:hover { background: #1a1a1a; color: #fff; }
-.gpl-error { font-size: 0.78rem; color: #c53030; font-weight: 600; }
-.gpl-success { font-size: 0.78rem; color: #2d7a2d; font-weight: 600; }
+.gpl-upload-row { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #eee; }
+.pal-import-col { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 160px; }
+.pal-import-label { font-size: 0.75rem; font-weight: 700; color: #555; margin: 0; }
+.pal-import-textarea { font-size: 0.75rem; border: 1px solid #ccc; border-radius: 2px; padding: 0.4rem; font-family: monospace; resize: vertical; }
+.pal-import-btn { font-size: 0.78rem; font-weight: 700; font-family: inherit; border: 2px solid #1a1a1a; background: #fff; color: #1a1a1a; padding: 0.3rem 0.7rem; border-radius: 2px; cursor: pointer; transition: all 0.15s; display: inline-block; }
+.pal-import-btn:hover { background: #1a1a1a; color: #fff; }
+.pal-import-error { font-size: 0.75rem; color: #c53030; font-weight: 600; }
+.pal-import-success { font-size: 0.75rem; color: #2d7a2d; font-weight: 600; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 600px) {
