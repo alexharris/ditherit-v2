@@ -1,6 +1,9 @@
 <template>
 
 <div class="w-full border-t border-b border-dashed border-red-500 flex flex-col items-center py-16">
+    <div class="w-full bg-red-500 text-white py-4 px-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+      <span>Dither it! v3 is coming soon. This version will be replaced. <a href="https://ditheritv3.netlify.app/" class="text-white underline decoration-1 hover:opacity-75">Try v3 now &rarr;</a></span>
+    </div>
     <div class="w-full lg:w-11/12 flex flex-col md:flex-row items-stretch gap-4 p-4">
       <div class="w-full md:w-1/2 shadow-md p-4 rounded">
       
