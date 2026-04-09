@@ -6,6 +6,13 @@ html, body {
   overscroll-behavior: none;
 }
 
+/* Prevent iOS Safari auto-zoom on focus by keeping font size at 16px on mobile */
+@media (max-width: 1023px) {
+  * {
+    font-size: 16px;
+  }
+}
+
 /* Prevent long-press context menu on dithered/original images */
 .no-touch-callout {
   -webkit-touch-callout: none;

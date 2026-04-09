@@ -37,6 +37,9 @@ export default defineNuxtConfig({
     optimizeDeps: {
       include: ['rgbquant'],
       force: true
+    },
+    server: {
+      allowedHosts: ['alexs-mac-mini.tail701361.ts.net']
     }
   },
 

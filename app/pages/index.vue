@@ -15,6 +15,10 @@ const {
   bayerSize,
   smoothPixels,
   palette,
+  originalWidth,
+  originalHeight,
+  sizeWidth,
+  sizeValid,
   analyzePalette,
   dither,
   invalidateQuantCache
@@ -60,16 +64,6 @@ const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
 
-// Image sizing state (managed by ImageSizeControl, synced via events)
-const originalWidth = ref(0)
-const originalHeight = ref(0)
-const sizeWidth = ref<number | undefined>(undefined)
-const sizeValid = ref(true)
-
-function handleSizeChange(payload: { width: number | undefined; valid: boolean }) {
-  sizeWidth.value = payload.width
-  sizeValid.value = payload.valid
-}
 
 function handleDragOver(e: DragEvent) {
   e.preventDefault()
@@ -459,7 +453,7 @@ watch(selectedImage, async (newImage) => {
   if (newImage) {
     const img = await loadImage(newImage.originalSrc)
 
-    // Capture original dimensions (passed as props to ImageSizeControl)
+    // Capture original dimensions for ImageSizeControl in SidebarPixelScale
     originalWidth.value = img.naturalWidth
     originalHeight.value = img.naturalHeight
 
@@ -530,6 +524,58 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     <!-- Top Bar -->
     <AppHeader />
 
+    <!-- Mobile image selector + download bar -->
+    <div class="flex lg:hidden shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950">
+      <!-- Multiple images: show thumbnail strip -->
+      <template v-if="images.length > 1">
+        <div
+          class="flex min-w-0 flex-1 items-center gap-2 rounded-lg bg-gray-100 px-2 py-2 ring-1 ring-gray-200 ring-inset dark:bg-gray-900 dark:ring-gray-800"
+        >
+          <ImageThumbnailStrip
+            :images="images"
+            :selected-id="selectedImage?.id"
+            @select="selectImage"
+            @remove="removeImage"
+            @add="triggerFileInput"
+          />
+          <button
+            class="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-dashed border-gray-300 text-gray-400 transition-colors hover:border-gray-400 hover:text-gray-500 dark:border-gray-600 dark:hover:border-gray-500"
+            @click="triggerFileInput"
+          >
+            <UIcon name="i-lucide-plus" class="size-5" />
+          </button>
+        </div>
+      </template>
+      <!-- Single image: show upload button -->
+      <template v-else>
+        <UButton
+          label="✨ Select image"
+          color="neutral"
+          variant="outline"
+          size="sm"
+          class=""
+          @click="triggerFileInput"
+        />
+      </template>
+      <UPopover class="shrink-0">
+        <UButton
+          label="💾 Download"
+          color="primary"
+          variant="solid"
+          size="sm"
+          :loading="isDownloadingAll"
+          :disabled="!selectedImage?.ditheredDataUrl"
+        />
+        <template #content="{ close }">
+          <div class="flex flex-col gap-1 p-2">
+            <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('png'); close()" />
+            <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
+            <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('svg'); close()" />
+          </div>
+        </template>
+      </UPopover>
+    </div>
+
     <!-- Mobile Drawers -->
     <UDrawer v-model:open="drawerMode" :overlay="false">
       <template #body>
@@ -563,6 +609,14 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         class="flex shrink-0 items-center justify-between border-t border-gray-200 p-4 dark:border-gray-800"
       >
         <span class="text-sm text-gray-500 dark:text-gray-400">v3</span>
+        <UButton
+          icon="i-simple-icons-github"
+          color="neutral"
+          variant="ghost"
+          size="sm"
+          to="https://github.com/alexharris/ditherit-v3"
+          target="_blank"
+        />
         <UButton
           :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
           color="neutral"
@@ -661,12 +715,6 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               <div
                 class="mt-3 flex flex-wrap items-center gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900"
               >
-                <ImageSizeControl
-                  v-if="originalWidth > 0"
-                  :original-width="originalWidth"
-                  :original-height="originalHeight"
-                  @change="handleSizeChange"
-                />
                 <div class="flex-1" />
                 <UButton
                   icon="i-lucide-columns-2"
@@ -730,7 +778,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
       <!-- Bottom Bar (thumbnails + actions) -->
       <footer
-        class="flex shrink-0 flex-col lg:flex-row items-stretch lg:items-center gap-2 border-t border-gray-200 bg-white px-3 py-3 lg:px-4 lg:py-4 dark:border-gray-800 dark:bg-gray-950"
+        class="hidden lg:flex shrink-0 flex-col lg:flex-row items-stretch lg:items-center gap-2 border-t border-gray-200 bg-white px-3 py-3 lg:px-4 lg:py-4 dark:border-gray-800 dark:bg-gray-950"
       >
         <!-- Image Thumbnails + mobile download -->
         <div v-if="hasImages" class="flex min-w-0 items-center justify-between gap-2">
@@ -808,16 +856,16 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       <!-- Mobile Bottom Toolbar -->
       <div class="flex lg:hidden shrink-0 items-center justify-around border-t border-gray-200 bg-white py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] dark:border-gray-800 dark:bg-gray-950">
         <button class="flex flex-col items-center gap-1 text-xs text-gray-600 dark:text-gray-400" @click="drawerMode = true">
-          <UIcon name="i-lucide-grid-2x2" class="size-6" />
+          <span class="text-2xl leading-none">🏁</span>
           <span>Mode</span>
         </button>
         <button class="flex flex-col items-center gap-1 text-xs text-gray-600 dark:text-gray-400" @click="drawerPalette = true">
-          <UIcon name="i-lucide-palette" class="size-6" />
+          <span class="text-2xl leading-none">🎨</span>
           <span>Palette</span>
         </button>
         <button class="flex flex-col items-center gap-1 text-xs text-gray-600 dark:text-gray-400" @click="drawerScale = true">
-          <UIcon name="i-lucide-maximize" class="size-6" />
-          <span>Scale</span>
+          <span class="text-2xl leading-none">🖼️</span>
+          <span>Image</span>
         </button>
       </div>
     </div>

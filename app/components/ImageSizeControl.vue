@@ -12,14 +12,6 @@ const MAX_WIDTH = 5000
 const useCustomSize = ref(false)
 const customWidth = ref(0)
 const customWidthInput = ref(0)
-let widthDebounceTimeout: ReturnType<typeof setTimeout> | null = null
-
-watch(customWidthInput, (val) => {
-  if (widthDebounceTimeout) clearTimeout(widthDebounceTimeout)
-  widthDebounceTimeout = setTimeout(() => {
-    customWidth.value = val
-  }, 400)
-})
 
 const calculatedHeight = computed(() => {
   if (!props.originalWidth || !props.originalHeight) return 0
@@ -32,11 +24,18 @@ const isWidthValid = computed(() => {
   return customWidthInput.value > 0 && customWidthInput.value <= MAX_WIDTH
 })
 
+const isDirty = computed(() => useCustomSize.value && customWidthInput.value !== customWidth.value)
+
 function enableCustomSize() {
   if (useCustomSize.value) return
   useCustomSize.value = true
   customWidth.value = props.originalWidth
   customWidthInput.value = props.originalWidth
+}
+
+function applySize() {
+  if (!isWidthValid.value) return
+  customWidth.value = customWidthInput.value
 }
 
 function resetToOriginalSize() {
@@ -73,6 +72,7 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       class="w-14"
       :color="useCustomSize && !isWidthValid ? 'error' : 'neutral'"
       @focus="enableCustomSize"
+      @keydown.enter="applySize"
     />
     <span class="text-xs text-gray-400 dark:text-gray-500">&times;</span>
     <label class="text-xs text-gray-500 dark:text-gray-400">H</label>
@@ -80,11 +80,21 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       :model-value="calculatedHeight"
       type="number"
       size="xs"
-      class="w-14"
+      class="w-14 opacity-50"
       disabled
     />
     <UButton
-      v-if="useCustomSize"
+      v-if="isDirty"
+      icon="i-lucide-check"
+      size="xs"
+      color="primary"
+      variant="solid"
+      title="Apply size"
+      :disabled="!isWidthValid"
+      @click="applySize"
+    />
+    <UButton
+      v-else-if="useCustomSize"
       icon="i-lucide-rotate-ccw"
       size="xs"
       color="neutral"
@@ -98,6 +108,7 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
 <style scoped>
 :deep(input[type="number"]) {
   -moz-appearance: textfield;
+  font-size: 16px;
 }
 
 :deep(input[type="number"])::-webkit-outer-spin-button,

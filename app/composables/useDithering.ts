@@ -74,6 +74,10 @@ const pixelScale = ref(1)
 const bayerSize = ref<BayerSize>(4)
 const smoothPixels = ref(false)
 const palette = ref<number[][]>([])
+const originalWidth = ref(0)
+const originalHeight = ref(0)
+const sizeWidth = ref<number | undefined>(undefined)
+const sizeValid = ref(true)
 
 // RgbQuant instance cache — reused when only algorithm/serpentine changes
 let cachedQuant: any = null
@@ -265,6 +269,10 @@ export function useDithering() {
     bayerSize,
     smoothPixels,
     palette,
+    originalWidth,
+    originalHeight,
+    sizeWidth,
+    sizeValid,
 
     // Computed
     rgbQuantOptions,

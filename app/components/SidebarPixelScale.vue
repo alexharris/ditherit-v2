@@ -2,13 +2,35 @@
 const {
   pixeliness,
   pixelScale,
-  smoothPixels
+  smoothPixels,
+  originalWidth,
+  originalHeight,
+  sizeWidth,
+  sizeValid
 } = useDithering()
+
+function handleSizeChange(payload: { width: number | undefined; valid: boolean }) {
+  sizeWidth.value = payload.width
+  sizeValid.value = payload.valid
+}
 
 const advancedOpen = ref(false)
 </script>
 
 <template>
+  <div v-if="originalWidth > 0" class="px-4 py-4">
+    <span class="text-sm font-medium text-highlighted">Size</span>
+    <div class="mt-2">
+      <ImageSizeControl
+        :original-width="originalWidth"
+        :original-height="originalHeight"
+        @change="handleSizeChange"
+      />
+    </div>
+  </div>
+
+  <USeparator v-if="originalWidth > 0" />
+
   <div class="px-4 py-4">
     <HelpTooltip>
       <template #label>
