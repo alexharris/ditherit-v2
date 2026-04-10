@@ -531,12 +531,12 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
     <!-- Mobile image selector + download bar -->
     <div
-      class="flex lg:hidden shrink-0 items-center border-b border-gray-200 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950"
+      class="flex lg:hidden shrink-0 items-center border-b border-gray-200 px-3 py-4 dark:border-gray-800"
       :class="isDefaultImage ? 'justify-center' : 'justify-between'"
     >
       <!-- Upload/add button -->
       <button
-        class="inline-flex items-center gap-1.5 rounded-md border border-ditherit px-3 py-1.5 text-sm font-medium text-ditherit transition-colors hover:bg-ditherit hover:text-white"
+        class="inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-950"
         @click="triggerFileInput"
       >
         {{ isDefaultImage ? '✨ Select image(s)' : '➕ Add' }}
@@ -677,7 +677,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           <!-- Preview Area -->
           <div
             class="relative flex flex-1 flex-col items-center justify-center overflow-hidden lg:overflow-auto p-2 pb-14 lg:p-8 lg:pb-8 [scrollbar-gutter:stable]"
-            :class="isIntro ? 'border-2 border-dashed border-gray-300 m-2 lg:m-4 dark:border-gray-600' : ''"
+            :class="isIntro ? 'lg:border-2 lg:border-dashed lg:border-gray-300 lg:m-4 dark:lg:border-gray-600' : ''"
           >
             <!-- Intro upload hint -->
             <div v-if="isIntro" class="absolute left-0 right-0 top-16 lg:top-24 hidden items-center justify-center gap-3 text-sm text-gray-500 dark:text-gray-400 lg:flex">
