@@ -40,7 +40,6 @@ defineProps<{
   --default-handle-color: rgb(239, 68, 68);
   --default-handle-width: 50px;
   --divider-width: 3px;
-  border-radius: 0.5rem;
   overflow: hidden;
   max-width: 100%;
 }
@@ -52,8 +51,13 @@ defineProps<{
 .compare-image {
   display: block;
   max-width: 100%;
-  max-height: 60vh;
   height: auto;
   object-fit: contain;
+}
+
+@media (min-width: 1024px) {
+  .compare-image {
+    max-height: 60vh;
+  }
 }
 </style>
