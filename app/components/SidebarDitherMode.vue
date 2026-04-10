@@ -26,7 +26,15 @@ const ditherModes = [
         error introduced by reducing an image's color palette. They look quite
         different, try them out!
       </template>
-      <div class="mt-2 flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+      <!-- Desktop: select -->
+      <USelect
+        v-model="ditherMode"
+        :items="ditherModes"
+        class="mt-2 hidden w-full lg:block"
+        :ui="{ base: 'text-left' }"
+      />
+      <!-- Mobile: button group -->
+      <div class="mt-2 flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 lg:hidden">
         <button
           v-for="mode in ditherModes"
           :key="mode.value"

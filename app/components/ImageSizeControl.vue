@@ -115,7 +115,12 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
 <style scoped>
 :deep(input[type="number"]) {
   -moz-appearance: textfield;
-  font-size: 16px;
+}
+
+@media (max-width: 1023px) {
+  :deep(input[type="number"]) {
+    font-size: 16px;
+  }
 }
 
 :deep(input[type="number"])::-webkit-outer-spin-button,
