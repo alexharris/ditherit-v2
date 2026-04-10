@@ -24,6 +24,7 @@ const advancedOpen = ref(false)
       <ImageSizeControl
         :original-width="originalWidth"
         :original-height="originalHeight"
+        :initial-width="sizeWidth"
         @change="handleSizeChange"
       />
     </div>

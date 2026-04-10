@@ -122,6 +122,7 @@ export function useDithering() {
   function analyzePalette(image: HTMLImageElement): number[][] {
     const q = new RgbQuant({
       ...rgbQuantOptions.value,
+      colors: 8,
       palette: []
     })
     q.sample(image)

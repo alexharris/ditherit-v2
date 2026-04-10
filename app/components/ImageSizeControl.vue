@@ -2,6 +2,7 @@
 const props = defineProps<{
   originalWidth: number
   originalHeight: number
+  initialWidth?: number
 }>()
 
 const emit = defineEmits<{
@@ -46,9 +47,15 @@ function resetToOriginalSize() {
 
 // Reset when original dimensions change (new image selected)
 watch(() => props.originalWidth, (newWidth) => {
-  useCustomSize.value = false
-  customWidth.value = newWidth
-  customWidthInput.value = newWidth
+  if (props.initialWidth && props.initialWidth !== newWidth) {
+    useCustomSize.value = true
+    customWidth.value = props.initialWidth
+    customWidthInput.value = props.initialWidth
+  } else {
+    useCustomSize.value = false
+    customWidth.value = newWidth
+    customWidthInput.value = newWidth
+  }
 }, { immediate: true })
 
 // Emit resolved state whenever it changes

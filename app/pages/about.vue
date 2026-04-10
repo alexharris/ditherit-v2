@@ -4,34 +4,29 @@ useSeoMeta({ title: 'About — Dither it!' })
 
 const featureCards = [
   {
-    icon: 'i-lucide-git-branch',
-    title: 'Error Diffusion',
-    description: '11 algorithms including Floyd-Steinberg, Atkinson, Stucki, and more.',
+    icon: '🔒',
+    title: 'Privacy First',
+    description: '100% client-side. Your images never leave your device — no uploads, no servers.',
   },
   {
-    icon: 'i-lucide-grid-2x2',
-    title: 'Bayer Ordered Dithering',
-    description: 'Classic matrix-based ordered dithering with an adjustable threshold.',
+    icon: '🏁',
+    title: 'Multiple Dithering Methods',
+    description: 'Choose from error diffusion (11 algorithms including Floyd-Steinberg, Atkinson, and Stucki) or classic Bayer ordered dithering with an adjustable threshold.',
   },
   {
-    icon: 'i-lucide-palette',
+    icon: '🎨',
     title: 'Custom Palette Editor',
     description: '16 built-in presets plus a full editor to build, save, import, and export your own palettes.',
   },
   {
-    icon: 'i-lucide-images',
+    icon: '🖼️',
     title: 'Multi-Image Gallery',
     description: 'Upload and process multiple images at once, then bulk download as a ZIP.',
   },
   {
-    icon: 'i-lucide-scan',
+    icon: '🕹️',
     title: 'Pixeliness Control',
     description: 'A retro block-pixel effect with an adjustable size slider for that extra lo-fi look.',
-  },
-  {
-    icon: 'i-lucide-lock',
-    title: 'Privacy First',
-    description: '100% client-side. Your images never leave your device — no uploads, no servers.',
   },
 ]
 </script>
@@ -71,7 +66,10 @@ const featureCards = [
           :key="card.title"
         >
           <div class="flex items-start gap-3">
-            <UIcon :name="card.icon" class="mt-0.5 size-5 shrink-0 text-[--ui-primary]" />
+            <span v-if="card.icon.startsWith('i-')" class="mt-0.5 shrink-0">
+              <UIcon :name="card.icon" class="size-5 text-[--ui-primary]" />
+            </span>
+            <span v-else class="mt-0.5 shrink-0 text-lg leading-none">{{ card.icon }}</span>
             <div>
               <p class="font-semibold text-gray-900 dark:text-gray-100">
                 {{ card.title }}

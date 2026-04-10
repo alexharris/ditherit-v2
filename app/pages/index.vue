@@ -59,7 +59,7 @@ const isDefaultImage = computed(() => images.value.length === 1 && images.value[
 
 const isDragging = ref(false)
 const isIntro = ref(true)
-const showCompare = ref(false)
+const showCompare = ref(true)
 const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
@@ -448,6 +448,11 @@ watch(hasImages, (has) => {
   }
 })
 
+// Turn off compare when user adds their own image
+watch(isDefaultImage, (isDefault) => {
+  if (!isDefault) showCompare.value = false
+})
+
 // Update palette and dimensions when selected image changes
 watch(selectedImage, async (newImage) => {
   if (newImage) {
@@ -480,7 +485,7 @@ watch(paletteAsRgb, (newPalette) => {
   if (newPalette.length > 0) {
     palette.value = newPalette
   }
-}, { deep: true })
+}, { deep: true, immediate: true })
 
 // Auto-dither selected image when any setting changes
 watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb, sizeWidth], () => {
@@ -507,7 +512,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 </script>
 
 <template>
-  <div class="flex h-dvh flex-col bg-gray-100 dark:bg-gray-900 bg-grid">
+  <div class="flex h-dvh flex-col bg-gray-100 dark:bg-gray-900 bg-grid pt-12 lg:pt-0">
     <!-- Hidden file input (multiple) -->
     <input
       ref="fileInputRef"
@@ -549,7 +554,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       <!-- Single image: show upload button -->
       <template v-else>
         <UButton
-          label="✨ Select image"
+          label="✨ Upload image(s)"
           color="neutral"
           variant="outline"
           size="sm"
@@ -657,7 +662,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             :class="isIntro ? 'border-2 border-dashed border-gray-300 m-2 lg:m-4 dark:border-gray-600' : ''"
           >
             <!-- Intro upload hint -->
-            <div v-if="isIntro" class="absolute left-0 right-0 top-16 lg:top-24 flex items-center justify-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+            <div v-if="isIntro" class="absolute left-0 right-0 top-16 lg:top-24 hidden items-center justify-center gap-3 text-sm text-gray-500 dark:text-gray-400 lg:flex">
               <span>Drop or paste images here, or</span>
               <UButton
                 icon="i-lucide-upload"

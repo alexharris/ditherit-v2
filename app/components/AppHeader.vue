@@ -3,13 +3,16 @@ const colorMode = useColorMode()
 const router = useRouter()
 const route = useRoute()
 
+defineProps<{ showBack?: boolean }>()
+
 // Mobile drawer
 const isMenuOpen = ref(false)
 
 const navItems = [
-  { id: 'about', label: 'About', icon: 'i-lucide-info', to: '/about' },
-  { id: 'resources', label: 'Resources', icon: 'i-lucide-book-open', to: '/resources' },
-  { id: 'contact', label: 'Contact', icon: 'i-lucide-mail', to: '/contact' },
+  { id: 'about', label: 'About', icon: '💡', to: '/about' },
+  { id: 'resources', label: 'Resources', icon: '📚', to: '/resources' },
+  { id: 'support', label: 'Support', icon: '❤️', to: '/support' },
+  { id: 'contact', label: 'Contact', icon: '✉️', to: '/contact' },
 ]
 
 function mobileNavigate(to: string) {
@@ -19,7 +22,20 @@ function mobileNavigate(to: string) {
 </script>
 
 <template>
-  <header class="relative flex h-12 shrink-0 items-center border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-950">
+  <header class="fixed inset-x-0 top-0 z-50 flex h-12 shrink-0 items-center border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-950 lg:relative lg:inset-x-auto lg:top-auto lg:z-auto">
+    <!-- Mobile back button -->
+    <UButton
+      v-if="showBack"
+      color="neutral"
+      variant="ghost"
+      size="sm"
+      class="lg:hidden"
+      aria-label="Back"
+      to="/"
+    >
+      <UIcon name="i-lucide-arrow-left" class="size-6" />
+    </UButton>
+
     <!-- Logo -->
     <span class="absolute left-1/2 -translate-x-1/2 lg:static lg:flex-1 lg:translate-x-0">
       <NuxtLink to="/">
@@ -42,15 +58,6 @@ function mobileNavigate(to: string) {
         :to="item.to"
       />
     </nav>
-
-    <!-- Support button (desktop) -->
-    <NuxtLink
-      to="/support"
-      class="mr-2 hidden items-center gap-1.5 rounded-md border border-ditherit px-3 py-1.5 text-sm font-medium text-ditherit transition-colors hover:bg-ditherit hover:text-white lg:inline-flex"
-    >
-      <UIcon name="i-lucide-heart" class="size-4" />
-      Support
-    </NuxtLink>
 
     <!-- Desktop dark mode toggle (hidden on mobile) -->
     <UButton
@@ -102,10 +109,7 @@ function mobileNavigate(to: string) {
             @click="mobileNavigate(item.to)"
           >
             <div class="flex items-center gap-2.5">
-              <UIcon
-                :name="item.icon"
-                class="size-4 text-gray-400"
-              />
+              <span class="text-base leading-none">{{ item.icon }}</span>
               {{ item.label }}
             </div>
             <UIcon
