@@ -530,7 +530,10 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     <AppHeader />
 
     <!-- Mobile image selector + download bar -->
-    <div class="flex lg:hidden shrink-0 items-center justify-between border-b border-gray-200 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950">
+    <div
+      class="flex lg:hidden shrink-0 items-center border-b border-gray-200 bg-white px-3 py-2 dark:border-gray-800 dark:bg-gray-950"
+      :class="isDefaultImage ? 'justify-center' : 'justify-between'"
+    >
       <!-- Multiple images: show thumbnail strip -->
       <template v-if="images.length > 1">
         <div
@@ -551,21 +554,19 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           </button>
         </div>
       </template>
-      <!-- Single image: show upload button -->
+      <!-- Single image: show upload/add button -->
       <template v-else>
-        <UButton
-          label="✨ Upload image(s)"
-          color="neutral"
-          variant="outline"
-          size="sm"
-          class=""
+        <button
+          class="inline-flex items-center gap-1.5 rounded-md border border-ditherit px-3 py-1.5 text-sm font-medium text-ditherit transition-colors hover:bg-ditherit hover:text-white"
           @click="triggerFileInput"
-        />
+        >
+          {{ isDefaultImage ? '✨ Select image(s)' : '➕ Add' }}
+        </button>
       </template>
-      <UPopover class="shrink-0">
+      <UPopover v-if="!isDefaultImage" class="shrink-0">
         <UButton
           label="💾 Download"
-          color="primary"
+          color="neutral"
           variant="solid"
           size="sm"
           :loading="isDownloadingAll"
