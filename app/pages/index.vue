@@ -4,6 +4,7 @@ definePageMeta({ keepalive: true })
 import { loadImage } from '~/composables/useDithering'
 import type { GalleryImage } from '~/composables/useImageGallery'
 import defaultImageUrl from '~/assets/examples/quantfrog.png'
+import defaultImageUrl2 from '~/assets/examples/earth.jpg'
 
 const {
   isProcessing,
@@ -55,7 +56,7 @@ const colorMode = useColorMode()
 const fileInputRef = ref<HTMLInputElement>()
 const canvasRef = ref<HTMLCanvasElement>()
 
-const isDefaultImage = computed(() => images.value.length === 1 && images.value[0].fileName === 'quantfrog.png')
+const isDefaultImage = computed(() => images.value.length <= 2 && images.value.every(img => img.fileName === 'quantfrog.png' || img.fileName === 'earth.jpg'))
 
 const isDragging = ref(false)
 const isIntro = ref(true)
@@ -433,6 +434,7 @@ async function handleDownload(format: 'png' | 'jpg' | 'svg') {
 onMounted(() => {
   if (!hasImages.value) {
     addImageFromUrl(defaultImageUrl, 'quantfrog.png')
+    addImageFromUrl(defaultImageUrl2, 'earth.jpg')
   }
   document.addEventListener('paste', handlePaste)
 })
@@ -446,6 +448,7 @@ watch(hasImages, (has) => {
   if (!has) {
     isIntro.value = true
     addImageFromUrl(defaultImageUrl, 'quantfrog.png')
+    addImageFromUrl(defaultImageUrl2, 'earth.jpg')
   }
 })
 
