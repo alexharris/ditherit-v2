@@ -205,6 +205,7 @@ async function handleDither() {
 }
 
 let ditherTimeout: ReturnType<typeof setTimeout> | null = null
+let skipNextDither = false
 function debouncedDither() {
   if (ditherTimeout) clearTimeout(ditherTimeout)
   ditherTimeout = setTimeout(() => handleDither(), 300)
@@ -470,12 +471,15 @@ watch(selectedImage, async (newImage) => {
 
     if (selectedPreset.value === 'original') {
       // Use the image's own analyzed palette
+      if (newImage.ditheredDataUrl) skipNextDither = true
       palette.value = colors
       setPaletteFromRgb(colors)
       // Auto-dither triggers via paletteAsRgb watcher
     } else {
-      // Keep current preset/custom palette, just re-dither with new image
-      debouncedDither()
+      // Keep current preset/custom palette, re-dither only if not already cached
+      if (!newImage.ditheredDataUrl) {
+        debouncedDither()
+      }
     }
   }
 }, { immediate: true })
@@ -490,6 +494,7 @@ watch(paletteAsRgb, (newPalette) => {
 // Auto-dither selected image when any setting changes
 watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb, sizeWidth], () => {
   if (selectedImage.value && sizeValid.value) {
+    if (skipNextDither) { skipNextDither = false; return }
     debouncedDither()
   }
 }, { deep: true })
