@@ -680,16 +680,18 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             :class="isIntro ? 'lg:border-2 lg:border-dashed lg:border-gray-300 lg:m-4 dark:lg:border-gray-600' : ''"
           >
             <!-- Intro upload hint -->
-            <div v-if="isIntro" class="absolute left-0 right-0 top-16 lg:top-24 hidden items-center justify-center gap-3 text-sm text-gray-500 dark:text-gray-400 lg:flex">
-              <span>Drop or paste images here, or</span>
-              <UButton
-                icon="i-lucide-upload"
-                label="Upload"
-                size="xs"
-                color="neutral"
-                variant="outline"
-                @click="triggerFileInput"
-              />
+            <div v-if="isIntro" class="absolute left-0 right-0 top-16 lg:top-24 hidden items-center justify-center lg:flex">
+              <div class="flex items-center gap-3 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700 ring-1 ring-red-200 dark:bg-red-950/40 dark:text-red-300 dark:ring-red-800">
+                <span>✨ Drop or paste images here, or</span>
+                <UButton
+                  icon="i-lucide-upload"
+                  label="Upload"
+                  size="xs"
+                  color="error"
+                  variant="subtle"
+                  @click="triggerFileInput"
+                />
+              </div>
             </div>
 
             <!-- Selected Image Display -->
