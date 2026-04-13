@@ -471,13 +471,13 @@ watch(selectedImage, async (newImage) => {
 
     if (selectedPreset.value === 'original') {
       // Use the image's own analyzed palette
-      if (newImage.ditheredDataUrl) skipNextDither = true
+      if (newImage.ditheredDataUrl && !newImage.isStale) skipNextDither = true
       palette.value = colors
       setPaletteFromRgb(colors)
       // Auto-dither triggers via paletteAsRgb watcher
     } else {
-      // Keep current preset/custom palette, re-dither only if not already cached
-      if (!newImage.ditheredDataUrl) {
+      // Keep current preset/custom palette, re-dither only if not already cached (or stale)
+      if (!newImage.ditheredDataUrl || newImage.isStale) {
         debouncedDither()
       }
     }
@@ -499,18 +499,13 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
   }
 }, { deep: true })
 
-// Clear dithered results when settings change (for non-selected images)
+// Mark non-selected images as stale when settings change so they re-dither on next select
+// but keep their ditheredDataUrl so the old result stays visible during recalculation
 watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb], () => {
-  // Mark other images as needing re-processing
   // Note: width changes only affect the selected image, so we don't include it here
   images.value.forEach((img) => {
-    if (img.id !== selectedImage.value?.id) {
-      if (img.ditheredDataUrl) {
-        URL.revokeObjectURL(img.ditheredDataUrl)
-      }
-      img.ditheredDataUrl = null
-      img.ditheredBlob = null
-      img.ditheredFileSize = null
+    if (img.id !== selectedImage.value?.id && img.ditheredDataUrl) {
+      img.isStale = true
     }
   })
 }, { deep: true })

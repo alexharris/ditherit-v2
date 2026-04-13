@@ -12,6 +12,7 @@ export interface GalleryImage {
   ditheredFileSize: number | null // blob.size in bytes
   resizedOriginalSrc: string | null
   isProcessing: boolean
+  isStale: boolean // dithered result is outdated and needs re-processing
 }
 
 // Module-level state — shared across all callers
@@ -89,7 +90,8 @@ export function useImageGallery() {
         ditheredBlob: null,
         ditheredFileSize: null,
         resizedOriginalSrc: null,
-        isProcessing: false
+        isProcessing: false,
+        isStale: false
       }
       images.value.push(newImage)
 
@@ -162,6 +164,7 @@ export function useImageGallery() {
       image.ditheredDataUrl = url
       image.ditheredBlob = blob
       image.ditheredFileSize = blob.size
+      image.isStale = false
       // Revoke old blob URL after Vue has flushed the DOM update
       if (oldUrl) {
         nextTick(() => URL.revokeObjectURL(oldUrl))
