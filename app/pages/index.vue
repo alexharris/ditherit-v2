@@ -286,6 +286,16 @@ const scorecardDitheredSize = computed(() => {
   return nativeFormatSizeMap.get(img.id) ?? img.ditheredFileSize
 })
 
+const scorecardDitheredWidth = computed(() => {
+  if (!originalWidth.value) return undefined
+  return sizeWidth.value || originalWidth.value
+})
+
+const scorecardDitheredHeight = computed(() => {
+  if (!originalWidth.value || !originalHeight.value || !scorecardDitheredWidth.value) return undefined
+  return Math.round((originalHeight.value / originalWidth.value) * scorecardDitheredWidth.value)
+})
+
 const pngSizeLabel = computed(() => {
   const size = selectedImage.value?.ditheredBlob?.size
   return size ? `PNG (${formatBytes(size)})` : 'PNG'
@@ -798,6 +808,10 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               :original-size="selectedImage.originalFileSize"
               :dithered-file-size="scorecardDitheredSize"
               :file-name="selectedImage.fileName"
+              :original-width="originalWidth || undefined"
+              :original-height="originalHeight || undefined"
+              :dithered-width="scorecardDitheredWidth"
+              :dithered-height="scorecardDitheredHeight"
               class="w-full"
             />
           </div>

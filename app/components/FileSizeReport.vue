@@ -3,6 +3,10 @@ const props = defineProps<{
   originalSize: number // in bytes
   ditheredFileSize: number | null // in bytes, in the original file format
   fileName?: string
+  originalWidth?: number
+  originalHeight?: number
+  ditheredWidth?: number
+  ditheredHeight?: number
 }>()
 
 const originalKb = computed(() => (props.originalSize / 1024).toFixed(1))
@@ -20,6 +24,16 @@ const strokeDashArray = computed(() => {
 })
 
 const isSmaller = computed(() => (props.ditheredFileSize || 0) < props.originalSize)
+
+const isDimensionsIncreased = computed(() => {
+  if (!props.originalWidth || !props.originalHeight || !props.ditheredWidth || !props.ditheredHeight) return false
+  return props.ditheredWidth > props.originalWidth || props.ditheredHeight > props.originalHeight
+})
+
+const upscalePercent = computed(() => {
+  if (!props.originalWidth || !props.ditheredWidth) return 0
+  return Math.round((props.ditheredWidth / props.originalWidth - 1) * 100)
+})
 
 const savedKb = computed(() => {
   const saved = (props.originalSize - (props.ditheredFileSize || 0)) / 1024
@@ -102,5 +116,10 @@ const savedKb = computed(() => {
         </span>
       </div>
     </div>
+
+    <!-- Upscale note -->
+    <p v-if="isDimensionsIncreased" class="mt-3 w-full text-center text-xs text-amber-500 dark:text-amber-400">
+      Image upscaled {{ upscalePercent }}%
+    </p>
   </div>
 </template>
