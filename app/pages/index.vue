@@ -542,10 +542,10 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     <!-- Top Bar -->
     <AppHeader />
 
-    <!-- Mobile image selector + download bar -->
+    <!-- Mobile image selector + download bar (hidden during intro — upload button is in the top zone) -->
     <div
-      class="flex lg:hidden shrink-0 items-center border-b border-gray-200 px-3 py-4 dark:border-gray-800"
-      :class="isDefaultImage ? 'justify-center' : 'justify-between'"
+      v-if="!isDefaultImage"
+      class="flex lg:hidden shrink-0 items-center justify-between border-b border-gray-200 px-3 py-4 dark:border-gray-800"
     >
       <!-- Upload/add button -->
       <button
@@ -635,9 +635,9 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           @dragleave="handleDragLeave"
           @drop="handleDrop"
         >
-          <!-- Mobile floating image toolbar pill -->
+          <!-- Mobile floating image toolbar pill (replaced by inline toolbar in flex-col flow) -->
           <div
-            v-if="selectedImage"
+            v-if="false"
             class="absolute bottom-3 left-1/2 z-10 flex lg:hidden -translate-x-1/2 items-center gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900"
           >
             <UButton
@@ -689,69 +689,73 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
           <!-- Preview Area -->
           <div
-            class="relative flex flex-1 flex-col items-center justify-center overflow-hidden lg:overflow-auto p-2 pb-14 lg:p-8 lg:pb-8 [scrollbar-gutter:stable]"
+            class="flex flex-1 flex-col items-center overflow-hidden p-2 lg:p-8"
             :class="isIntro ? 'lg:border-2 lg:border-dashed lg:border-gray-300 lg:m-4 dark:lg:border-gray-600' : ''"
           >
-            <!-- Intro upload hint -->
-            <div v-if="isIntro" class="absolute left-0 right-0 top-16 lg:top-24 hidden items-center justify-center lg:flex">
-              <div class="flex items-center gap-3 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700 ring-1 ring-red-200 dark:bg-red-950/40 dark:text-red-300 dark:ring-red-800">
-                <span>✨ Drop or paste images here, or</span>
-                <UButton
-                  icon="i-lucide-upload"
-                  label="Upload"
-                  size="xs"
-                  color="error"
-                  variant="subtle"
-                  @click="triggerFileInput"
-                />
-              </div>
-            </div>
-
-            <!-- Selected Image Display -->
+            <!-- Content group: three zones — hint (flex-1) + image+toolbar (flex-2) + spacer (flex-1)
+                 The hint and spacer mirror each other so the image zone is always centered in the pane -->
             <div
               v-if="selectedImage"
-              class="flex min-h-0 flex-col items-center gap-4"
+              class="flex h-full w-full min-h-0 flex-col items-center"
             >
-              <div class="relative">
-                <template v-if="selectedImage.ditheredDataUrl">
-                  <!-- Comparison slider -->
-                  <ImageCompare
-                    v-show="showCompare"
-                    :original-src="selectedImage.resizedOriginalSrc || selectedImage.originalSrc"
-                    :dithered-src="selectedImage.ditheredDataUrl"
-                    :alt="selectedImage.fileName"
-                    class="max-h-full max-w-full lg:max-h-[60vh]"
-                  />
-
-                  <!-- Dithered only -->
-                  <img
-                    v-show="!showCompare"
-                    :src="selectedImage.ditheredDataUrl"
-                    :alt="selectedImage.fileName"
-                    class="max-h-full max-w-full lg:max-h-[60vh] no-touch-callout"
-                  />
-                </template>
-
-                <!-- Original only (when not dithered) -->
-                <img
-                  v-else
-                  :src="selectedImage.originalSrc"
-                  :alt="selectedImage.fileName"
-                  class="max-h-full max-w-full lg:max-h-[60vh] no-touch-callout"
-                />
-
-                <!-- Processing overlay -->
-                <div
-                  v-if="selectedImage.isProcessing"
-                  class="absolute inset-0 flex items-center justify-center bg-black/30"
+              <!-- Top zone (flex-1): always present; shows upload prompt when isIntro -->
+              <div class="flex flex-1 min-h-0 w-full items-center justify-center">
+                <button
+                  v-if="isIntro"
+                  class="inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-950"
+                  @click="triggerFileInput"
                 >
-                  <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-red-500" />
-                </div>
+                  ✨ Select image(s)
+                </button>
               </div>
 
-              <!-- Image toolbar (desktop only — mobile version is below) -->
+              <!-- Image + toolbar zone: flex-2 so its center = 25% + 25% = 50% of the pane (on mobile the spacers are hidden so it fills naturally) -->
+              <div class="flex min-h-0 w-full flex-col items-center justify-center gap-2" style="flex: 2 1 0%">
+                <!-- Wrapper: aspect-ratio + max constraints give it a definite computed size
+                     so the overlay can cover exactly the image area via absolute inset-0 -->
+                <div
+                  class="relative max-h-full max-w-full"
+                  :style="originalWidth && originalHeight ? { aspectRatio: `${originalWidth}/${originalHeight}` } : {}"
+                >
+                  <template v-if="selectedImage.ditheredDataUrl">
+                    <!-- Comparison slider -->
+                    <ImageCompare
+                      v-show="showCompare"
+                      :original-src="selectedImage.resizedOriginalSrc || selectedImage.originalSrc"
+                      :dithered-src="selectedImage.ditheredDataUrl"
+                      :alt="selectedImage.fileName"
+                      class="h-full w-full max-h-full max-w-full"
+                    />
+
+                    <!-- Dithered only -->
+                    <img
+                      v-show="!showCompare"
+                      :src="selectedImage.ditheredDataUrl"
+                      :alt="selectedImage.fileName"
+                      class="h-full w-full max-h-full max-w-full no-touch-callout"
+                    />
+                  </template>
+
+                  <!-- Original only (when not dithered) -->
+                  <img
+                    v-else
+                    :src="selectedImage.originalSrc"
+                    :alt="selectedImage.fileName"
+                    class="h-full w-full max-h-full max-w-full no-touch-callout"
+                  />
+
+                  <!-- Processing overlay covers exactly the image -->
+                  <div
+                    v-if="selectedImage.isProcessing"
+                    class="absolute inset-0 flex items-center justify-center bg-black/30"
+                  >
+                    <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-red-500" />
+                  </div>
+                </div>
+
+              <!-- Image toolbar — flex sibling of image, snug beneath it -->
               <div
-                class="mt-3 hidden lg:flex flex-wrap items-center gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+                class="shrink-0 flex flex-wrap items-center gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900"
               >
                 <div class="flex-1" />
                 <UButton
@@ -793,6 +797,11 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   <span class="hidden lg:inline">Remove</span>
                 </UButton>
               </div>
+
+              </div><!-- end image+toolbar zone -->
+
+              <!-- Bottom spacer (flex-1): mirrors the top zone so image stays centered -->
+              <div class="flex-1 min-h-0" />
 
             </div>
           </div>
