@@ -920,18 +920,18 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       </div>
 
       <!-- Mobile Bottom Toolbar -->
-      <div class="flex lg:hidden shrink-0 items-center justify-around border-t border-gray-200 bg-white py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] dark:border-gray-800 dark:bg-gray-950">
-        <button class="flex flex-col items-center gap-1 text-xs text-gray-600 dark:text-gray-400" @click="drawerMode = true">
+      <div class="flex lg:hidden shrink-0 items-center justify-around border-t border-gray-200 bg-white pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] dark:border-gray-800 dark:bg-gray-950">
+        <button class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400" @click="drawerMode = true">
           <span class="text-2xl leading-none">🏁</span>
-          <span>Mode</span>
+          <span class="uppercase tracking-wide" style="font-size: 12px">Mode</span>
         </button>
-        <button class="flex flex-col items-center gap-1 text-xs text-gray-600 dark:text-gray-400" @click="drawerPalette = true">
+        <button class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400" @click="drawerPalette = true">
           <span class="text-2xl leading-none">🎨</span>
-          <span>Palette</span>
+          <span class="uppercase tracking-wide" style="font-size: 12px">Palette</span>
         </button>
-        <button class="flex flex-col items-center gap-1 text-xs text-gray-600 dark:text-gray-400" @click="drawerScale = true">
+        <button class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400" @click="drawerScale = true">
           <span class="text-2xl leading-none">🖼️</span>
-          <span>Image</span>
+          <span class="uppercase tracking-wide" style="font-size: 12px">Image</span>
         </button>
       </div>
     </div>

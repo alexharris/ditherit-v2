@@ -6,9 +6,9 @@ html, body {
   overscroll-behavior: none;
 }
 
-/* Prevent iOS Safari auto-zoom on focus by keeping font size at 16px on mobile */
+/* Prevent iOS Safari auto-zoom on input focus — only target focusable form elements */
 @media (max-width: 1023px) {
-  * {
+  input, select, textarea {
     font-size: 16px;
   }
 }
