@@ -5,6 +5,7 @@ import { loadImage } from '~/composables/useDithering'
 import type { GalleryImage } from '~/composables/useImageGallery'
 import defaultImageUrl from '~/assets/examples/quantfrog.png'
 import defaultImageUrl2 from '~/assets/examples/earth.jpg'
+import defaultImageUrl3 from '~/assets/examples/coat.gif'
 
 const {
   isProcessing,
@@ -461,6 +462,7 @@ onMounted(() => {
   if (!hasImages.value) {
     addImageFromUrl(defaultImageUrl, 'quantfrog.png')
     addImageFromUrl(defaultImageUrl2, 'earth.jpg')
+    addImageFromUrl(defaultImageUrl3, 'coat.gif')
   }
   document.addEventListener('paste', handlePaste)
 })
@@ -475,6 +477,7 @@ watch(hasImages, (has) => {
     isIntro.value = true
     addImageFromUrl(defaultImageUrl, 'quantfrog.png')
     addImageFromUrl(defaultImageUrl2, 'earth.jpg')
+    addImageFromUrl(defaultImageUrl3, 'coat.gif')
   }
 })
 
