@@ -2,6 +2,23 @@ import RgbQuant from 'rgbquant'
 import type { BayerSize } from '~/utils/dithering'
 import { addPixelation, bayerDither } from '~/utils/dithering'
 
+export interface GifFrame {
+  imageData: ImageData
+  delay: number // milliseconds
+}
+
+// gif.js worker blob URL (created once, reused)
+let gifWorkerUrl: string | null = null
+async function getGifWorkerUrl(): Promise<string> {
+  if (!gifWorkerUrl) {
+    // Import worker source as a raw string via Vite, then create a Blob URL so gif.js can spawn it
+    const workerSrc = await import('gif.js/dist/gif.worker.js?raw')
+    const blob = new Blob([workerSrc.default], { type: 'application/javascript' })
+    gifWorkerUrl = URL.createObjectURL(blob)
+  }
+  return gifWorkerUrl
+}
+
 export interface RgbQuantOptions {
   colors: number
   method: number
@@ -259,6 +276,93 @@ export function useDithering() {
     cachedPaletteKey = ''
   }
 
+  async function ditherGif(
+    frames: GifFrame[],
+    onProgress?: (progress: number) => void
+  ): Promise<DitherResult> {
+    isProcessing.value = true
+    try {
+      const firstFrame = frames[0]!
+      const { width, height } = firstFrame.imageData
+
+      const scratchCanvas = document.createElement('canvas')
+      scratchCanvas.width = width
+      scratchCanvas.height = height
+      const ctx = scratchCanvas.getContext('2d')!
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const GIF = ((await import('gif.js')) as any).default
+      const workerScript = await getGifWorkerUrl()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const gif = new GIF({ workers: 2, quality: 10, workerScript }) as any
+
+      // Build palette from first frame for diffusion mode
+      let q: any = null
+      if (ditherMode.value === 'diffusion') {
+        const palKey = getPaletteKey(palette.value)
+        if (cachedQuant && cachedPaletteKey === palKey) {
+          q = cachedQuant
+        } else {
+          q = new RgbQuant(rgbQuantOptions.value)
+          ctx.putImageData(firstFrame.imageData, 0, 0)
+          q.sample(scratchCanvas)
+          cachedQuant = q
+          cachedPaletteKey = palKey
+        }
+      }
+
+      // For Bayer mode, use configured palette (or derive from first frame if empty)
+      let paletteToUse = palette.value
+      if (ditherMode.value === 'bayer' && paletteToUse.length === 0) {
+        ctx.putImageData(firstFrame.imageData, 0, 0)
+        const qTemp = new RgbQuant({ ...rgbQuantOptions.value, colors: 8, palette: [] })
+        qTemp.sample(scratchCanvas)
+        paletteToUse = qTemp.palette(true)
+      }
+
+      for (let i = 0; i < frames.length; i++) {
+        const { imageData, delay } = frames[i]!
+        ctx.putImageData(imageData, 0, 0)
+
+        if (ditherMode.value === 'bayer') {
+          const buf = imageData.data.buffer.slice(0) // copy — don't transfer the original
+          const result = await new Promise<{ pixels: ArrayBuffer; width: number; height: number }>((resolve, reject) => {
+            const w = getWorker()
+            const timeoutId = setTimeout(() => reject(new Error('Bayer worker timeout')), 10_000)
+            w.onmessage = (e: MessageEvent) => { clearTimeout(timeoutId); resolve(e.data) }
+            w.onerror = (e: ErrorEvent) => { clearTimeout(timeoutId); reject(e) }
+            w.postMessage({ pixels: buf, width, height, palette: paletteToUse, blockSize: pixeliness.value, bayerSize: bayerSize.value }, [buf])
+          })
+          ctx.putImageData(new ImageData(new Uint8ClampedArray(result.pixels), result.width, result.height), 0, 0)
+        } else {
+          const ditherResult = q.reduce(scratchCanvas, 1, algorithm.value, serpentine.value)
+          const id = ctx.getImageData(0, 0, width, height)
+          id.data.set(ditherResult)
+          ctx.putImageData(id, 0, 0)
+        }
+
+        const ditheredData = ctx.getImageData(0, 0, width, height)
+        gif.addFrame(ditheredData, { delay })
+
+        onProgress?.((i + 1) / frames.length)
+
+        // Yield to the browser every 5 frames to keep the UI responsive
+        if (i % 5 === 4) {
+          await new Promise(resolve => requestAnimationFrame(resolve))
+        }
+      }
+
+      const blob = await new Promise<Blob>((resolve) => {
+        gif.on('finished', resolve)
+        gif.render()
+      })
+      const url = URL.createObjectURL(blob)
+      return { width, height, blob, url }
+    } finally {
+      isProcessing.value = false
+    }
+  }
+
   return {
     // State
     isProcessing,
@@ -281,6 +385,7 @@ export function useDithering() {
     // Methods
     analyzePalette,
     dither,
+    ditherGif,
     invalidateQuantCache
   }
 }

@@ -15,6 +15,8 @@
     "@iconify-json/lucide": "^1.2.87",
     "@iconify-json/simple-icons": "^1.2.68",
     "@nuxt/ui": "^4.4.0",
+    "gif.js": "^0.2.0",
+    "gifuct-js": "^2.1.2",
     "img-comparison-slider": "^8.0.7",
     "jszip": "^3.10.1",
     "nuxt": "^4.3.0",

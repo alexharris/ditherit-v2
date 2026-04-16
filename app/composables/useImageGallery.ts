@@ -1,6 +1,11 @@
 import JSZip from 'jszip'
 import { nextTick } from 'vue'
 
+export interface GifFrame {
+  imageData: ImageData
+  delay: number // milliseconds
+}
+
 export interface GalleryImage {
   id: string
   fileName: string
@@ -8,11 +13,15 @@ export interface GalleryImage {
   originalFileSize: number // in bytes
   originalMimeType: string // e.g. 'image/jpeg', 'image/png'
   ditheredDataUrl: string | null // blob URL for display
-  ditheredBlob: Blob | null // raw PNG blob for download/zip
+  ditheredBlob: Blob | null // raw PNG/GIF blob for download/zip
   ditheredFileSize: number | null // blob.size in bytes
   resizedOriginalSrc: string | null
   isProcessing: boolean
   isStale: boolean // dithered result is outdated and needs re-processing
+  isAnimatedGif: boolean
+  gifFrames: GifFrame[] | null
+  gifFrameCount: number | null
+  processingProgress: number | null // 0–1 while dithering GIF frames
 }
 
 // Module-level state — shared across all callers
@@ -48,6 +57,73 @@ export function useImageGallery() {
     })
   }
 
+  function readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = (e) => resolve(e.target?.result as ArrayBuffer)
+      reader.onerror = () => reject(new Error('Failed to read file'))
+      reader.readAsArrayBuffer(file)
+    })
+  }
+
+  async function decodeGifFrames(file: File): Promise<GifFrame[] | null> {
+    try {
+      const { parseGIF, decompressFrames } = await import('gifuct-js')
+      const buffer = await readFileAsArrayBuffer(file)
+      const gif = parseGIF(buffer)
+      const frames = decompressFrames(gif, true)
+      if (frames.length <= 1) return null
+
+      const fullWidth = gif.lsd.width
+      const fullHeight = gif.lsd.height
+
+      // Compositing canvas — accumulates frames respecting disposal methods
+      const canvas = document.createElement('canvas')
+      canvas.width = fullWidth
+      canvas.height = fullHeight
+      const ctx = canvas.getContext('2d')!
+
+      const result: GifFrame[] = []
+      let previousSnapshot: ImageData | null = null
+
+      for (const frame of frames) {
+        // Save snapshot before drawing if we need to restore it next iteration
+        if (frame.disposalType === 3) {
+          previousSnapshot = ctx.getImageData(0, 0, fullWidth, fullHeight)
+        }
+
+        // Draw the patch at its position within the full canvas
+        const patchCanvas = document.createElement('canvas')
+        patchCanvas.width = frame.dims.width
+        patchCanvas.height = frame.dims.height
+        const patchCtx = patchCanvas.getContext('2d')!
+        patchCtx.putImageData(new ImageData(new Uint8ClampedArray(frame.patch), frame.dims.width, frame.dims.height), 0, 0)
+        ctx.drawImage(patchCanvas, frame.dims.left, frame.dims.top)
+
+        // Capture the fully composited frame
+        result.push({
+          imageData: ctx.getImageData(0, 0, fullWidth, fullHeight),
+          delay: frame.delay // gifuct-js already returns ms
+        })
+
+        // Apply disposal method for the next frame
+        switch (frame.disposalType) {
+          case 2:
+            ctx.clearRect(frame.dims.left, frame.dims.top, frame.dims.width, frame.dims.height)
+            break
+          case 3:
+            if (previousSnapshot) ctx.putImageData(previousSnapshot, 0, 0)
+            break
+          // 0/1: leave canvas as-is
+        }
+      }
+
+      return result
+    } catch {
+      return null
+    }
+  }
+
   function getImageDimensions(src: string): Promise<{ width: number; height: number }> {
     return new Promise((resolve, reject) => {
       const img = new Image()
@@ -80,6 +156,19 @@ export function useImageGallery() {
         continue
       }
 
+      let isAnimatedGif = false
+      let gifFrames: GifFrame[] | null = null
+      let gifFrameCount: number | null = null
+
+      if (file.type === 'image/gif') {
+        const frames = await decodeGifFrames(file)
+        if (frames) {
+          isAnimatedGif = true
+          gifFrames = frames
+          gifFrameCount = frames.length
+        }
+      }
+
       const newImage: GalleryImage = {
         id: generateId(),
         fileName: file.name,
@@ -91,7 +180,11 @@ export function useImageGallery() {
         ditheredFileSize: null,
         resizedOriginalSrc: null,
         isProcessing: false,
-        isStale: false
+        isStale: false,
+        isAnimatedGif,
+        gifFrames,
+        gifFrameCount,
+        processingProgress: null
       }
       images.value.push(newImage)
 
@@ -195,6 +288,7 @@ export function useImageGallery() {
       img.ditheredBlob = null
       img.ditheredFileSize = null
       img.resizedOriginalSrc = null
+      img.processingProgress = null
     })
   }
 
@@ -233,11 +327,16 @@ export function useImageGallery() {
         }
 
         if (blob) {
-          if (convertBlob) {
-            blob = await convertBlob(blob)
-          }
           const baseName = image.fileName.replace(/\.[^.]+$/, '')
-          zip.file(`${baseName}-dithered.${format}`, blob)
+          if (image.isAnimatedGif) {
+            // Always use .gif extension and skip format conversion for animated GIFs
+            zip.file(`${baseName}-dithered.gif`, blob)
+          } else {
+            if (convertBlob) {
+              blob = await convertBlob(blob)
+            }
+            zip.file(`${baseName}-dithered.${format}`, blob)
+          }
         }
       }
 

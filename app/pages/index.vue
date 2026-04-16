@@ -22,6 +22,7 @@ const {
   sizeValid,
   analyzePalette,
   dither,
+  ditherGif,
   invalidateQuantCache
 } = useDithering()
 
@@ -161,6 +162,13 @@ async function handlePaste(e: ClipboardEvent) {
 
 // Process a single image — uses cached image loading
 async function processImageForDither(image: GalleryImage, width?: number): Promise<{ url: string; blob: Blob }> {
+  if (image.isAnimatedGif && image.gifFrames?.length) {
+    const result = await ditherGif(image.gifFrames, (progress) => {
+      image.processingProgress = progress
+    })
+    image.processingProgress = null
+    return { url: result.url, blob: result.blob }
+  }
   const img = await loadImage(image.originalSrc)
   const canvas = canvasRef.value
   if (!canvas) throw new Error('Canvas not available')
@@ -223,7 +231,7 @@ const jpgSizeMap = reactive(new Map<string, number>())
 const jpgBlobTracker = new Map<string, Blob>()
 
 watch(
-  () => images.value.map(img => ({ id: img.id, blob: img.ditheredBlob })),
+  () => images.value.map(img => ({ id: img.id, blob: img.ditheredBlob, isAnimatedGif: img.isAnimatedGif })),
   async (entries) => {
     // Clean up removed/cleared entries
     for (const key of [...jpgSizeMap.keys()]) {
@@ -232,9 +240,9 @@ watch(
         jpgBlobTracker.delete(key)
       }
     }
-    // Compute JPG size for new/changed blobs
-    for (const { id, blob } of entries) {
-      if (!blob || jpgBlobTracker.get(id) === blob) continue
+    // Compute JPG size for new/changed blobs (skip animated GIFs)
+    for (const { id, blob, isAnimatedGif } of entries) {
+      if (!blob || isAnimatedGif || jpgBlobTracker.get(id) === blob) continue
       jpgBlobTracker.set(id, blob)
       const jpgBlob = await convertBlobToJpeg(blob)
       if (jpgBlobTracker.get(id) === blob) {
@@ -279,6 +287,8 @@ watch(
   },
   { immediate: true }
 )
+
+const isSelectedGif = computed(() => selectedImage.value?.isAnimatedGif ?? false)
 
 const scorecardDitheredSize = computed(() => {
   const img = selectedImage.value
@@ -410,10 +420,16 @@ async function generateSvgBlob(pngBlob: Blob): Promise<Blob> {
   return new Blob([parts.join('')], { type: 'image/svg+xml' })
 }
 
-async function downloadSingleImage(format: 'png' | 'jpg' | 'svg') {
+async function downloadSingleImage(format: 'png' | 'jpg' | 'svg' | 'gif') {
   if (!selectedImage.value?.ditheredBlob) return
+  // Always use GIF for animated GIF images regardless of requested format
+  if (selectedImage.value.isAnimatedGif) {
+    format = 'gif'
+  }
   let blob: Blob
-  if (format === 'jpg') {
+  if (format === 'gif') {
+    blob = selectedImage.value.ditheredBlob
+  } else if (format === 'jpg') {
     blob = await convertBlobToJpeg(selectedImage.value.ditheredBlob)
   } else if (format === 'svg') {
     blob = await generateSvgBlob(selectedImage.value.ditheredBlob)
@@ -429,7 +445,7 @@ async function downloadSingleImage(format: 'png' | 'jpg' | 'svg') {
   URL.revokeObjectURL(url)
 }
 
-async function handleDownload(format: 'png' | 'jpg' | 'svg') {
+async function handleDownload(format: 'png' | 'jpg' | 'svg' | 'gif') {
   if (images.value.length > 1) {
     const converter = format === 'jpg' ? convertBlobToJpeg
       : format === 'svg' ? generateSvgBlob
@@ -658,9 +674,14 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               />
               <template #content="{ close }">
                 <div class="flex flex-col gap-1 p-2">
-                  <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
-                  <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
-                  <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
+                  <template v-if="isSelectedGif">
+                    <UButton label="GIF" icon="i-lucide-film" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('gif'); close()" />
+                  </template>
+                  <template v-else>
+                    <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
+                    <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
+                    <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
+                  </template>
                 </div>
               </template>
             </UPopover>
@@ -747,9 +768,13 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   <!-- Processing overlay covers exactly the image -->
                   <div
                     v-if="selectedImage.isProcessing"
-                    class="absolute inset-0 flex items-center justify-center bg-black/30"
+                    class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/30"
                   >
                     <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-red-500" />
+                    <span
+                      v-if="selectedImage.processingProgress !== null"
+                      class="text-sm font-medium text-white"
+                    >{{ Math.round(selectedImage.processingProgress * 100) }}%</span>
                   </div>
                 </div>
 
@@ -780,9 +805,14 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   </UButton>
                   <template #content="{ close }">
                     <div class="flex flex-col gap-1 p-2">
-                      <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
-                      <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
-                      <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
+                      <template v-if="isSelectedGif">
+                        <UButton label="GIF" icon="i-lucide-film" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('gif'); close()" />
+                      </template>
+                      <template v-else>
+                        <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
+                        <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
+                        <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
+                      </template>
                     </div>
                   </template>
                 </UPopover>

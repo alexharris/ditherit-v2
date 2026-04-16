@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 
   vite: {
     optimizeDeps: {
-      include: ['rgbquant'],
+      include: ['rgbquant', 'gifuct-js'],
       force: true
     },
     server: {

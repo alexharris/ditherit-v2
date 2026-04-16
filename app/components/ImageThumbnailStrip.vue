@@ -90,6 +90,11 @@ onBeforeUnmount(() => {
         >
           <UIcon name="i-lucide-loader-2" class="size-4 animate-spin text-red-500" />
         </div>
+        <!-- Animated GIF frame count badge -->
+        <span
+          v-if="image.isAnimatedGif && image.gifFrameCount"
+          class="absolute bottom-0.5 right-0.5 rounded bg-black/60 px-1 text-xs text-white"
+        >{{ image.gifFrameCount }}f</span>
       </div>
     </div>
     <UButton
