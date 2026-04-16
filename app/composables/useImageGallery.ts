@@ -12,6 +12,8 @@ export interface GalleryImage {
   originalSrc: string
   originalFileSize: number // in bytes
   originalMimeType: string // e.g. 'image/jpeg', 'image/png'
+  naturalWidth: number
+  naturalHeight: number
   ditheredDataUrl: string | null // blob URL for display
   ditheredBlob: Blob | null // raw PNG/GIF blob for download/zip
   ditheredFileSize: number | null // blob.size in bytes
@@ -175,6 +177,8 @@ export function useImageGallery() {
         originalSrc: dataUrl,
         originalFileSize: file.size,
         originalMimeType: file.type || 'image/png',
+        naturalWidth: width,
+        naturalHeight: height,
         ditheredDataUrl: null,
         ditheredBlob: null,
         ditheredFileSize: null,

@@ -63,7 +63,6 @@ const isDefaultImage = computed(() => images.value.length <= 3 && images.value.e
 const isDragging = ref(false)
 const isIntro = ref(true)
 const showCompare = ref(true)
-const isImageSwitching = ref(false)
 const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
@@ -490,15 +489,12 @@ watch(isDefaultImage, (isDefault) => {
 // Update palette and dimensions when selected image changes
 watch(selectedImage, async (newImage) => {
   if (newImage) {
-    isImageSwitching.value = true
+    // Set dimensions synchronously from stored values so the aspect-ratio
+    // container is correct before any repaint (avoids distortion on image switch)
+    originalWidth.value = newImage.naturalWidth
+    originalHeight.value = newImage.naturalHeight
+
     const img = await loadImage(newImage.originalSrc)
-
-    // Capture original dimensions for ImageSizeControl in SidebarPixelScale
-    originalWidth.value = img.naturalWidth
-    originalHeight.value = img.naturalHeight
-
-    await nextTick()
-    isImageSwitching.value = false
 
     invalidateQuantCache()
     const colors = analyzePalette(img)
@@ -754,8 +750,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               <div class="flex min-h-0 w-full flex-col items-center justify-center gap-2" style="flex: 0 0 70%">
               <!-- Image wrapper -->
               <div
-                class="relative min-h-0 max-h-full max-w-full transition-opacity duration-150"
-                :class="isImageSwitching ? 'opacity-0' : 'opacity-100'"
+                class="relative min-h-0 max-h-full max-w-full"
                 :style="originalWidth && originalHeight ? { aspectRatio: `${originalWidth}/${originalHeight}` } : {}"
               >
                 <template v-if="selectedImage.ditheredDataUrl">
