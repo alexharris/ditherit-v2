@@ -278,23 +278,44 @@ export function useDithering() {
 
   async function ditherGif(
     frames: GifFrame[],
-    onProgress?: (progress: number) => void
+    onProgress?: (progress: number) => void,
+    targetWidth?: number
   ): Promise<DitherResult> {
     isProcessing.value = true
     try {
       const firstFrame = frames[0]!
-      const { width, height } = firstFrame.imageData
+      const srcWidth = firstFrame.imageData.width
+      const srcHeight = firstFrame.imageData.height
+
+      // Resolve final output dimensions (respecting user-set width)
+      const finalWidth = targetWidth || srcWidth
+      const finalHeight = Math.round((srcHeight / srcWidth) * finalWidth)
+
+      // Pre-dither downscale for chunky pixel effect (mirrors `dither` logic)
+      const scale = pixelScale.value
+      const ditherWidth = scale > 1 ? Math.max(1, Math.round(finalWidth / scale)) : finalWidth
+      const ditherHeight = scale > 1 ? Math.max(1, Math.round(finalHeight / scale)) : finalHeight
+
+      // sourceCanvas holds the original-size frame so we can drawImage to scale it
+      const sourceCanvas = document.createElement('canvas')
+      sourceCanvas.width = srcWidth
+      sourceCanvas.height = srcHeight
+      const sourceCtx = sourceCanvas.getContext('2d')!
 
       const scratchCanvas = document.createElement('canvas')
-      scratchCanvas.width = width
-      scratchCanvas.height = height
+      scratchCanvas.width = ditherWidth
+      scratchCanvas.height = ditherHeight
       const ctx = scratchCanvas.getContext('2d')!
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const GIF = ((await import('gif.js')) as any).default
       const workerScript = await getGifWorkerUrl()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const gif = new GIF({ workers: 2, quality: 10, workerScript }) as any
+      const gif = new GIF({ workers: 2, quality: 10, workerScript, width: finalWidth, height: finalHeight }) as any
+
+      // Scale the first frame into the scratch canvas for palette sampling
+      sourceCtx.putImageData(firstFrame.imageData, 0, 0)
+      ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
 
       // Build palette from first frame for diffusion mode
       let q: any = null
@@ -304,7 +325,6 @@ export function useDithering() {
           q = cachedQuant
         } else {
           q = new RgbQuant(rgbQuantOptions.value)
-          ctx.putImageData(firstFrame.imageData, 0, 0)
           q.sample(scratchCanvas)
           cachedQuant = q
           cachedPaletteKey = palKey
@@ -314,34 +334,47 @@ export function useDithering() {
       // For Bayer mode, use configured palette (or derive from first frame if empty)
       let paletteToUse = palette.value
       if (ditherMode.value === 'bayer' && paletteToUse.length === 0) {
-        ctx.putImageData(firstFrame.imageData, 0, 0)
         const qTemp = new RgbQuant({ ...rgbQuantOptions.value, colors: 8, palette: [] })
         qTemp.sample(scratchCanvas)
         paletteToUse = qTemp.palette(true)
       }
 
+      // Output canvas — upscaled to finalWidth/finalHeight when pixelScale > 1
+      const outputCanvas = document.createElement('canvas')
+      outputCanvas.width = finalWidth
+      outputCanvas.height = finalHeight
+      const outputCtx = outputCanvas.getContext('2d')!
+
       for (let i = 0; i < frames.length; i++) {
         const { imageData, delay } = frames[i]!
-        ctx.putImageData(imageData, 0, 0)
+
+        // Scale frame to dither dimensions
+        sourceCtx.putImageData(imageData, 0, 0)
+        ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
 
         if (ditherMode.value === 'bayer') {
-          const buf = imageData.data.buffer.slice(0) // copy — don't transfer the original
+          const scaledImageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+          const buf = scaledImageData.data.buffer.slice(0) // copy — don't transfer the original
           const result = await new Promise<{ pixels: ArrayBuffer; width: number; height: number }>((resolve, reject) => {
             const w = getWorker()
             const timeoutId = setTimeout(() => reject(new Error('Bayer worker timeout')), 10_000)
             w.onmessage = (e: MessageEvent) => { clearTimeout(timeoutId); resolve(e.data) }
             w.onerror = (e: ErrorEvent) => { clearTimeout(timeoutId); reject(e) }
-            w.postMessage({ pixels: buf, width, height, palette: paletteToUse, blockSize: pixeliness.value, bayerSize: bayerSize.value }, [buf])
+            w.postMessage({ pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value, bayerSize: bayerSize.value }, [buf])
           })
           ctx.putImageData(new ImageData(new Uint8ClampedArray(result.pixels), result.width, result.height), 0, 0)
         } else {
           const ditherResult = q.reduce(scratchCanvas, 1, algorithm.value, serpentine.value)
-          const id = ctx.getImageData(0, 0, width, height)
+          const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
           id.data.set(ditherResult)
           ctx.putImageData(id, 0, 0)
         }
 
-        const ditheredData = ctx.getImageData(0, 0, width, height)
+        // Upscale dithered result to final dimensions with nearest-neighbor interpolation
+        outputCtx.imageSmoothingEnabled = false
+        outputCtx.drawImage(scratchCanvas, 0, 0, finalWidth, finalHeight)
+
+        const ditheredData = outputCtx.getImageData(0, 0, finalWidth, finalHeight)
         gif.addFrame(ditheredData, { delay })
 
         onProgress?.((i + 1) / frames.length)
@@ -357,7 +390,7 @@ export function useDithering() {
         gif.render()
       })
       const url = URL.createObjectURL(blob)
-      return { width, height, blob, url }
+      return { width: finalWidth, height: finalHeight, blob, url }
     } finally {
       isProcessing.value = false
     }

@@ -50,7 +50,7 @@ defineProps<{
 
 .compare-image {
   display: block;
-  max-width: 100%;
+  width: 100%;
   height: auto;
   object-fit: contain;
 }
