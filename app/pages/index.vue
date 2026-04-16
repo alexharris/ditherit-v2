@@ -58,7 +58,7 @@ const colorMode = useColorMode()
 const fileInputRef = ref<HTMLInputElement>()
 const canvasRef = ref<HTMLCanvasElement>()
 
-const isDefaultImage = computed(() => images.value.length <= 2 && images.value.every(img => img.fileName === 'quantfrog.png' || img.fileName === 'earth.jpg'))
+const isDefaultImage = computed(() => images.value.length <= 3 && images.value.every(img => img.fileName === 'quantfrog.png' || img.fileName === 'earth.jpg' || img.fileName === 'coat.gif'))
 
 const isDragging = ref(false)
 const isIntro = ref(true)
@@ -724,13 +724,27 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             >
               <!-- Top zone (flex-1): always present; shows upload prompt when isIntro -->
               <div class="flex flex-1 min-h-0 w-full items-center justify-center">
-                <button
-                  v-if="isIntro"
-                  class="inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-950"
-                  @click="triggerFileInput"
-                >
-                  ✨ Select image(s)
-                </button>
+                <template v-if="isIntro">
+                  <!-- Desktop: prominent drop/paste hint -->
+                  <div class="hidden lg:flex items-center gap-3 rounded-lg bg-white px-4 py-2.5 text-sm text-red-700 ring-1 ring-red-200 dark:bg-gray-900 dark:text-red-300 dark:ring-red-800">
+                    <span>✨ Drop or paste images here, or</span>
+                    <UButton
+                      icon="i-lucide-upload"
+                      label="Select"
+                      size="xs"
+                      color="error"
+                      variant="subtle"
+                      @click="triggerFileInput"
+                    />
+                  </div>
+                  <!-- Mobile: plain button -->
+                  <button
+                    class="lg:hidden inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-950"
+                    @click="triggerFileInput"
+                  >
+                    ✨ Select image(s)
+                  </button>
+                </template>
               </div>
 
               <!-- Image + toolbar zone: flex-2 so its center = 25% + 25% = 50% of the pane (on mobile the spacers are hidden so it fills naturally) -->
