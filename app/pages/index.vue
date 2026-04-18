@@ -209,6 +209,8 @@ async function handleDither() {
     } else {
       setResizedOriginal(selectedImage.value.id, null)
     }
+  } catch (err) {
+    console.error('Dithering failed:', err)
   } finally {
     setProcessing(selectedImage.value.id, false)
   }

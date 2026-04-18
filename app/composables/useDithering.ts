@@ -355,14 +355,22 @@ export function useDithering() {
         if (ditherMode.value === 'bayer') {
           const scaledImageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
           const buf = scaledImageData.data.buffer.slice(0) // copy — don't transfer the original
-          const result = await new Promise<{ pixels: ArrayBuffer; width: number; height: number }>((resolve, reject) => {
-            const w = getWorker()
-            const timeoutId = setTimeout(() => reject(new Error('Bayer worker timeout')), 10_000)
-            w.onmessage = (e: MessageEvent) => { clearTimeout(timeoutId); resolve(e.data) }
-            w.onerror = (e: ErrorEvent) => { clearTimeout(timeoutId); reject(e) }
-            w.postMessage({ pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value, bayerSize: bayerSize.value }, [buf])
-          })
-          ctx.putImageData(new ImageData(new Uint8ClampedArray(result.pixels), result.width, result.height), 0, 0)
+          try {
+            const result = await new Promise<{ pixels: ArrayBuffer; width: number; height: number }>((resolve, reject) => {
+              const w = getWorker()
+              const timeoutId = setTimeout(() => reject(new Error('Bayer worker timeout')), 10_000)
+              w.onmessage = (e: MessageEvent) => { clearTimeout(timeoutId); resolve(e.data) }
+              w.onerror = (e: ErrorEvent) => { clearTimeout(timeoutId); reject(e) }
+              w.postMessage({ pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value, bayerSize: bayerSize.value }, [buf])
+            })
+            ctx.putImageData(new ImageData(new Uint8ClampedArray(result.pixels), result.width, result.height), 0, 0)
+          } catch {
+            // Worker failed — fall back to main-thread Bayer dithering for this frame
+            sourceCtx.putImageData(imageData, 0, 0)
+            ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
+            const freshImageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+            bayerDither(ctx, freshImageData, paletteToUse, 1, bayerSize.value, smoothPixels.value)
+          }
         } else {
           const ditherResult = q.reduce(scratchCanvas, 1, algorithm.value, serpentine.value)
           const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
