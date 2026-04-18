@@ -1,6 +1,6 @@
 import RgbQuant from 'rgbquant'
 import type { BayerSize } from '~/utils/dithering'
-import { addPixelation, bayerDither, blueNoiseDither, riemersmaDither } from '~/utils/dithering'
+import { addPixelation, bayerDither, blueNoiseDither, riemersmaDither, simple2DDither } from '~/utils/dithering'
 
 export interface GifFrame {
   imageData: ImageData
@@ -49,7 +49,8 @@ export const DIFFUSION_ALGORITHMS = [
   { label: 'Sierra24A', value: 'Sierra24A' },
   { label: 'Fan', value: 'Fan' },
   { label: 'ShiauFan', value: 'ShiauFan' },
-  { label: 'ShiauFan2', value: 'ShiauFan2' }
+  { label: 'ShiauFan2', value: 'ShiauFan2' },
+  { label: 'Simple 2D', value: 'Simple2D' }
 ] as const
 
 export interface DitherResult {
@@ -220,6 +221,11 @@ export function useDithering() {
             riemersmaDither(ctx, freshImageData, paletteToUse, pixeliness.value, smoothPixels.value)
           }
         }
+      } else if (algorithm.value === 'Simple2D') {
+        // --- Simple 2D: custom implementation (not supported by RgbQuant) ---
+        const paletteToUse = palette.value.length > 0 ? palette.value : analyzePalette(sourceImage)
+        const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+        simple2DDither(ctx, imageData, paletteToUse, pixeliness.value, smoothPixels.value)
       } else {
         // --- Error diffusion path: cache RgbQuant instance ---
         const palKey = getPaletteKey(palette.value)
@@ -325,9 +331,9 @@ export function useDithering() {
       sourceCtx.putImageData(firstFrame.imageData, 0, 0)
       ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
 
-      // Build palette from first frame for diffusion mode
+      // Build palette from first frame for diffusion mode (skip for Simple2D — uses its own path)
       let q: any = null
-      if (ditherMode.value === 'diffusion') {
+      if (ditherMode.value === 'diffusion' && algorithm.value !== 'Simple2D') {
         const palKey = getPaletteKey(palette.value)
         if (cachedQuant && cachedPaletteKey === palKey) {
           q = cachedQuant
@@ -339,9 +345,9 @@ export function useDithering() {
         }
       }
 
-      // For ordered/noise modes, use configured palette (or derive from first frame if empty)
+      // For ordered/noise modes and Simple2D, use configured palette (or derive from first frame if empty)
       let paletteToUse = palette.value
-      if (ditherMode.value !== 'diffusion' && paletteToUse.length === 0) {
+      if ((ditherMode.value !== 'diffusion' || algorithm.value === 'Simple2D') && paletteToUse.length === 0) {
         const qTemp = new RgbQuant({ ...rgbQuantOptions.value, colors: 8, palette: [] })
         qTemp.sample(scratchCanvas)
         paletteToUse = qTemp.palette(true)
@@ -387,6 +393,9 @@ export function useDithering() {
               riemersmaDither(ctx, freshImageData, paletteToUse, 1, smoothPixels.value)
             }
           }
+        } else if (algorithm.value === 'Simple2D') {
+          const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+          simple2DDither(ctx, id, paletteToUse, 1, smoothPixels.value)
         } else {
           const ditherResult = q.reduce(scratchCanvas, 1, algorithm.value, serpentine.value)
           const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)

@@ -122,6 +122,65 @@ export function bayerDither(
   }
 }
 
+export function simple2DDither(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  palette: number[][],
+  blockSize: number,
+  smoothDownscale = false
+) {
+  const { width, height } = imageData
+  const data = imageData.data
+  const newPalette = palette.map((color, id) => [id, ...color])
+
+  // Floating-point error buffer: one [eR, eG, eB] per pixel
+  const errR = new Float64Array(width * height)
+  const errG = new Float64Array(width * height)
+  const errB = new Float64Array(width * height)
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4
+      const idx = y * width + x
+
+      const adjR = Math.max(0, Math.min(255, data[i]! + errR[idx]!))
+      const adjG = Math.max(0, Math.min(255, data[i + 1]! + errG[idx]!))
+      const adjB = Math.max(0, Math.min(255, data[i + 2]! + errB[idx]!))
+
+      const closest = getClosestColor(newPalette, [adjR, adjG, adjB])
+      const chosenR = closest[1]!
+      const chosenG = closest[2]!
+      const chosenB = closest[3]!
+
+      data[i] = chosenR
+      data[i + 1] = chosenG
+      data[i + 2] = chosenB
+
+      const eR = adjR - chosenR
+      const eG = adjG - chosenG
+      const eB = adjB - chosenB
+
+      // Spread error: 1/2 right, 1/2 below
+      if (x + 1 < width) {
+        errR[idx + 1]! += eR * 0.5
+        errG[idx + 1]! += eG * 0.5
+        errB[idx + 1]! += eB * 0.5
+      }
+      if (y + 1 < height) {
+        errR[idx + width]! += eR * 0.5
+        errG[idx + width]! += eG * 0.5
+        errB[idx + width]! += eB * 0.5
+      }
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0)
+
+  if (blockSize > 1) {
+    addPixelation(ctx, ctx.canvas, width, height, blockSize, smoothDownscale)
+  }
+}
+
 function nextPowerOfTwo(n: number): number {
   let p = 1; while (p < n) p <<= 1; return p
 }
