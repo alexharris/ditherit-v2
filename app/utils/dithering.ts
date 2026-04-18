@@ -1,3 +1,5 @@
+import { BLUE_NOISE_TEXTURE } from './blue-noise-texture'
+
 export type BayerSize = 2 | 4 | 8 | 16
 
 export const BAYER_SIZES = [
@@ -117,5 +119,136 @@ export function bayerDither(
 
   if (blockSize > 1) {
     addPixelation(ctx, ctx.canvas, imageData.width, imageData.height, blockSize, smoothDownscale)
+  }
+}
+
+function nextPowerOfTwo(n: number): number {
+  let p = 1; while (p < n) p <<= 1; return p
+}
+
+export function hilbertD2XY(n: number, d: number): [number, number] {
+  let rx: number, ry: number, t = d, x = 0, y = 0
+  for (let s = 1; s < n; s *= 2) {
+    rx = 1 & Math.floor(t / 2)
+    ry = 1 & (t ^ rx)
+    if (ry === 0) {
+      if (rx === 1) { x = s - 1 - x; y = s - 1 - y }
+      const tmp = x; x = y; y = tmp
+    }
+    x += s * rx; y += s * ry; t = Math.floor(t / 4)
+  }
+  return [x, y]
+}
+
+export function blueNoiseDither(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  palette: number[][],
+  blockSize: number,
+  smoothDownscale = false
+) {
+  const imageDataLength = imageData.data.length
+  const w = imageData.width
+
+  const newPalette = palette.map((color, id) => [id, ...color])
+  const colorCache = new Map<number, number[]>()
+
+  for (let currentPixel = 0; currentPixel <= imageDataLength - 4; currentPixel += 4) {
+    const x = (currentPixel / 4) % w
+    const y = Math.floor(currentPixel / 4 / w)
+
+    const threshold = BLUE_NOISE_TEXTURE[(y % 64) * 64 + (x % 64)]!
+
+    const r = Math.max(0, Math.min(255, imageData.data[currentPixel]! + 128 - threshold))
+    const g = Math.max(0, Math.min(255, imageData.data[currentPixel + 1]! + 128 - threshold))
+    const b = Math.max(0, Math.min(255, imageData.data[currentPixel + 2]! + 128 - threshold))
+
+    const key = (r << 16) | (g << 8) | b
+    let closest = colorCache.get(key)
+    if (!closest) {
+      closest = getClosestColor(newPalette, [r, g, b])
+      colorCache.set(key, closest)
+    }
+
+    imageData.data[currentPixel] = closest[1]!
+    imageData.data[currentPixel + 1] = closest[2]!
+    imageData.data[currentPixel + 2] = closest[3]!
+  }
+
+  ctx.putImageData(imageData, 0, 0)
+
+  if (blockSize > 1) {
+    addPixelation(ctx, ctx.canvas, imageData.width, imageData.height, blockSize, smoothDownscale)
+  }
+}
+
+export function riemersmaDither(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  palette: number[][],
+  blockSize: number,
+  smoothDownscale = false
+) {
+  const { width, height } = imageData
+  const data = imageData.data
+  const newPalette = palette.map((color, id) => [id, ...color])
+
+  const N = 32
+  const r = 1 / 8
+  // weights[0] = most recent (1.0), weights[N-1] = oldest (r^1 ≈ 0.125)
+  const weights: number[] = []
+  for (let i = 0; i < N; i++) {
+    weights.push(Math.pow(r, i / (N - 1)))
+  }
+
+  // Circular error buffer: [eR, eG, eB] per slot
+  const errorBuf: Float64Array = new Float64Array(N * 3)
+  let bufHead = 0
+
+  const side = nextPowerOfTwo(Math.max(width, height))
+
+  for (let d = 0; d < side * side; d++) {
+    const [x, y] = hilbertD2XY(side, d)
+    if (x >= width || y >= height) continue
+
+    const i = (y * width + x) * 4
+
+    // Accumulate weighted errors from circular buffer
+    let eR = 0, eG = 0, eB = 0
+    for (let k = 0; k < N; k++) {
+      const slot = ((bufHead - 1 - k) % N + N) % N
+      eR += weights[k]! * errorBuf[slot * 3]!
+      eG += weights[k]! * errorBuf[slot * 3 + 1]!
+      eB += weights[k]! * errorBuf[slot * 3 + 2]!
+    }
+
+    const origR = data[i]!
+    const origG = data[i + 1]!
+    const origB = data[i + 2]!
+
+    const adjR = Math.max(0, Math.min(255, origR + eR))
+    const adjG = Math.max(0, Math.min(255, origG + eG))
+    const adjB = Math.max(0, Math.min(255, origB + eB))
+
+    const closest = getClosestColor(newPalette, [adjR, adjG, adjB])
+    const chosenR = closest[1]!
+    const chosenG = closest[2]!
+    const chosenB = closest[3]!
+
+    data[i] = chosenR
+    data[i + 1] = chosenG
+    data[i + 2] = chosenB
+
+    // Store error in circular buffer
+    errorBuf[bufHead * 3] = origR - chosenR
+    errorBuf[bufHead * 3 + 1] = origG - chosenG
+    errorBuf[bufHead * 3 + 2] = origB - chosenB
+    bufHead = (bufHead + 1) % N
+  }
+
+  ctx.putImageData(imageData, 0, 0)
+
+  if (blockSize > 1) {
+    addPixelation(ctx, ctx.canvas, width, height, blockSize, smoothDownscale)
   }
 }

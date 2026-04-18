@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { DitherMode } from '~/composables/useDithering'
 import { DIFFUSION_ALGORITHMS } from '~/composables/useDithering'
 import { BAYER_SIZES } from '~/utils/dithering'
 
@@ -9,9 +10,11 @@ const {
   bayerSize
 } = useDithering()
 
-const ditherModes = [
+const ditherModes: Array<{ label: string; value: DitherMode }> = [
   { label: 'Error Diffusion', value: 'diffusion' },
-  { label: 'Bayer (Ordered)', value: 'bayer' }
+  { label: 'Bayer (Ordered)', value: 'bayer' },
+  { label: 'Blue Noise', value: 'blue-noise' },
+  { label: 'Riemersma', value: 'riemersma' }
 ]
 </script>
 
@@ -42,7 +45,7 @@ const ditherModes = [
           :class="ditherMode === mode.value
             ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
             : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-950 dark:text-gray-400 dark:hover:bg-gray-900'"
-          @click="ditherMode = mode.value"
+          @click="ditherMode = (mode.value as DitherMode)"
         >
           {{ mode.label }}
         </button>

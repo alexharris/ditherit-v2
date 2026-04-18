@@ -1,6 +1,6 @@
 import RgbQuant from 'rgbquant'
 import type { BayerSize } from '~/utils/dithering'
-import { addPixelation, bayerDither } from '~/utils/dithering'
+import { addPixelation, bayerDither, blueNoiseDither, riemersmaDither } from '~/utils/dithering'
 
 export interface GifFrame {
   imageData: ImageData
@@ -36,7 +36,7 @@ export interface RgbQuantOptions {
   colorDist: string
 }
 
-export type DitherMode = 'diffusion' | 'bayer'
+export type DitherMode = 'diffusion' | 'bayer' | 'blue-noise' | 'riemersma'
 
 export const DIFFUSION_ALGORITHMS = [
   { label: 'Floyd-Steinberg', value: 'FloydSteinberg' },
@@ -173,15 +173,15 @@ export function useDithering() {
       targetCanvas.height = ditherHeight
       ctx.drawImage(sourceImage, 0, 0, ditherWidth, ditherHeight)
 
-      if (ditherMode.value === 'bayer') {
-        // --- Bayer path: offload to Web Worker with main-thread fallback ---
+      if (ditherMode.value !== 'diffusion') {
+        // --- Ordered/noise path: offload to Web Worker with main-thread fallback ---
         const paletteToUse = palette.value.length > 0 ? palette.value : analyzePalette(sourceImage)
 
         try {
           const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
           const result = await new Promise<{ pixels: ArrayBuffer; width: number; height: number }>((resolve, reject) => {
             const w = getWorker()
-            const timeoutId = setTimeout(() => reject(new Error('Bayer worker timeout')), 10_000)
+            const timeoutId = setTimeout(() => reject(new Error('Dither worker timeout')), 10_000)
             w.onmessage = (e) => {
               clearTimeout(timeoutId)
               resolve(e.data)
@@ -190,14 +190,16 @@ export function useDithering() {
               clearTimeout(timeoutId)
               reject(e)
             }
-            w.postMessage({
+            const msg: Record<string, unknown> = {
+              mode: ditherMode.value,
               pixels: imageData.data.buffer,
               width: ditherWidth,
               height: ditherHeight,
               palette: paletteToUse,
-              blockSize: pixeliness.value,
-              bayerSize: bayerSize.value
-            }, [imageData.data.buffer])
+              blockSize: pixeliness.value
+            }
+            if (ditherMode.value === 'bayer') msg.bayerSize = bayerSize.value
+            w.postMessage(msg, [imageData.data.buffer])
           })
 
           const processedData = new ImageData(
@@ -207,10 +209,16 @@ export function useDithering() {
           )
           ctx.putImageData(processedData, 0, 0)
         } catch {
-          // Worker failed — fall back to main-thread Bayer dithering
+          // Worker failed — fall back to main-thread dithering
           ctx.drawImage(sourceImage, 0, 0, ditherWidth, ditherHeight)
           const freshImageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
-          bayerDither(ctx, freshImageData, paletteToUse, pixeliness.value, bayerSize.value, smoothPixels.value)
+          if (ditherMode.value === 'bayer') {
+            bayerDither(ctx, freshImageData, paletteToUse, pixeliness.value, bayerSize.value, smoothPixels.value)
+          } else if (ditherMode.value === 'blue-noise') {
+            blueNoiseDither(ctx, freshImageData, paletteToUse, pixeliness.value, smoothPixels.value)
+          } else {
+            riemersmaDither(ctx, freshImageData, paletteToUse, pixeliness.value, smoothPixels.value)
+          }
         }
       } else {
         // --- Error diffusion path: cache RgbQuant instance ---
@@ -331,9 +339,9 @@ export function useDithering() {
         }
       }
 
-      // For Bayer mode, use configured palette (or derive from first frame if empty)
+      // For ordered/noise modes, use configured palette (or derive from first frame if empty)
       let paletteToUse = palette.value
-      if (ditherMode.value === 'bayer' && paletteToUse.length === 0) {
+      if (ditherMode.value !== 'diffusion' && paletteToUse.length === 0) {
         const qTemp = new RgbQuant({ ...rgbQuantOptions.value, colors: 8, palette: [] })
         qTemp.sample(scratchCanvas)
         paletteToUse = qTemp.palette(true)
@@ -352,24 +360,32 @@ export function useDithering() {
         sourceCtx.putImageData(imageData, 0, 0)
         ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
 
-        if (ditherMode.value === 'bayer') {
+        if (ditherMode.value !== 'diffusion') {
           const scaledImageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
           const buf = scaledImageData.data.buffer.slice(0) // copy — don't transfer the original
           try {
             const result = await new Promise<{ pixels: ArrayBuffer; width: number; height: number }>((resolve, reject) => {
               const w = getWorker()
-              const timeoutId = setTimeout(() => reject(new Error('Bayer worker timeout')), 10_000)
+              const timeoutId = setTimeout(() => reject(new Error('Dither worker timeout')), 10_000)
               w.onmessage = (e: MessageEvent) => { clearTimeout(timeoutId); resolve(e.data) }
               w.onerror = (e: ErrorEvent) => { clearTimeout(timeoutId); reject(e) }
-              w.postMessage({ pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value, bayerSize: bayerSize.value }, [buf])
+              const msg: Record<string, unknown> = { mode: ditherMode.value, pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value }
+              if (ditherMode.value === 'bayer') msg.bayerSize = bayerSize.value
+              w.postMessage(msg, [buf])
             })
             ctx.putImageData(new ImageData(new Uint8ClampedArray(result.pixels), result.width, result.height), 0, 0)
           } catch {
-            // Worker failed — fall back to main-thread Bayer dithering for this frame
+            // Worker failed — fall back to main-thread dithering for this frame
             sourceCtx.putImageData(imageData, 0, 0)
             ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
             const freshImageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
-            bayerDither(ctx, freshImageData, paletteToUse, 1, bayerSize.value, smoothPixels.value)
+            if (ditherMode.value === 'bayer') {
+              bayerDither(ctx, freshImageData, paletteToUse, 1, bayerSize.value, smoothPixels.value)
+            } else if (ditherMode.value === 'blue-noise') {
+              blueNoiseDither(ctx, freshImageData, paletteToUse, 1, smoothPixels.value)
+            } else {
+              riemersmaDither(ctx, freshImageData, paletteToUse, 1, smoothPixels.value)
+            }
           }
         } else {
           const ditherResult = q.reduce(scratchCanvas, 1, algorithm.value, serpentine.value)
