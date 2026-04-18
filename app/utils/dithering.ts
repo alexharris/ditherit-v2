@@ -12,13 +12,13 @@ function generateBayerIndex(size: number): number[][] {
   const half = size / 2
   const sub = generateBayerIndex(half)
   const m: number[][] = Array.from({ length: size }, () => new Array(size))
-  for (let i = 0; i < half; i++) {
-    for (let j = 0; j < half; j++) {
-      const v = sub[i]![j]! * 4
-      m[2 * i]![2 * j] = v
-      m[2 * i]![2 * j + 1] = v + 2
-      m[2 * i + 1]![2 * j] = v + 3
-      m[2 * i + 1]![2 * j + 1] = v + 1
+  for (let si = 0; si < half; si++) {
+    for (let sj = 0; sj < half; sj++) {
+      const v = sub[si]![sj]! * 4
+      m[si]![sj] = v
+      m[si]![half + sj] = v + 2
+      m[half + si]![sj] = v + 3
+      m[half + si]![half + sj] = v + 1
     }
   }
   return m
@@ -100,7 +100,7 @@ export function bayerDither(
     const x = (currentPixel / 4) % w
     const y = Math.floor(currentPixel / 4 / w)
 
-    const threshold = matrix[x % size]![y % size]!
+    const threshold = matrix[y % size]![x % size]!
 
     const map = Math.max(0, Math.min(255, imageData.data[currentPixel]! + 128 - threshold))
     const map2 = Math.max(0, Math.min(255, imageData.data[currentPixel + 1]! + 128 - threshold))
