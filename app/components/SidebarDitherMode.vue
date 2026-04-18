@@ -29,27 +29,12 @@ const ditherModes: Array<{ label: string; value: DitherMode }> = [
         error introduced by reducing an image's color palette. They look quite
         different, try them out!
       </template>
-      <!-- Desktop: select -->
       <USelect
         v-model="ditherMode"
         :items="ditherModes"
-        class="mt-2 hidden w-full lg:block"
+        class="mt-2 w-full"
         :ui="{ base: 'text-left' }"
       />
-      <!-- Mobile: button group -->
-      <div class="mt-2 flex rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 lg:hidden">
-        <button
-          v-for="mode in ditherModes"
-          :key="mode.value"
-          class="flex-1 px-3 py-1.5 text-sm transition-colors"
-          :class="ditherMode === mode.value
-            ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900'
-            : 'bg-white text-gray-600 hover:bg-gray-50 dark:bg-gray-950 dark:text-gray-400 dark:hover:bg-gray-900'"
-          @click="ditherMode = (mode.value as DitherMode)"
-        >
-          {{ mode.label }}
-        </button>
-      </div>
     </HelpTooltip>
 
     <!-- Algorithm (for diffusion mode) -->
