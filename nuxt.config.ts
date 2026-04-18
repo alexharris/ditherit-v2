@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         {
           name: 'description',
           content:
-            'Dither it! is a web application for processing images using dithering.'
+            'Free online image dithering tool. Floyd-Steinberg, Atkinson, Bayer ordered dithering, animated GIFs, and multi-image upload — processed locally in your browser.'
         },
         { name: 'theme-color', content: '#C53030' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },

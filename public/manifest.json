@@ -1,7 +1,7 @@
 {
   "name": "Dither it!",
   "short_name": "Dither it!",
-  "description": "A web application for processing images using dithering.",
+  "description": "Free online image dithering tool. Floyd-Steinberg, Atkinson, Bayer ordered dithering, animated GIFs, and multi-image upload — processed locally in your browser.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
