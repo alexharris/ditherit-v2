@@ -138,9 +138,6 @@ const featureCards = [
         </div>
         <UButton type="submit" label="Subscribe" />
       </form>
-      <p class="text-xs text-gray-400 dark:text-gray-500">
-        <a href="https://buttondown.com/refer/ditherit" target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:opacity-80">Powered by Buttondown.</a>
-      </p>
     </section>
   </div>
 </template>
