@@ -33,28 +33,6 @@ const featureCards = [
 
 <template>
   <div class="space-y-10">
-    <!-- What is Dithering -->
-    <section class="space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-        What is Dithering?
-      </h2>
-      <p class="text-base leading-relaxed text-gray-600 dark:text-gray-400">
-        Dithering is a method for trying to make an image look good while reducing the number of colors it uses, or as Wikipedia puts it:
-      </p>
-      <blockquote class="border-l-4 border-gray-200 pl-4 dark:border-gray-700">
-        <p class="italic leading-relaxed text-gray-500 dark:text-gray-400">
-          Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette — a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it. Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance.
-        </p>
-      </blockquote>
-      <p class="text-base text-gray-600 dark:text-gray-400">
-        For more information, see this
-        <NuxtLink to="/resources" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">
-          list of dithering resources
-        </NuxtLink>
-        from around the web: explainers, algorithms, examples, and more.
-      </p>
-    </section>
-
     <!-- Features Grid -->
     <section class="space-y-4">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -81,6 +59,28 @@ const featureCards = [
           </div>
         </UCard>
       </div>
+    </section>
+
+    <!-- What is Dithering -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+        What is Dithering?
+      </h2>
+      <p class="text-base leading-relaxed text-gray-600 dark:text-gray-400">
+        Dithering is a method for trying to make an image look good while reducing the number of colors it uses, or as Wikipedia puts it:
+      </p>
+      <blockquote class="border-l-4 border-gray-200 pl-4 dark:border-gray-700">
+        <p class="italic leading-relaxed text-gray-500 dark:text-gray-400">
+          Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette — a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it. Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance.
+        </p>
+      </blockquote>
+      <p class="text-base text-gray-600 dark:text-gray-400">
+        For more information, see this
+        <NuxtLink to="/resources" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">
+          list of dithering resources
+        </NuxtLink>
+        from around the web: explainers, algorithms, examples, and more.
+      </p>
     </section>
 
     <USeparator />
