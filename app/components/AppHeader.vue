@@ -11,7 +11,6 @@ const isMenuOpen = ref(false)
 const navItems = [
   { id: 'about', label: 'About', icon: '💡', to: '/about' },
   { id: 'resources', label: 'Resources', icon: '📚', to: '/resources' },
-  { id: 'support', label: 'Support', icon: '❤️', to: '/support' },
   { id: 'contact', label: 'Contact', icon: '✉️', to: '/contact' },
 ]
 
@@ -59,15 +58,14 @@ function mobileNavigate(to: string) {
       />
     </nav>
 
-    <!-- Desktop dark mode toggle (hidden on mobile) -->
-    <UButton
-      class="hidden lg:inline-flex"
-      :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
-      color="neutral"
-      variant="ghost"
-      size="sm"
-      @click="colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'"
-    />
+    <!-- Desktop support button -->
+    <NuxtLink
+      to="/support"
+      class="hidden lg:flex items-center gap-1.5 rounded-md border border-ditherit px-3 py-1.5 text-sm font-medium text-ditherit transition-colors hover:bg-ditherit hover:text-white"
+    >
+      ❤️
+      Support
+    </NuxtLink>
 
     <!-- Mobile dark mode toggle + menu button -->
     <div class="ml-auto flex items-center gap-0.5 lg:hidden">
@@ -127,7 +125,7 @@ function mobileNavigate(to: string) {
           class="flex items-center justify-center gap-2 rounded-md border border-ditherit px-3 py-2 text-sm font-medium text-ditherit transition-colors hover:bg-ditherit hover:text-white"
           @click="isMenuOpen = false"
         >
-          <UIcon name="i-lucide-heart" class="size-4" />
+          ❤️
           Support Dither it!
         </NuxtLink>
 

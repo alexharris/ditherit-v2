@@ -64,7 +64,7 @@ onBeforeUnmount(() => {
     />
     <div
       ref="scrollContainer"
-      class="flex min-w-0 flex-1 gap-2 overflow-x-auto scrollbar-hide"
+      class="flex min-w-0 flex-1 justify-center gap-2 overflow-x-auto scrollbar-hide"
       @scroll="updateScrollState"
     >
       <div

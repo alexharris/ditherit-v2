@@ -63,6 +63,7 @@ const isDefaultImage = computed(() => images.value.length <= 3 && images.value.e
 const isDragging = ref(false)
 const isIntro = ref(true)
 const showCompare = ref(true)
+const showReportCard = ref(false)
 const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
@@ -834,6 +835,15 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   </template>
                 </UPopover>
                 <UButton
+                  icon="i-lucide-bar-chart-2"
+                  color="neutral"
+                  variant="ghost"
+                  size="xs"
+                  :disabled="!selectedImage.ditheredDataUrl"
+                  class="lg:hidden"
+                  @click="showReportCard = true"
+                />
+                <UButton
                   v-if="!isDefaultImage"
                   icon="i-lucide-trash-2"
                   color="error"
@@ -844,6 +854,23 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   <span class="hidden lg:inline">Remove</span>
                 </UButton>
               </div>
+
+              <!-- Report card modal (mobile only) -->
+              <UModal v-model:open="showReportCard" title="Report Card" class="lg:hidden">
+                <template #body>
+                  <FileSizeReport
+                    :original-size="selectedImage.originalFileSize"
+                    :dithered-file-size="scorecardDitheredSize"
+                    :file-name="selectedImage.fileName"
+                    :original-width="originalWidth || undefined"
+                    :original-height="originalHeight || undefined"
+                    :dithered-width="scorecardDitheredWidth"
+                    :dithered-height="scorecardDitheredHeight"
+                    class="w-full"
+                  />
+                </template>
+              </UModal>
+
               </div><!-- end image+toolbar zone -->
 
               <!-- Bottom spacer (flex-1) -->
@@ -875,27 +902,23 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
       <!-- Bottom Bar (thumbnails + actions) -->
       <footer
-        class="hidden lg:flex shrink-0 flex-col lg:flex-row items-stretch lg:items-center gap-2 border-t border-gray-200 bg-white px-3 py-3 lg:px-4 lg:py-4 dark:border-gray-800 dark:bg-gray-950"
+        class="hidden lg:flex relative shrink-0 flex-col lg:flex-row items-stretch lg:items-center justify-center gap-2 border-t border-gray-200 bg-white px-3 py-3 lg:px-4 lg:py-2 dark:border-gray-800 dark:bg-gray-950"
       >
         <!-- Image Thumbnails + mobile download -->
         <div v-if="hasImages" class="flex min-w-0 items-center justify-between gap-2">
-          <div
-            class="flex min-w-0 items-center gap-2 rounded-lg bg-gray-100 px-2 py-2 ring-1 ring-gray-200 ring-inset dark:bg-gray-900 dark:ring-gray-800"
+          <ImageThumbnailStrip
+            :images="images"
+            :selected-id="selectedImage?.id"
+            @select="selectImage"
+            @remove="removeImage"
+            @add="triggerFileInput"
+          />
+          <button
+            class="size-10 shrink-0 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 text-gray-400 transition-colors hover:border-gray-400 hover:text-gray-500 dark:border-gray-600 dark:hover:border-gray-500"
+            @click="triggerFileInput"
           >
-            <ImageThumbnailStrip
-              :images="images"
-              :selected-id="selectedImage?.id"
-              @select="selectImage"
-              @remove="removeImage"
-              @add="triggerFileInput"
-            />
-            <button
-              class="flex h-10 w-10 shrink-0 items-center justify-center rounded border-2 border-dashed border-gray-300 text-gray-400 transition-colors hover:border-gray-400 hover:text-gray-500 dark:border-gray-600 dark:hover:border-gray-500"
-              @click="triggerFileInput"
-            >
-              <UIcon name="i-lucide-plus" class="size-5" />
-            </button>
-          </div>
+            <UIcon name="i-lucide-plus" class="size-5" />
+          </button>
           <UPopover class="lg:hidden shrink-0">
             <UButton
               icon="i-lucide-download"
@@ -914,10 +937,8 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             </template>
           </UPopover>
         </div>
-        <div class="hidden lg:block flex-1" />
-
         <!-- Action buttons (desktop only) -->
-        <div class="hidden lg:flex shrink-0 items-center justify-end gap-2">
+        <div class="hidden lg:flex absolute right-4 shrink-0 items-center gap-2">
           <UButton
             v-if="images.length > 0 && !isDefaultImage"
             icon="i-lucide-trash-2"
