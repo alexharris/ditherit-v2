@@ -11,7 +11,7 @@ const featureCards = [
   {
     icon: '🏁',
     title: 'Multiple Dithering Methods',
-    description: 'Choose from error diffusion (11 algorithms including Floyd-Steinberg, Atkinson, and Stucki) or classic Bayer ordered dithering with an adjustable threshold.',
+    description: 'Supported dithering methods include: error diffusion, Bayer ordered, blue noise, and Riemersma.',
   },
   {
     icon: '🎨',
@@ -26,13 +26,23 @@ const featureCards = [
   {
     icon: '🕹️',
     title: 'Pixeliness Control',
-    description: 'A retro block-pixel effect with an adjustable size slider for that extra lo-fi look.',
+    description: 'Increase pixel chunkiness for pixel art effects.',
+  },
+  {
+    icon: '📁',
+    title: 'File Format Support',
+    description: 'Accepts any image format your browser supports, including animated GIFs. Export as PNG, JPG, SVG, or GIF.',
   },
 ]
 </script>
 
 <template>
   <div class="space-y-10">
+    <!-- Intro -->
+    <p class="text-base leading-relaxed text-gray-600 dark:text-gray-400">
+      Dither it! is a free website for dithering images, an image processing technique that reduces the number of colors used to render an image.
+    </p>
+
     <!-- Features Grid -->
     <section class="space-y-4">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
@@ -107,12 +117,8 @@ const featureCards = [
         </p>
         <p>
           Thanks to
-          <a href="https://github.com/leeoniya/RgbQuant.js" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">Leon Sorokin</a>,
-          for making RgbQuant.js and Don for making vue-color.
-        </p>
-        <p>
-          Image slider for examples:
-          <a href="https://img-comparison-slider.sneas.io/" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">Img Comparison Slider</a>
+          <a href="https://github.com/leeoniya/RgbQuant.js" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">Leon Sorokin</a>
+          for making RgbQuant.js.
         </p>
       </div>
     </section>
