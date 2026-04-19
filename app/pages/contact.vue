@@ -89,7 +89,7 @@ async function handleSubmit(event: Event) {
             type="text"
             name="name"
             required
-            class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-green-400"
+            class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-ditherit"
           />
         </div>
 
@@ -100,7 +100,7 @@ async function handleSubmit(event: Event) {
             type="email"
             name="email"
             required
-            class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-green-400"
+            class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-ditherit"
           />
         </div>
 
@@ -111,7 +111,7 @@ async function handleSubmit(event: Event) {
             name="message"
             rows="5"
             required
-            class="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-green-400"
+            class="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-ditherit"
           ></textarea>
         </div>
 

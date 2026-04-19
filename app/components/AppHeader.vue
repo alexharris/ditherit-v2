@@ -53,6 +53,7 @@ function mobileNavigate(to: string) {
         :label="item.label"
         color="neutral"
         :variant="route.path === item.to ? 'soft' : 'ghost'"
+        :aria-current="route.path === item.to ? 'page' : undefined"
         size="sm"
         :to="item.to"
       />
@@ -71,6 +72,7 @@ function mobileNavigate(to: string) {
     <div class="ml-auto flex items-center gap-0.5 lg:hidden">
       <UButton
         :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
+        :aria-label="colorMode.value === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"
         color="neutral"
         variant="ghost"
         size="sm"
@@ -104,6 +106,7 @@ function mobileNavigate(to: string) {
             :class="route.path === item.to
               ? 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
               : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'"
+            :aria-current="route.path === item.to ? 'page' : undefined"
             @click="mobileNavigate(item.to)"
           >
             <div class="flex items-center gap-2.5">

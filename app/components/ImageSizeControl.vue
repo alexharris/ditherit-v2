@@ -69,8 +69,9 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
 
 <template>
   <div class="flex items-center gap-1.5">
-    <label class="text-xs text-gray-500 dark:text-gray-400">W</label>
+    <label for="img-width" class="text-xs text-gray-500 dark:text-gray-400">W</label>
     <UInput
+      id="img-width"
       v-model="customWidthInput"
       type="number"
       :min="1"
@@ -82,8 +83,9 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       @keydown.enter="applySize"
     />
     <span class="text-xs text-gray-400 dark:text-gray-500">&times;</span>
-    <label class="text-xs text-gray-500 dark:text-gray-400">H</label>
+    <label for="img-height" class="text-xs text-gray-500 dark:text-gray-400">H</label>
     <UInput
+      id="img-height"
       :model-value="calculatedHeight"
       type="number"
       size="xs"
@@ -96,7 +98,7 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       size="xs"
       color="primary"
       variant="solid"
-      title="Apply size"
+      aria-label="Apply size"
       :disabled="!isWidthValid"
       @click="applySize"
     />
@@ -106,7 +108,7 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       size="xs"
       color="neutral"
       variant="ghost"
-      title="Reset to original size"
+      aria-label="Reset to original size"
       @click="resetToOriginalSize"
     />
   </div>

@@ -45,7 +45,8 @@ defineProps<{
 }
 
 .image-compare-slider:focus {
-  outline: none;
+  outline: 3px solid #C53030;
+  outline-offset: 2px;
 }
 
 .compare-image {

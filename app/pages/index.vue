@@ -915,6 +915,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           />
           <button
             class="size-10 shrink-0 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 text-gray-400 transition-colors hover:border-gray-400 hover:text-gray-500 dark:border-gray-600 dark:hover:border-gray-500"
+            aria-label="Add image"
             @click="triggerFileInput"
           >
             <UIcon name="i-lucide-plus" class="size-5" />

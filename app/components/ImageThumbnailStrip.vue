@@ -67,10 +67,13 @@ onBeforeUnmount(() => {
       class="flex min-w-0 flex-1 justify-center gap-2 overflow-x-auto scrollbar-hide"
       @scroll="updateScrollState"
     >
-      <div
+      <button
         v-for="image in images"
         :key="image.id"
-        class="group relative shrink-0 cursor-pointer"
+        type="button"
+        class="group relative shrink-0 appearance-none border-0 bg-transparent p-0"
+        :aria-label="`Select ${image.fileName}`"
+        :aria-pressed="selectedId === image.id"
         @click="emit('select', image.id)"
       >
         <img
@@ -95,7 +98,7 @@ onBeforeUnmount(() => {
           v-if="image.isAnimatedGif && image.gifFrameCount"
           class="absolute bottom-0.5 right-0.5 rounded bg-black/60 px-1 text-xs text-white"
         >{{ image.gifFrameCount }}f</span>
-      </div>
+      </button>
     </div>
     <UButton
       v-if="isScrollable"
