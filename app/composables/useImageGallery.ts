@@ -135,9 +135,9 @@ export function useImageGallery() {
     })
   }
 
-  const LARGE_FILE_THRESHOLD = 2 * 1024 * 1024 // 2 MB
-
   async function addImages(files: FileList | File[]): Promise<{ tooLarge: string[]; tooWide: string[]; largeFiles: string[]; added: number }> {
+    const isMobile = import.meta.client && window.innerWidth < 1024
+    const LARGE_FILE_THRESHOLD = isMobile ? 1 * 1024 * 1024 : 2 * 1024 * 1024
     const fileArray = Array.from(files).filter(f => f.type.startsWith('image/'))
     const tooLarge: string[] = []
     const tooWide: string[] = []
@@ -192,7 +192,7 @@ export function useImageGallery() {
       }
       images.value.push(newImage)
 
-      if (file.size > LARGE_FILE_THRESHOLD) {
+      if (file.size > LARGE_FILE_THRESHOLD || width * height > 4_000_000) {
         largeFiles.push(file.name)
       }
 
@@ -280,6 +280,13 @@ export function useImageGallery() {
     const image = images.value.find(img => img.id === id)
     if (image) {
       image.isProcessing = processing
+    }
+  }
+
+  function setProgress(id: string, value: number | null) {
+    const image = images.value.find(img => img.id === id)
+    if (image) {
+      image.processingProgress = value
     }
   }
 
@@ -375,6 +382,7 @@ export function useImageGallery() {
     setDitheredResult,
     setResizedOriginal,
     setProcessing,
+    setProgress,
     clearDitheredResults,
     downloadAll
   }

@@ -41,6 +41,7 @@ const {
   setDitheredResult,
   setResizedOriginal,
   setProcessing,
+  setProgress,
   clearDitheredResults,
   downloadAll
 } = useImageGallery()
@@ -67,6 +68,8 @@ const showReportCard = ref(false)
 const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
+const showResizeModal = ref(false)
+const resizeModalImage = ref<GalleryImage | null>(null)
 
 
 function handleDragOver(e: DragEvent) {
@@ -98,10 +101,31 @@ function warnRejectedFiles(result: { tooLarge: string[]; tooWide: string[]; larg
   if (result.largeFiles.length > 0) {
     toast.add({
       title: 'Large file warning',
-      description: `${result.largeFiles.join(', ')} ${result.largeFiles.length === 1 ? 'is' : 'are'} over 2 MB. You may experience slow load times or degraded performance. Consider reducing image size first.`,
+      description: `${result.largeFiles.join(', ')} ${result.largeFiles.length === 1 ? 'is' : 'are'} large or high-resolution. Processing may be slow. Consider reducing image size first.`,
       color: 'warning'
     })
   }
+}
+
+function checkAndPromptResize(image: GalleryImage): boolean {
+  if (Math.max(image.naturalWidth, image.naturalHeight) > 2500) {
+    if (ditherTimeout) clearTimeout(ditherTimeout)
+    resizeModalImage.value = image
+    showResizeModal.value = true
+    return true
+  }
+  return false
+}
+
+function handleResizeChoice(resize: boolean) {
+  showResizeModal.value = false
+  if (resize) {
+    skipNextDither = true
+    sizeWidth.value = 1920
+    sizeValid.value = true
+  }
+  resizeModalImage.value = null
+  debouncedDither()
 }
 
 async function handleDrop(e: DragEvent) {
@@ -116,6 +140,9 @@ async function handleDrop(e: DragEvent) {
       isIntro.value = false
       oldIds.forEach(id => removeImage(id))
     }
+    if (result.added > 0 && selectedImage.value && checkAndPromptResize(selectedImage.value)) {
+      result.largeFiles = result.largeFiles.filter(f => f !== selectedImage.value!.fileName)
+    }
     warnRejectedFiles(result)
   }
 }
@@ -129,6 +156,9 @@ async function handleFileSelect(e: Event) {
     if (wasIntro && result.added > 0) {
       isIntro.value = false
       oldIds.forEach(id => removeImage(id))
+    }
+    if (result.added > 0 && selectedImage.value && checkAndPromptResize(selectedImage.value)) {
+      result.largeFiles = result.largeFiles.filter(f => f !== selectedImage.value!.fileName)
     }
     warnRejectedFiles(result)
     // Reset input so same file can be selected again
@@ -159,6 +189,9 @@ async function handlePaste(e: ClipboardEvent) {
     isIntro.value = false
     oldIds.forEach(id => removeImage(id))
   }
+  if (result.added > 0 && selectedImage.value && checkAndPromptResize(selectedImage.value)) {
+    result.largeFiles = result.largeFiles.filter(f => f !== selectedImage.value!.fileName)
+  }
   warnRejectedFiles(result)
 }
 
@@ -174,7 +207,7 @@ async function processImageForDither(image: GalleryImage, width?: number): Promi
   const img = await loadImage(image.originalSrc)
   const canvas = canvasRef.value
   if (!canvas) throw new Error('Canvas not available')
-  const result = await dither(img, canvas, width)
+  const result = await dither(img, canvas, width, (v) => setProgress(image.id, v))
   return { url: result.url, blob: result.blob }
 }
 
@@ -195,6 +228,7 @@ function generateResizedOriginal(image: GalleryImage, width: number): Promise<st
 
 async function handleDither() {
   if (!selectedImage.value || !canvasRef.value || !sizeValid.value) return
+  if (showResizeModal.value) return
 
   setProcessing(selectedImage.value.id, true)
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
@@ -211,8 +245,14 @@ async function handleDither() {
       setResizedOriginal(selectedImage.value.id, null)
     }
   } catch (err) {
+    toast.add({
+      title: 'Processing failed',
+      description: err instanceof Error ? err.message : 'An unexpected error occurred',
+      color: 'error'
+    })
     console.error('Dithering failed:', err)
   } finally {
+    setProgress(selectedImage.value.id, null)
     setProcessing(selectedImage.value.id, false)
   }
 }
@@ -868,6 +908,32 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     :dithered-height="scorecardDitheredHeight"
                     class="w-full"
                   />
+                </template>
+              </UModal>
+
+              <!-- Resize prompt modal -->
+              <UModal v-model:open="showResizeModal" title="Large image detected">
+                <template #body>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    This image is {{ resizeModalImage?.naturalWidth }} &times; {{ resizeModalImage?.naturalHeight }}px.
+                    Processing at full resolution may be slow on mobile.
+                  </p>
+                  <div class="mt-4 flex flex-col gap-2">
+                    <UButton
+                      label="Resize to 1920px wide (faster)"
+                      color="primary"
+                      variant="solid"
+                      block
+                      @click="handleResizeChoice(true)"
+                    />
+                    <UButton
+                      label="Keep full resolution"
+                      color="neutral"
+                      variant="ghost"
+                      block
+                      @click="handleResizeChoice(false)"
+                    />
+                  </div>
                 </template>
               </UModal>
 

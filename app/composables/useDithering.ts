@@ -105,6 +105,7 @@ let cachedPaletteKey = ''
 let worker: Worker | null = null
 
 export function useDithering() {
+  const toast = useToast()
 
   function getWorker(): Worker {
     if (!worker) {
@@ -156,7 +157,8 @@ export function useDithering() {
   async function dither(
     sourceImage: HTMLImageElement,
     targetCanvas: HTMLCanvasElement,
-    width?: number
+    width?: number,
+    onProgress?: (v: number) => void
   ): Promise<DitherResult> {
     isProcessing.value = true
 
@@ -184,6 +186,10 @@ export function useDithering() {
             const w = getWorker()
             const timeoutId = setTimeout(() => reject(new Error('Dither worker timeout')), 10_000)
             w.onmessage = (e) => {
+              if (e.data.type === 'progress') {
+                onProgress?.(e.data.value)
+                return
+              }
               clearTimeout(timeoutId)
               resolve(e.data)
             }
@@ -209,8 +215,16 @@ export function useDithering() {
             result.height
           )
           ctx.putImageData(processedData, 0, 0)
-        } catch {
+        } catch (err) {
           // Worker failed — fall back to main-thread dithering
+          const isTimeout = err instanceof Error && err.message === 'Dither worker timeout'
+          if (isTimeout) {
+            toast.add({
+              title: 'Processing on main thread',
+              description: 'Worker timed out — this may slow the UI briefly',
+              color: 'warning'
+            })
+          }
           ctx.drawImage(sourceImage, 0, 0, ditherWidth, ditherHeight)
           const freshImageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
           if (ditherMode.value === 'bayer') {
@@ -373,7 +387,11 @@ export function useDithering() {
             const result = await new Promise<{ pixels: ArrayBuffer; width: number; height: number }>((resolve, reject) => {
               const w = getWorker()
               const timeoutId = setTimeout(() => reject(new Error('Dither worker timeout')), 10_000)
-              w.onmessage = (e: MessageEvent) => { clearTimeout(timeoutId); resolve(e.data) }
+              w.onmessage = (e: MessageEvent) => {
+                if (e.data.type === 'progress') return
+                clearTimeout(timeoutId)
+                resolve(e.data)
+              }
               w.onerror = (e: ErrorEvent) => { clearTimeout(timeoutId); reject(e) }
               const msg: Record<string, unknown> = { mode: ditherMode.value, pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value }
               if (ditherMode.value === 'bayer') msg.bayerSize = bayerSize.value

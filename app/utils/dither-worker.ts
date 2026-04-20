@@ -73,63 +73,69 @@ function hilbertD2XY(n: number, d: number): [number, number] {
   return [x, y]
 }
 
-function runBayer(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][], bayerSize: BayerSize = 4) {
-  const len = data.length
+function runBayer(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][], bayerSize: BayerSize = 4, onProgress?: (v: number) => void) {
   const size = bayerSize
   const matrix = BAYER_MATRICES[size]
-
   const colorCache = new Map<number, number[]>()
+  const reportEvery = Math.max(1, Math.floor(height / 10))
 
-  for (let i = 0; i <= len - 4; i += 4) {
-    const x = (i / 4) % width
-    const y = Math.floor(i / 4 / width)
-    const row = matrix[y % size]!
-    const threshold = row[x % size]!
+  for (let row = 0; row < height; row++) {
+    for (let col = 0; col < width; col++) {
+      const i = (row * width + col) * 4
+      const threshold = matrix[row % size]![col % size]!
 
-    const r = Math.max(0, Math.min(255, data[i]! + 128 - threshold))
-    const g = Math.max(0, Math.min(255, data[i + 1]! + 128 - threshold))
-    const b = Math.max(0, Math.min(255, data[i + 2]! + 128 - threshold))
+      const r = Math.max(0, Math.min(255, data[i]! + 128 - threshold))
+      const g = Math.max(0, Math.min(255, data[i + 1]! + 128 - threshold))
+      const b = Math.max(0, Math.min(255, data[i + 2]! + 128 - threshold))
 
-    const key = (r << 16) | (g << 8) | b
-    let closest = colorCache.get(key)
-    if (!closest) {
-      closest = getClosestColor(indexedPalette, r, g, b)
-      colorCache.set(key, closest)
+      const key = (r << 16) | (g << 8) | b
+      let closest = colorCache.get(key)
+      if (!closest) {
+        closest = getClosestColor(indexedPalette, r, g, b)
+        colorCache.set(key, closest)
+      }
+
+      data[i] = closest[1]!
+      data[i + 1] = closest[2]!
+      data[i + 2] = closest[3]!
     }
-
-    data[i] = closest[1]!
-    data[i + 1] = closest[2]!
-    data[i + 2] = closest[3]!
+    if (onProgress && row % reportEvery === 0) {
+      onProgress((row + 1) / height)
+    }
   }
 }
 
-function runBlueNoise(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][]) {
-  const len = data.length
+function runBlueNoise(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][], onProgress?: (v: number) => void) {
   const colorCache = new Map<number, number[]>()
+  const reportEvery = Math.max(1, Math.floor(height / 10))
 
-  for (let i = 0; i <= len - 4; i += 4) {
-    const x = (i / 4) % width
-    const y = Math.floor(i / 4 / width)
-    const threshold = BLUE_NOISE_TEXTURE[(y % 64) * 64 + (x % 64)]!
+  for (let row = 0; row < height; row++) {
+    for (let col = 0; col < width; col++) {
+      const i = (row * width + col) * 4
+      const threshold = BLUE_NOISE_TEXTURE[(row % 64) * 64 + (col % 64)]!
 
-    const r = Math.max(0, Math.min(255, data[i]! + 128 - threshold))
-    const g = Math.max(0, Math.min(255, data[i + 1]! + 128 - threshold))
-    const b = Math.max(0, Math.min(255, data[i + 2]! + 128 - threshold))
+      const r = Math.max(0, Math.min(255, data[i]! + 128 - threshold))
+      const g = Math.max(0, Math.min(255, data[i + 1]! + 128 - threshold))
+      const b = Math.max(0, Math.min(255, data[i + 2]! + 128 - threshold))
 
-    const key = (r << 16) | (g << 8) | b
-    let closest = colorCache.get(key)
-    if (!closest) {
-      closest = getClosestColor(indexedPalette, r, g, b)
-      colorCache.set(key, closest)
+      const key = (r << 16) | (g << 8) | b
+      let closest = colorCache.get(key)
+      if (!closest) {
+        closest = getClosestColor(indexedPalette, r, g, b)
+        colorCache.set(key, closest)
+      }
+
+      data[i] = closest[1]!
+      data[i + 1] = closest[2]!
+      data[i + 2] = closest[3]!
     }
-
-    data[i] = closest[1]!
-    data[i + 1] = closest[2]!
-    data[i + 2] = closest[3]!
+    if (onProgress && row % reportEvery === 0) {
+      onProgress((row + 1) / height)
+    }
   }
 }
 
-function runRiemersma(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][]) {
+function runRiemersma(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][], onProgress?: (v: number) => void) {
   const N = 32
   const r = 1 / 8
   const weights: number[] = []
@@ -141,8 +147,10 @@ function runRiemersma(data: Uint8ClampedArray, width: number, height: number, in
   let bufHead = 0
 
   const side = nextPowerOfTwo(Math.max(width, height))
+  const total = side * side
+  const reportEvery = Math.max(1, Math.floor(total / 10))
 
-  for (let d = 0; d < side * side; d++) {
+  for (let d = 0; d < total; d++) {
     const [x, y] = hilbertD2XY(side, d)
     if (x >= width || y >= height) continue
 
@@ -177,6 +185,10 @@ function runRiemersma(data: Uint8ClampedArray, width: number, height: number, in
     errorBuf[bufHead * 3 + 1] = origG - chosenG
     errorBuf[bufHead * 3 + 2] = origB - chosenB
     bufHead = (bufHead + 1) % N
+
+    if (onProgress && d % reportEvery === 0) {
+      onProgress((d + 1) / total)
+    }
   }
 }
 
@@ -194,15 +206,16 @@ self.onmessage = function (e: MessageEvent<DitherMessage>) {
   const { mode, pixels, width, height, palette, bayerSize } = e.data
   const data = new Uint8ClampedArray(pixels)
   const indexedPalette = palette.map((color: number[], id: number) => [id, ...color])
+  const onProgress = (v: number) => self.postMessage({ type: 'progress', value: v })
 
   if (mode === 'bayer') {
-    runBayer(data, width, height, indexedPalette, bayerSize ?? 4)
+    runBayer(data, width, height, indexedPalette, bayerSize ?? 4, onProgress)
   } else if (mode === 'blue-noise') {
-    runBlueNoise(data, width, height, indexedPalette)
+    runBlueNoise(data, width, height, indexedPalette, onProgress)
   } else if (mode === 'riemersma') {
-    runRiemersma(data, width, height, indexedPalette)
+    runRiemersma(data, width, height, indexedPalette, onProgress)
   }
 
   const transfer: Transferable[] = [data.buffer]
-  self.postMessage({ pixels: data.buffer, width, height }, { transfer })
+  self.postMessage({ type: 'done', pixels: data.buffer, width, height }, { transfer })
 }
