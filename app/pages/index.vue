@@ -21,6 +21,7 @@ const {
   originalHeight,
   sizeWidth,
   sizeValid,
+  analyzeColorCount,
   analyzePalette,
   dither,
   ditherGif,
@@ -559,6 +560,17 @@ watch(selectedImage, async (newImage) => {
     }
   }
 }, { immediate: true })
+
+// Re-analyze image palette when color count is applied (only affects "original" preset)
+watch(analyzeColorCount, async () => {
+  if (selectedPreset.value === 'original' && selectedImage.value) {
+    const img = await loadImage(selectedImage.value.originalSrc)
+    const colors = analyzePalette(img)
+    updateOriginalPalette(colors)
+    palette.value = colors
+    setPaletteFromRgb(colors)
+  }
+})
 
 // Sync palette editor changes to dithering palette
 watch(paletteAsRgb, (newPalette) => {

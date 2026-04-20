@@ -93,17 +93,17 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       disabled
     />
     <UButton
-      v-if="isDirty"
+      v-if="useCustomSize"
       icon="i-lucide-check"
       size="xs"
       color="primary"
       variant="solid"
       aria-label="Apply size"
-      :disabled="!isWidthValid"
+      :disabled="!isDirty || !isWidthValid"
       @click="applySize"
     />
     <UButton
-      v-else-if="useCustomSize"
+      v-if="useCustomSize && !isDirty"
       icon="i-lucide-rotate-ccw"
       size="xs"
       color="neutral"

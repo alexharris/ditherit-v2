@@ -6,6 +6,7 @@ const props = defineProps<{
   customPalettes: { name: string; colors: PaletteColor[] }[]
   selectedPreset: string
   isCustomPaletteSelected: boolean
+  analyzeColorCount: number
 }>()
 
 const emit = defineEmits<{
@@ -18,7 +19,20 @@ const emit = defineEmits<{
   (e: 'saveCustom', name: string): void
   (e: 'deleteCustom', index: number): void
   (e: 'import', json: string): void
+  (e: 'update:analyzeColorCount', value: number): void
 }>()
+
+// Color count input — local staging value, only committed on apply
+const colorCountInput = ref(props.analyzeColorCount)
+const isColorCountDirty = computed(() => colorCountInput.value !== props.analyzeColorCount)
+
+watch(() => props.analyzeColorCount, (v) => {
+  colorCountInput.value = v
+})
+
+function applyColorCount() {
+  emit('update:analyzeColorCount', colorCountInput.value)
+}
 
 // UI state
 const editingIndex = ref<number | null>(null)
@@ -209,6 +223,28 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
       @update:model-value="handlePresetChange"
     />
 
+    <!-- Color count selector (original palette only) -->
+    <div v-if="selectedPreset === 'original'" class="flex items-center gap-2">
+      <span class="text-xs text-gray-500 dark:text-gray-400 shrink-0">Colors from image</span>
+      <UInputNumber
+        v-model="colorCountInput"
+        :min="2"
+        :max="32"
+        size="xs"
+        class="w-24"
+        @keydown.enter="applyColorCount"
+      />
+      <UButton
+        icon="i-lucide-check"
+        size="xs"
+        color="primary"
+        variant="solid"
+        aria-label="Apply color count"
+        :disabled="!isColorCountDirty"
+        @click="applyColorCount"
+      />
+    </div>
+
     <!-- Toolbar -->
     <div class="flex items-center gap-1">
       <UButton
@@ -232,6 +268,14 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
         color="neutral"
         @click="toggleTab('import')"
       />
+      <UButton
+        v-if="isCustomPaletteSelected"
+        label="Delete"
+        size="xs"
+        variant="ghost"
+        color="error"
+        @click="handleDeleteCurrent"
+      />
     </div>
 
     <!-- Tab Content -->
@@ -244,23 +288,13 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
           size="sm"
           @keyup.enter="handleSave"
         />
-        <div class="flex gap-2">
-          <UButton
-            label="Save"
-            size="xs"
-            color="primary"
-            :disabled="!newPaletteName.trim()"
-            @click="handleSave"
-          />
-          <UButton
-            v-if="isCustomPaletteSelected"
-            label="Delete Current"
-            size="xs"
-            color="error"
-            variant="outline"
-            @click="handleDeleteCurrent"
-          />
-        </div>
+        <UButton
+          label="Save"
+          size="xs"
+          color="primary"
+          :disabled="!newPaletteName.trim()"
+          @click="handleSave"
+        />
       </div>
 
       <!-- Export Tab -->

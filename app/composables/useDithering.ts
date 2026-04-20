@@ -96,6 +96,7 @@ const originalWidth = ref(0)
 const originalHeight = ref(0)
 const sizeWidth = ref<number | undefined>(undefined)
 const sizeValid = ref(true)
+const analyzeColorCount = ref(8)
 
 // RgbQuant instance cache — reused when only algorithm/serpentine changes
 let cachedQuant: any = null
@@ -141,7 +142,7 @@ export function useDithering() {
   function analyzePalette(image: HTMLImageElement): number[][] {
     const q = new RgbQuant({
       ...rgbQuantOptions.value,
-      colors: 8,
+      colors: analyzeColorCount.value,
       palette: []
     })
     q.sample(image)
@@ -467,6 +468,7 @@ export function useDithering() {
     rgbQuantOptions,
 
     // Methods
+    analyzeColorCount,
     analyzePalette,
     dither,
     ditherGif,
