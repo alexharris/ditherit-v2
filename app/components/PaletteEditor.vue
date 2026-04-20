@@ -237,8 +237,8 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
       <UButton
         icon="i-lucide-check"
         size="xs"
-        color="primary"
-        variant="solid"
+        :color="isColorCountDirty ? 'primary' : 'neutral'"
+        :variant="isColorCountDirty ? 'solid' : 'soft'"
         aria-label="Apply color count"
         :disabled="!isColorCountDirty"
         @click="applyColorCount"
