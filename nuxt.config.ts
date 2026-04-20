@@ -23,6 +23,9 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'manifest', href: '/manifest.json' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }
+      ],
+      script: [
+        { src: 'https://cdn.usefathom.com/script.js', 'data-site': 'OYXXIEJE', defer: true }
       ]
     }
   },
