@@ -149,7 +149,7 @@ export default {
   },     
   methods: {
     track() {
-      typeof fathom !== 'undefined' && fathom('trackGoal', 'GAHXDKWX', 0)
+      typeof fathom !== 'undefined' && fathom.trackGoal('GAHXDKWX', 0)
     }
   
   }

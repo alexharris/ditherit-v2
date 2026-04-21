@@ -514,7 +514,7 @@ export default {
       }
       this.updatePalette();
       this.presetPaletteSelection = 'custom'
-      typeof fathom !== 'undefined' && fathom('trackGoal', 'QQLOUIS1', 0);
+      typeof fathom !== 'undefined' && fathom.trackGoal('QQLOUIS1', 0);
     },
   }
 }

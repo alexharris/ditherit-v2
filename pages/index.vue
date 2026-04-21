@@ -277,7 +277,7 @@ export default {
       this.downloadFileSize = Math.round((downloadUrl.length * 3) / 4) / 1000
       this.downloadUrl = downloadUrl
 
-      typeof fathom !== 'undefined' && fathom('trackGoal', 'UAT4LRNZ', 0)
+      typeof fathom !== 'undefined' && fathom.trackGoal('UAT4LRNZ', 0)
     },
     onUpdatePalette(palette) {
       this.rgbQuantOptions.colors = palette.length
@@ -289,7 +289,7 @@ export default {
     async onImageUpload(images) {
       this.images = images
 
-      typeof fathom !== 'undefined' && fathom('trackGoal', 'HORTCOPW', 0)
+      typeof fathom !== 'undefined' && fathom.trackGoal('HORTCOPW', 0)
 
       this.showDitheredImage = false
       this.rgbQuantOptions.palette = []
@@ -307,7 +307,7 @@ export default {
       }
     },
     async ditherImage() {
-      typeof fathom !== 'undefined' && fathom('trackGoal', 'SFMGAORY', 0)
+      typeof fathom !== 'undefined' && fathom.trackGoal('SFMGAORY', 0)
 
       window.scrollTo(0, 0)
 
@@ -348,7 +348,7 @@ export default {
             this.rgbQuantOptions.palette,
             this.blockSize
           )
-          typeof fathom !== 'undefined' && fathom('trackGoal', 'Q3QWCGJU', 0)
+          typeof fathom !== 'undefined' && fathom.trackGoal('Q3QWCGJU', 0)
           this.downloadImage()
         } else {
           const q = new RgbQuant(this.rgbQuantOptions)
