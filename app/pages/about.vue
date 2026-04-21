@@ -126,24 +126,8 @@ const featureCards = [
     <USeparator />
 
     <!-- Newsletter -->
-    <section class="space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
-        Stay Updated
-      </h2>
-      <p class="text-base text-gray-600 dark:text-gray-400">
-        Subscribe for occasional updates about new features.
-      </p>
-      <form
-        action="https://buttondown.com/api/emails/embed-subscribe/ditherit"
-        method="post"
-        class="flex flex-col gap-3 sm:flex-row sm:items-end"
-      >
-        <div class="flex flex-col gap-1">
-          <label for="bd-email" class="text-sm font-medium text-gray-700 dark:text-gray-300">Email address</label>
-          <UInput type="email" name="email" id="bd-email" placeholder="you@example.com" class="w-full sm:w-72" />
-        </div>
-        <UButton type="submit" label="Subscribe" />
-      </form>
+    <section>
+      <NewsletterSignup />
     </section>
   </div>
 </template>

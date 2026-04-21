@@ -11,6 +11,7 @@ const isMenuOpen = ref(false)
 const navItems = [
   { id: 'about', label: 'About', icon: '💡', to: '/about' },
   { id: 'resources', label: 'Resources', icon: '📚', to: '/resources' },
+  { id: 'blog', label: 'Blog', icon: '📣', to: '/blog' },
   { id: 'contact', label: 'Contact', icon: '✉️', to: '/contact' },
 ]
 
@@ -133,6 +134,8 @@ function mobileNavigate(to: string) {
         </NuxtLink>
 
         <SidebarFeedback />
+
+        <SidebarLatestPost />
       </div>
     </template>
   </USlideover>

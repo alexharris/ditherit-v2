@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxt/eslint', '@nuxt/ui'],
+  modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxt/content'],
 
   ssr: false,
 
@@ -21,6 +21,7 @@ export default defineNuxtConfig({
       ],
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'alternate', type: 'application/rss+xml', title: 'Dither it! Blog', href: '/rss.xml' },
         { rel: 'manifest', href: '/manifest.json' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' }
       ],
