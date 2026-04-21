@@ -105,7 +105,16 @@
               <div v-if="viewImportPalette">
                 <textarea v-model="palette2Import" placeholder="Enter a palette here" rows="5" class="w-full border border-gray-400 p-2 text-xs">{{palette2Import}}</textarea>
                 <div class="pt-2">
-                  <span class="btn-red-small-outline" @click="importPalette">Import</span>
+                  <span class="btn-red-small-outline" @click="importPalette">Import JSON</span>
+                </div>
+                <div class="mt-3 border-t border-gray-200 pt-3">
+                  <p class="text-xs text-gray-500 mb-2">Or import a GIMP palette file (.gpl):</p>
+                  <label class="btn-red-small-outline cursor-pointer">
+                    Upload .gpl file
+                    <input type="file" accept=".gpl" class="hidden" @change="importGplFile" />
+                  </label>
+                  <p v-if="gplError" class="text-xs text-red-600 mt-2">{{ gplError }}</p>
+                  <p v-if="gplSuccess" class="text-xs text-green-600 mt-2">{{ gplSuccess }}</p>
                 </div>
               </div>
             </div>
@@ -176,6 +185,8 @@ export default {
       viewSavePalette: false,
       newPaletteName: '',
       customPalettes: [],
+      gplError: '',
+      gplSuccess: '',
       presetPalettes: [
         {
           name: 'Red',
@@ -515,6 +526,79 @@ export default {
       this.updatePalette();
       this.presetPaletteSelection = 'custom'
       typeof fathom !== 'undefined' && fathom('trackGoal', 'QQLOUIS1', 0);
+    },
+    importGplFile(e) {
+      this.gplError = ''
+      this.gplSuccess = ''
+      const file = e.target.files[0]
+      if (!file) return
+
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        const text = ev.target.result
+        const result = this.parseGpl(text)
+        if (result.error) {
+          this.gplError = result.error
+          return
+        }
+        if (result.colors.length === 0) {
+          this.gplError = 'No colours found in this .gpl file.'
+          return
+        }
+        if (result.colors.length > 256) {
+          this.gplError = `This palette has ${result.colors.length} colours. Maximum allowed is 256. Please trim it down before importing.`
+          return
+        }
+        // Load into palette
+        this.palette = result.colors.map(c => ({ hex: c }))
+        this.presetPaletteSelection = 'custom'
+        this.updatePalette()
+        this.gplSuccess = `Loaded "${result.name}" — ${result.colors.length} colour${result.colors.length !== 1 ? 's' : ''}`
+      }
+      reader.onerror = () => {
+        this.gplError = 'Could not read the file. Please try again.'
+      }
+      reader.readAsText(file)
+      // Reset input so same file can be re-uploaded
+      e.target.value = ''
+    },
+    parseGpl(text) {
+      const lines = text.split(/\r?\n/)
+
+      // Must start with GIMP Palette header
+      if (!lines[0] || lines[0].trim() !== 'GIMP Palette') {
+        return { error: 'Not a valid GIMP .gpl file. File must start with "GIMP Palette".' }
+      }
+
+      let name = 'Imported'
+      const colors = []
+
+      for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim()
+
+        // Skip empty lines and comments
+        if (!line || line.startsWith('#')) continue
+
+        // Parse Name: or Columns: header lines
+        if (line.startsWith('Name:')) {
+          name = line.replace('Name:', '').trim()
+          continue
+        }
+        if (line.startsWith('Columns:')) continue
+
+        // Try to parse colour line: R G B [name]
+        const match = line.match(/^\s*(\d{1,3})\s+(\d{1,3})\s+(\d{1,3})/)
+        if (match) {
+          const r = parseInt(match[1])
+          const g = parseInt(match[2])
+          const b = parseInt(match[3])
+          if (r > 255 || g > 255 || b > 255) continue // skip invalid
+          const hex = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('')
+          colors.push(hex)
+        }
+      }
+
+      return { name, colors }
     },
   }
 }

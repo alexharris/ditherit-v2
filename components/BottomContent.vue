@@ -88,7 +88,11 @@
       <div class="w-full md:w-1/2 p-4">
         <h3 class="text-lg font-serif">Resources</h3>
         <p>A list of dithering <a href="/resources">resources</a> from around the web. Explainers, algorithms, examples, etc.</p>
-      </div>      
+      </div>
+      <div class="w-full md:w-1/2 p-4">
+        <h3 class="text-lg font-serif">🏆 Dither Tournament</h3>
+        <p>Can't decide which dithering algorithm looks best on your image? Upload it, pick your options, and let a blind elimination bracket decide for you. <a href="/tournament">Try the Dither Tournament →</a></p>
+      </div>
       <div class="w-full md:w-1/2 p-4">
         <h3 class="text-lg font-serif">Privacy</h3>
         <p>Nothing is uploaded, your images never leave your browser. Some basic usage data is collected using a privacy-focused analytics tool.</p>    
