@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm generate"
+  command = "pnpm rebuild better-sqlite3 && pnpm generate"
   publish = "dist"
 
 [build.environment]
