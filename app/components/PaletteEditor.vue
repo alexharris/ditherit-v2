@@ -160,7 +160,7 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
           class="size-9 lg:size-7 rounded-full shadow-sm shadow-black/30 cursor-pointer transition-all"
           :class="[
             editingIndex === i
-              ? 'ring-2 ring-red-500/30 scale-110'
+              ? 'ring-2 ring-ditherit/30 scale-110'
               : ''
           ]"
           :style="{ backgroundColor: color.hex }"
@@ -181,7 +181,7 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
       <!-- Add color button -->
       <button
         type="button"
-        class="size-9 lg:size-7 rounded-full border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center text-gray-400 hover:border-gray-400 hover:text-gray-500 transition-colors"
+        class="size-9 lg:size-7 rounded-full border-2 border-dashed border-gray-100 dark:border-gray-500 flex items-center justify-center text-gray-500 hover:border-gray-500 hover:text-gray-500 transition-colors"
         @click="handleAddColor"
       >
         <UIcon name="i-lucide-plus" class="size-4" />
@@ -201,14 +201,14 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
       <div class="flex items-center gap-2">
         <UInput
           v-model="hexInput"
-          size="xs"
+          size="sm"
           class="flex-1 font-mono"
           @keyup.enter="commitHex"
         />
         <UButton
           label="Done"
           color="primary"
-          size="xs"
+          size="sm"
           @click="commitHex"
         />
       </div>
@@ -218,68 +218,68 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
     <USelect
       :model-value="selectedPreset"
       :items="presetOptions"
-      size="sm"
       class="w-full"
       @update:model-value="handlePresetChange"
     />
 
     <!-- Color count selector (original palette only) -->
-    <div v-if="selectedPreset === 'original'" class="flex items-center gap-2">
-      <span class="text-xs text-gray-500 dark:text-gray-400 shrink-0">Colors from image</span>
-      <UInputNumber
-        v-model="colorCountInput"
-        :min="2"
-        :max="32"
-        size="xs"
-        class="w-24"
-        @keydown.enter="applyColorCount"
-      />
-      <UButton
-        icon="i-lucide-check"
-        size="xs"
-        :color="isColorCountDirty ? 'primary' : 'neutral'"
-        :variant="isColorCountDirty ? 'solid' : 'soft'"
-        aria-label="Apply color count"
-        :disabled="!isColorCountDirty"
-        @click="applyColorCount"
-      />
+    <div v-if="selectedPreset === 'original'" class="space-y-1">
+      <span class="text-xs text-gray-500 dark:text-gray-400">Number of colors</span>
+      <div class="flex items-center gap-2">
+        <UInputNumber
+          v-model="colorCountInput"
+          :min="2"
+          :max="32"
+          class="flex-1"
+          @keydown.enter="applyColorCount"
+        />
+        <UButton
+          icon="i-lucide-check"
+          :color="isColorCountDirty ? 'primary' : 'neutral'"
+          :variant="isColorCountDirty ? 'solid' : 'soft'"
+          aria-label="Apply color count"
+          :disabled="!isColorCountDirty"
+          @click="applyColorCount"
+        />
+      </div>
     </div>
 
     <!-- Toolbar -->
-    <div class="flex items-center gap-1">
+    <div class="flex items-center justify-between">
       <UButton
         label="Save"
-        size="xs"
+        size="sm"
         :variant="activeTab === 'save' ? 'solid' : 'ghost'"
         color="neutral"
         @click="toggleTab('save')"
       />
       <UButton
         label="Export"
-        size="xs"
+        size="sm"
         :variant="activeTab === 'export' ? 'solid' : 'ghost'"
         color="neutral"
         @click="toggleTab('export')"
       />
       <UButton
         label="Import"
-        size="xs"
+        size="sm"
         :variant="activeTab === 'import' ? 'solid' : 'ghost'"
         color="neutral"
         @click="toggleTab('import')"
       />
       <UButton
         v-if="isCustomPaletteSelected"
-        label="Delete"
-        size="xs"
+        icon="i-lucide-trash-2"
+        size="sm"
         variant="ghost"
         color="error"
+        aria-label="Delete palette"
         @click="handleDeleteCurrent"
       />
     </div>
 
     <!-- Tab Content -->
-    <div v-if="activeTab" class="p-2 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+    <div v-if="activeTab" class="p-2 border border-dashed border-gray-100 dark:border-gray-500 rounded-lg">
       <!-- Save Tab -->
       <div v-if="activeTab === 'save'" class="space-y-2">
         <UInput
@@ -290,7 +290,7 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
         />
         <UButton
           label="Save"
-          size="xs"
+          size="sm"
           color="primary"
           :disabled="!newPaletteName.trim()"
           @click="handleSave"
@@ -308,7 +308,7 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
         <UButton
           label="Download"
           icon="i-lucide-download"
-          size="xs"
+          size="sm"
           color="primary"
           @click="downloadExport"
         />
@@ -324,7 +324,7 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
         />
         <UButton
           label="Import"
-          size="xs"
+          size="sm"
           color="primary"
           :disabled="!importJson.trim()"
           @click="handleImport"

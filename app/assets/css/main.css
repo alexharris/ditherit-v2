@@ -55,3 +55,20 @@ html, body {
   --color-green-900: #0A5331;
   --color-green-950: #052E16;
 }
+
+/* Override NuxtUI's primary color CSS variables directly to exact ditherit values.
+   These are set by NuxtUI's colors plugin inside @layer theme, so an unlayered
+   :root rule always wins regardless of injection order. */
+:root {
+  --ui-color-primary-50: #FFF0F0;
+  --ui-color-primary-100: #FFDFDF;
+  --ui-color-primary-200: #FBB8B8;
+  --ui-color-primary-300: #EF8080;
+  --ui-color-primary-400: #E05050;
+  --ui-color-primary-500: #C53030;
+  --ui-color-primary-600: #A82323;
+  --ui-color-primary-700: #7F1818;
+  --ui-color-primary-800: #5C1111;
+  --ui-color-primary-900: #3D0B0B;
+  --ui-color-primary-950: #240606;
+}

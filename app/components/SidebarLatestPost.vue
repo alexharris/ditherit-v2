@@ -5,19 +5,20 @@ const { data: post } = await useAsyncData('latest-post', () =>
 </script>
 
 <template>
-  <NuxtLink
+  <UCard
     v-if="post"
     to="/blog"
-    class="block rounded-lg border border-gray-200 bg-gray-50 p-3 transition-colors hover:border-gray-300 hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-gray-600 dark:hover:bg-gray-800"
+    variant="soft"
+    :ui="{ root: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors', body: 'p-3 sm:p-3' }"
   >
-    <p class="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
-      From the blog
+    <p class="mb-1 text-sm font-medium text-highlighted">
+      ✏️ From the blog
     </p>
-    <p class="text-sm font-medium text-gray-800 dark:text-gray-200">
+    <p class="text-sm font-medium text-gray-800 dark:text-gray-100">
       {{ post.title }}
     </p>
     <p class="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
       {{ post.description }}
     </p>
-  </NuxtLink>
+  </UCard>
 </template>

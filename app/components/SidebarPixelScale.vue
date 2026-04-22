@@ -48,40 +48,44 @@ const advancedOpen = ref(false)
   </div>
 
   <USeparator />
-  <div class="px-4 pb-4 pt-4">
-    <button class="flex cursor-pointer items-center gap-1" @click="advancedOpen = !advancedOpen">
+  <div class="px-4 py-4">
+    <UButton
+      color="neutral"
+      variant="ghost"
+      size="sm"
+      class="-mx-2"
+      @click="advancedOpen = !advancedOpen"
+    >
+      <span class="text-sm font-medium text-highlighted">Advanced</span>
       <UIcon
         name="i-lucide-chevron-right"
         class="size-4 transition-transform duration-200"
         :class="{ 'rotate-90': advancedOpen }"
       />
-      <span class="text-sm font-medium text-highlighted">Advanced</span>
-    </button>
+    </UButton>
   </div>
 
-  <div v-if="advancedOpen" class="px-4 pb-4">
-    <div class="rounded-lg bg-gray-50 p-3 space-y-4 dark:bg-gray-900">
-      <HelpTooltip>
-        <template #label>
-          <span class="text-sm font-medium text-highlighted">Pixeliness</span>
-        </template>
-        <template #help>
-          Like pixel scale but more chaotic.
-        </template>
-        <div class="mt-2">
-          <USlider v-model="pixeliness" :min="1" :max="25" :step="1" />
-          <span class="text-xs text-gray-500">{{ pixeliness }}x</span>
-        </div>
-      </HelpTooltip>
-      <HelpTooltip>
-        <template #label>
-          <UCheckbox v-model="smoothPixels" label="Smooth pixels" />
-        </template>
-        <template #help>
-          Blend colors when pixelating instead of using strict nearest-neighbor. Produces softer results but may introduce colors outside the palette.
-        </template>
-      </HelpTooltip>
-    </div>
+  <div v-if="advancedOpen" class="space-y-4 px-4 pb-4">
+    <HelpTooltip>
+      <template #label>
+        <span class="text-sm font-medium text-highlighted">Pixeliness</span>
+      </template>
+      <template #help>
+        Like pixel scale but more chaotic.
+      </template>
+      <div class="mt-2">
+        <USlider v-model="pixeliness" :min="1" :max="25" :step="1" />
+        <span class="text-xs text-gray-500">{{ pixeliness }}x</span>
+      </div>
+    </HelpTooltip>
+    <HelpTooltip>
+      <template #label>
+        <UCheckbox v-model="smoothPixels" label="Smooth pixels" />
+      </template>
+      <template #help>
+        Blend colors when pixelating instead of using strict nearest-neighbor. Produces softer results but may introduce colors outside the palette.
+      </template>
+    </HelpTooltip>
   </div>
 
   <USeparator />

@@ -83,7 +83,7 @@ const resourceSections = [
 
 <template>
   <div class="space-y-5">
-    <p class="text-base text-gray-600 dark:text-gray-400">
+    <p class="text-base text-gray-500 dark:text-gray-400">
       A list of dithering resources from around the internet.
     </p>
     <div
@@ -91,7 +91,7 @@ const resourceSections = [
       :key="section.title"
       class="space-y-1.5"
     >
-      <p class="text-sm font-semibold uppercase tracking-wider text-gray-400">
+      <p class="text-sm font-semibold uppercase tracking-wider text-gray-500">
         {{ section.title }}
       </p>
       <ul class="space-y-1">

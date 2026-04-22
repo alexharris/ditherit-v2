@@ -75,7 +75,7 @@ function savedPctClass(pct: number): string {
   if (pct >= 50) return 'text-green-600 dark:text-green-400 font-semibold'
   if (pct >= 20) return 'text-green-700 dark:text-green-500'
   if (pct < 0) return 'text-red-600 dark:text-red-400'
-  return 'text-gray-600 dark:text-gray-400'
+  return 'text-gray-500 dark:text-gray-400'
 }
 
 const columns: Array<{ key: SortKey, label: string, align?: string }> = [
@@ -99,7 +99,7 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
         {{ results.length }} result{{ results.length !== 1 ? 's' : '' }}
       </span>
       <UButton
-        size="xs"
+        size="sm"
         color="neutral"
         variant="outline"
         icon="i-lucide-clipboard-copy"
@@ -108,14 +108,14 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
       />
     </div>
 
-    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
+    <div class="overflow-x-auto rounded-lg border border-gray-100 dark:border-gray-800">
       <table class="w-full min-w-[800px] text-sm">
-        <thead class="bg-gray-50 dark:bg-gray-900">
+        <thead class="bg-gray-100 dark:bg-gray-800">
           <tr>
             <th
               v-for="col in columns"
               :key="String(col.key)"
-              class="cursor-pointer select-none whitespace-nowrap px-3 py-2 text-xs font-medium text-gray-500 hover:text-gray-900 dark:hover:text-gray-100"
+              class="cursor-pointer select-none whitespace-nowrap px-3 py-2 text-xs font-medium text-gray-500 hover:text-gray-800 dark:hover:text-gray-100"
               :class="col.align === 'right' ? 'text-right' : 'text-left'"
               @click="toggleSort(col.key)"
             >
@@ -139,13 +139,13 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
             :key="row.id"
             class="border-t border-gray-100 transition-colors dark:border-gray-800"
             :class="[
-              i % 2 === 1 ? 'bg-gray-50/50 dark:bg-gray-900/30' : '',
+              i % 2 === 1 ? 'bg-gray-100 50 dark:bg-gray-800/30' : '',
               'hover:bg-blue-50/50 dark:hover:bg-blue-900/10 cursor-default'
             ]"
             @mousemove="onRowMouseMove($event, row.id)"
             @mouseleave="onRowMouseLeave"
           >
-            <td class="px-3 py-1.5 font-mono text-xs text-gray-800 dark:text-gray-200">
+            <td class="px-3 py-1.5 font-mono text-xs text-gray-800 dark:text-gray-100">
               {{ row.algorithm }}
             </td>
             <td class="px-3 py-1.5">
@@ -158,22 +158,22 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
                 {{ row.ditherMode }}
               </span>
             </td>
-            <td class="px-3 py-1.5 text-xs text-gray-600 dark:text-gray-400">
+            <td class="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400">
               {{ row.paletteLabel }}
             </td>
-            <td class="px-3 py-1.5 text-right tabular-nums text-gray-700 dark:text-gray-300">
+            <td class="px-3 py-1.5 text-right tabular-nums text-gray-800 dark:text-gray-100">
               {{ row.colorCount }}
             </td>
-            <td class="px-3 py-1.5 text-right tabular-nums text-gray-700 dark:text-gray-300">
+            <td class="px-3 py-1.5 text-right tabular-nums text-gray-800 dark:text-gray-100">
               {{ row.pixelScale }}×
             </td>
-            <td class="px-3 py-1.5 text-right tabular-nums text-gray-700 dark:text-gray-300">
+            <td class="px-3 py-1.5 text-right tabular-nums text-gray-800 dark:text-gray-100">
               {{ row.pixeliness }}
             </td>
-            <td class="px-3 py-1.5 text-right tabular-nums text-gray-700 dark:text-gray-300">
+            <td class="px-3 py-1.5 text-right tabular-nums text-gray-800 dark:text-gray-100">
               {{ row.processingTimeMs }}
             </td>
-            <td class="px-3 py-1.5 text-right tabular-nums text-gray-700 dark:text-gray-300">
+            <td class="px-3 py-1.5 text-right tabular-nums text-gray-800 dark:text-gray-100">
               {{ (row.outputFileSizeBytes / 1024).toFixed(1) }} KB
             </td>
             <td
@@ -182,7 +182,7 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
             >
               {{ row.sizeReductionPct >= 0 ? '-' : '+' }}{{ Math.abs(row.sizeReductionPct) }}%
             </td>
-            <td class="px-3 py-1.5 text-right tabular-nums text-gray-700 dark:text-gray-300">
+            <td class="px-3 py-1.5 text-right tabular-nums text-gray-800 dark:text-gray-100">
               {{ row.mse }}
             </td>
           </tr>
@@ -194,7 +194,7 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
     <Teleport to="body">
       <div
         v-if="hoveredResult"
-        class="pointer-events-none fixed z-50 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900"
+        class="pointer-events-none fixed z-50 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-800"
         :style="thumbStyle"
       >
         <img
@@ -204,10 +204,10 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
           alt=""
         >
         <div class="px-2 pb-2 pt-1">
-          <p class="text-xs font-medium text-gray-700 dark:text-gray-300">
+          <p class="text-xs font-medium text-gray-800 dark:text-gray-100">
             {{ hoveredResult.algorithm }}
           </p>
-          <p class="text-xs text-gray-500 dark:text-gray-500">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
             {{ hoveredResult.colorCount }} colors · {{ hoveredResult.paletteLabel }}
           </p>
         </div>

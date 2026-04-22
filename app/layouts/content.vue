@@ -10,6 +10,7 @@ const navItems = [
   { label: 'Resources', to: '/resources' },
   { label: 'Support', to: '/support' },
   { label: 'Contact', to: '/contact' },
+  { label: 'Design System', to: '/design-system' },
 ]
 </script>
 
@@ -21,19 +22,19 @@ const navItems = [
         <div class="mb-8">
           <NuxtLink
             to="/"
-            class="hidden items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 lg:inline-flex"
+            class="hidden items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 dark:hover:text-gray-100 lg:inline-flex"
           >
             <UIcon name="i-lucide-arrow-left" class="size-4" />
             Back to app
           </NuxtLink>
-          <h1 class="mt-4 text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <h1 class="mt-4 text-3xl font-bold text-gray-800 dark:text-gray-100">
             {{ title }}
           </h1>
         </div>
         <slot />
       </div>
     </main>
-    <footer class="border-t border-gray-200 dark:border-gray-800">
+    <footer class="border-t border-gray-100 dark:border-gray-800">
       <div class="mx-auto flex max-w-3xl flex-col items-center gap-2 px-6 py-4">
         <nav class="flex flex-wrap items-center justify-center gap-0.5">
           <UButton
@@ -43,7 +44,7 @@ const navItems = [
             :to="item.to"
             :variant="route.path === item.to ? 'soft' : 'ghost'"
             color="neutral"
-            size="xs"
+            size="sm"
           />
         </nav>
         <UButton
@@ -53,7 +54,7 @@ const navItems = [
           target="_blank"
           color="neutral"
           variant="ghost"
-          size="xs"
+          size="sm"
           trailing-icon="i-lucide-arrow-up-right"
         />
       </div>

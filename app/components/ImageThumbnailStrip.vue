@@ -58,7 +58,7 @@ onBeforeUnmount(() => {
       icon="i-lucide-chevron-left"
       color="neutral"
       variant="ghost"
-      size="xs"
+      size="sm"
       class="hidden lg:flex shrink-0"
       @click="scroll('left')"
     />
@@ -83,7 +83,7 @@ onBeforeUnmount(() => {
           :class="[
             selectedId === image.id
               ? 'border-ditherit shadow-sm shadow-black/30'
-              : 'border-gray-200 hover:border-gray-400 dark:border-gray-700 dark:hover:border-gray-500'
+              : 'border-gray-100 hover:border-gray-500 dark:border-gray-800 dark:hover:border-gray-500'
           ]"
         />
         <!-- Processing indicator -->
@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
           v-if="image.isProcessing"
           class="absolute inset-0 flex items-center justify-center rounded bg-black/50"
         >
-          <UIcon name="i-lucide-loader-2" class="size-4 animate-spin text-red-500" />
+          <UIcon name="i-lucide-loader-2" class="size-4 animate-spin text-ditherit" />
         </div>
         <!-- Animated GIF frame count badge -->
         <span
@@ -106,7 +106,7 @@ onBeforeUnmount(() => {
       icon="i-lucide-chevron-right"
       color="neutral"
       variant="ghost"
-      size="xs"
+      size="sm"
       class="hidden lg:flex shrink-0"
       @click="scroll('right')"
     />

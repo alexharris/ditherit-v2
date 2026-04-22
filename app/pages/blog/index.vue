@@ -15,10 +15,10 @@ const { data: posts } = await useAsyncData('blog', () =>
       class="space-y-3"
     >
       <div>
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">
           {{ post.title }}
         </h2>
-        <p class="text-sm text-gray-400">
+        <p class="text-sm text-gray-500">
           {{ new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) }}
         </p>
       </div>

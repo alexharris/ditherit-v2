@@ -108,7 +108,7 @@ function cornerClasses(corner: string) {
 }
 
 function cornerBorderClasses(corner: string) {
-  const base = 'absolute border-red-500'
+  const base = 'absolute border-ditherit'
   const style: Record<string, string> = {
     'top-left': `${base} top-0 left-0 w-3 h-3 border-t-2 border-l-2`,
     'top-right': `${base} top-0 right-0 w-3 h-3 border-t-2 border-r-2`,
@@ -144,7 +144,7 @@ function cornerBorderClasses(corner: string) {
     <!-- Dimension badge -->
     <div
       v-if="isDragging"
-      class="absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-0.5 text-xs font-mono text-white shadow dark:bg-gray-100 dark:text-gray-900"
+      class="absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-0.5 text-xs font-mono text-white shadow dark:bg-gray-100 dark:text-gray-800"
     >
       {{ liveWidth }} &times; {{ liveHeight }}
     </div>

@@ -308,7 +308,7 @@ onMounted(async () => {
     <!-- Standard benchmarks -->
     <div class="space-y-3">
       <div>
-        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+        <h2 class="text-base font-semibold text-gray-800 dark:text-gray-100">
           Standard Benchmarks
         </h2>
         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -320,7 +320,7 @@ onMounted(async () => {
       <!-- Loading state -->
       <div
         v-if="standardRunning"
-        class="flex items-center gap-2 text-sm text-gray-400"
+        class="flex items-center gap-2 text-sm text-gray-500"
       >
         <UIcon
           name="i-lucide-loader-circle"
@@ -337,7 +337,7 @@ onMounted(async () => {
         <div
           v-for="r in standardResults"
           :key="r.id"
-          class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900"
+          class="rounded-lg border border-gray-100 bg-white p-3 dark:border-gray-800 dark:bg-gray-800"
         >
           <img
             :src="r.thumbnailUrl"
@@ -345,21 +345,21 @@ onMounted(async () => {
             style="image-rendering: pixelated; aspect-ratio: 1;"
             alt=""
           >
-          <p class="truncate font-mono text-xs font-semibold text-gray-800 dark:text-gray-200">
+          <p class="truncate font-mono text-xs font-semibold text-gray-800 dark:text-gray-100">
             {{ r.algorithm }}
           </p>
           <div class="mt-1.5 space-y-0.5">
             <div class="flex justify-between text-xs">
-              <span class="text-gray-400">Time</span>
-              <span class="tabular-nums text-gray-600 dark:text-gray-400">{{ r.processingTimeMs }} ms</span>
+              <span class="text-gray-500">Time</span>
+              <span class="tabular-nums text-gray-500 dark:text-gray-400">{{ r.processingTimeMs }} ms</span>
             </div>
             <div class="flex justify-between text-xs">
-              <span class="text-gray-400">Size</span>
-              <span class="tabular-nums text-gray-600 dark:text-gray-400">{{ (r.outputFileSizeBytes / 1024).toFixed(1) }} KB</span>
+              <span class="text-gray-500">Size</span>
+              <span class="tabular-nums text-gray-500 dark:text-gray-400">{{ (r.outputFileSizeBytes / 1024).toFixed(1) }} KB</span>
             </div>
             <div class="flex justify-between text-xs">
-              <span class="text-gray-400">MSE</span>
-              <span class="tabular-nums text-gray-600 dark:text-gray-400">{{ r.mse }}</span>
+              <span class="text-gray-500">MSE</span>
+              <span class="tabular-nums text-gray-500 dark:text-gray-400">{{ r.mse }}</span>
             </div>
           </div>
         </div>
@@ -368,7 +368,7 @@ onMounted(async () => {
       <!-- Glossary -->
       <dl
         v-if="standardResults.length > 0"
-        class="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-400 dark:text-gray-500"
+        class="flex flex-wrap gap-x-6 gap-y-1 text-xs text-gray-500 dark:text-gray-400"
       >
         <div class="flex gap-1">
           <dt class="font-medium">Time —</dt>
@@ -411,7 +411,7 @@ onMounted(async () => {
                   class="accent-[--ui-primary]"
                   @change="imageSource = opt.value as ImageSource"
                 >
-                <span class="text-sm text-gray-700 dark:text-gray-300">{{ opt.label }}</span>
+                <span class="text-sm text-gray-800 dark:text-gray-100">{{ opt.label }}</span>
               </label>
             </div>
 
@@ -423,14 +423,14 @@ onMounted(async () => {
                 ref="fileInputRef"
                 type="file"
                 accept="image/*"
-                class="text-sm text-gray-600 dark:text-gray-400 file:mr-3 file:cursor-pointer file:rounded file:border-0 file:bg-gray-100 file:px-3 file:py-1 file:text-xs file:font-medium dark:file:bg-gray-800 dark:file:text-gray-300"
+                class="text-sm text-gray-500 dark:text-gray-400 file:mr-3 file:cursor-pointer file:rounded file:border-0 file:bg-gray-100 file:px-3 file:py-1 file:text-xs file:font-medium dark:file:bg-gray-800 dark:file:text-gray-100"
                 @change="onFileChange"
               >
             </div>
 
             <div
               v-if="imageLoading"
-              class="flex items-center gap-2 text-xs text-gray-400"
+              class="flex items-center gap-2 text-xs text-gray-500"
             >
               <UIcon
                 name="i-lucide-loader-circle"
@@ -469,7 +469,7 @@ onMounted(async () => {
                     class="accent-[--ui-primary]"
                     @change="toggleItem(selectedPaletteModes, pm.value)"
                   >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">{{ pm.label }}</span>
+                  <span class="text-sm text-gray-800 dark:text-gray-100">{{ pm.label }}</span>
                 </label>
               </div>
             </div>
@@ -489,7 +489,7 @@ onMounted(async () => {
                     class="accent-[--ui-primary]"
                     @change="toggleItem(selectedSerpentine, opt.value)"
                   >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">{{ opt.label }}</span>
+                  <span class="text-sm text-gray-800 dark:text-gray-100">{{ opt.label }}</span>
                 </label>
               </div>
             </div>
@@ -517,7 +517,7 @@ onMounted(async () => {
                   class="accent-[--ui-primary]"
                   @change="toggleItem(selectedDiffusion, algo.value)"
                 >
-                <span class="text-sm text-gray-700 dark:text-gray-300">{{ algo.label }}</span>
+                <span class="text-sm text-gray-800 dark:text-gray-100">{{ algo.label }}</span>
               </label>
             </div>
           </div>
@@ -540,14 +540,14 @@ onMounted(async () => {
                     class="accent-[--ui-primary]"
                     @change="toggleItem(selectedBayerSizes, bs.value)"
                   >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">{{ bs.label }}</span>
+                  <span class="text-sm text-gray-800 dark:text-gray-100">{{ bs.label }}</span>
                 </label>
               </div>
             </div>
 
             <div class="space-y-2">
               <p class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                Color Count <span class="font-normal normal-case text-gray-400">(auto palette only)</span>
+                Color Count <span class="font-normal normal-case text-gray-500">(auto palette only)</span>
               </p>
               <div class="flex flex-wrap gap-x-4 gap-y-1">
                 <label
@@ -561,7 +561,7 @@ onMounted(async () => {
                     class="accent-[--ui-primary]"
                     @change="toggleItem(selectedColorCounts, count)"
                   >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">{{ count }}</span>
+                  <span class="text-sm text-gray-800 dark:text-gray-100">{{ count }}</span>
                 </label>
               </div>
             </div>
@@ -582,7 +582,7 @@ onMounted(async () => {
                     class="accent-[--ui-primary]"
                     @change="toggleItem(selectedPixelScales, scale)"
                   >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">{{ scale }}×</span>
+                  <span class="text-sm text-gray-800 dark:text-gray-100">{{ scale }}×</span>
                 </label>
               </div>
             </div>
@@ -603,7 +603,7 @@ onMounted(async () => {
                     class="accent-[--ui-primary]"
                     @change="toggleItem(selectedPixeliness, pix)"
                   >
-                  <span class="text-sm text-gray-700 dark:text-gray-300">{{ pix }}</span>
+                  <span class="text-sm text-gray-800 dark:text-gray-100">{{ pix }}</span>
                 </label>
               </div>
             </div>
@@ -619,27 +619,27 @@ onMounted(async () => {
               Presets
             </p>
             <p class="mb-3 text-xs text-gray-500 dark:text-gray-400">
-              Presets configure the checkboxes above. <strong class="text-gray-700 dark:text-gray-300">Quick</strong> runs Floyd-Steinberg + Bayer 4×4 at 3 color counts — good for a fast sanity check.
-              <strong class="text-gray-700 dark:text-gray-300">Standard</strong> adds more diffusion algorithms, two Bayer sizes, and a B&W palette pass — a reasonable broad comparison.
-              <strong class="text-gray-700 dark:text-gray-300">Full</strong> runs every algorithm, all color counts, all scales, pixeliness values, and palette modes — expect several hundred runs.
+              Presets configure the checkboxes above. <strong class="text-gray-800 dark:text-gray-100">Quick</strong> runs Floyd-Steinberg + Bayer 4×4 at 3 color counts — good for a fast sanity check.
+              <strong class="text-gray-800 dark:text-gray-100">Standard</strong> adds more diffusion algorithms, two Bayer sizes, and a B&W palette pass — a reasonable broad comparison.
+              <strong class="text-gray-800 dark:text-gray-100">Full</strong> runs every algorithm, all color counts, all scales, pixeliness values, and palette modes — expect several hundred runs.
             </p>
             <div class="flex flex-wrap items-center gap-2">
               <UButton
-                size="xs"
+                size="sm"
                 color="neutral"
                 variant="outline"
                 label="Quick (~6)"
                 @click="applyPreset('quick')"
               />
               <UButton
-                size="xs"
+                size="sm"
                 color="neutral"
                 variant="outline"
                 label="Standard (~60)"
                 @click="applyPreset('standard')"
               />
               <UButton
-                size="xs"
+                size="sm"
                 color="neutral"
                 variant="outline"
                 label="Full"
@@ -677,7 +677,7 @@ onMounted(async () => {
     <UCard v-if="isRunning || (progressTotal > 0 && progressDone < progressTotal)">
       <div class="space-y-2">
         <div class="flex items-center justify-between text-sm">
-          <span class="font-medium text-gray-700 dark:text-gray-300">
+          <span class="font-medium text-gray-800 dark:text-gray-100">
             {{ progressDone }} / {{ progressTotal }} runs complete
           </span>
           <span class="text-gray-500 dark:text-gray-400">
@@ -711,7 +711,7 @@ onMounted(async () => {
             <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
               Fastest
             </p>
-            <p class="truncate font-mono text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <p class="truncate font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
               {{ summaryStats.fastest.algorithm }}
             </p>
             <p class="text-xs text-gray-500">
@@ -731,7 +731,7 @@ onMounted(async () => {
             <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
               Best Compression
             </p>
-            <p class="truncate font-mono text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <p class="truncate font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
               {{ summaryStats.bestCompression.algorithm }}
             </p>
             <p class="text-xs text-gray-500">
@@ -751,7 +751,7 @@ onMounted(async () => {
             <p class="text-xs font-medium text-gray-500 dark:text-gray-400">
               Most Faithful
             </p>
-            <p class="truncate font-mono text-sm font-semibold text-gray-900 dark:text-gray-100">
+            <p class="truncate font-mono text-sm font-semibold text-gray-800 dark:text-gray-100">
               {{ summaryStats.mostFaithful.algorithm }}
             </p>
             <p class="text-xs text-gray-500">
@@ -765,7 +765,7 @@ onMounted(async () => {
     <!-- Charts -->
     <UCard v-if="results.length > 0">
       <div class="space-y-4">
-        <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">
+        <h2 class="text-base font-semibold text-gray-800 dark:text-gray-100">
           Results
         </h2>
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -777,7 +777,7 @@ onMounted(async () => {
               class="rounded-md px-3 py-1.5 text-xs font-medium transition-colors"
               :class="activeMetric === tab.key
                 ? 'bg-ditherit text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700'"
+                : 'bg-gray-100 text-gray-500 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-800'"
               @click="activeMetric = tab.key"
             >
               {{ tab.label }}
@@ -793,8 +793,8 @@ onMounted(async () => {
                 :key="g.key"
                 class="rounded px-2 py-1 text-xs transition-colors"
                 :class="activeGroupBy === g.key
-                  ? 'bg-gray-200 font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'"
+                  ? 'bg-gray-100 font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-100'
+                  : 'text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-100'"
                 @click="activeGroupBy = g.key"
               >
                 {{ g.label }}

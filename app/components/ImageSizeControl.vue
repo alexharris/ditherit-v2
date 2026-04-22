@@ -76,25 +76,22 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       type="number"
       :min="1"
       :max="MAX_WIDTH"
-      size="xs"
-      class="w-14"
+      class="w-16"
       :color="useCustomSize && !isWidthValid ? 'error' : 'neutral'"
       @focus="enableCustomSize"
       @keydown.enter="applySize"
     />
-    <span class="text-xs text-gray-400 dark:text-gray-500">&times;</span>
+    <span class="text-xs text-gray-500 dark:text-gray-400">&times;</span>
     <label for="img-height" class="text-xs text-gray-500 dark:text-gray-400">H</label>
     <UInput
       id="img-height"
       :model-value="calculatedHeight"
       type="number"
-      size="xs"
-      class="w-14 opacity-50"
+      class="w-16 opacity-50"
       disabled
     />
     <UButton
       icon="i-lucide-check"
-      size="xs"
       :color="isDirty && isWidthValid ? 'primary' : 'neutral'"
       :variant="isDirty && isWidthValid ? 'solid' : 'soft'"
       aria-label="Apply size"
@@ -104,7 +101,6 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
     <UButton
       v-if="useCustomSize && !isDirty"
       icon="i-lucide-rotate-ccw"
-      size="xs"
       color="neutral"
       variant="ghost"
       aria-label="Reset to original size"

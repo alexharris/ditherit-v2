@@ -22,7 +22,7 @@ function mobileNavigate(to: string) {
 </script>
 
 <template>
-  <header class="fixed inset-x-0 top-0 z-50 flex h-12 shrink-0 items-center border-b border-gray-200 bg-white px-4 dark:border-gray-800 dark:bg-gray-950 lg:relative lg:inset-x-auto lg:top-auto lg:z-auto">
+  <header class="fixed inset-x-0 top-0 z-50 flex h-12 shrink-0 items-center border-b border-gray-100 bg-white px-4 dark:border-gray-800 dark:bg-gray-800 lg:relative lg:inset-x-auto lg:top-auto lg:z-auto">
     <!-- Mobile back button -->
     <UButton
       v-if="showBack"
@@ -61,13 +61,14 @@ function mobileNavigate(to: string) {
     </nav>
 
     <!-- Desktop support button -->
-    <NuxtLink
+    <UButton
       to="/support"
-      class="hidden lg:flex items-center gap-1.5 rounded-md border border-ditherit px-3 py-1.5 text-sm font-medium text-ditherit transition-colors hover:bg-ditherit hover:text-white"
-    >
-      ❤️
-      Support
-    </NuxtLink>
+      label="❤️ Support"
+      color="primary"
+      variant="outline"
+      size="sm"
+      class="hidden lg:flex"
+    />
 
     <!-- Mobile dark mode toggle + menu button -->
     <div class="ml-auto flex items-center gap-0.5 lg:hidden">
@@ -94,7 +95,7 @@ function mobileNavigate(to: string) {
   <USlideover
     v-model:open="isMenuOpen"
     side="right"
-    :ui="{ header: 'flex items-center min-h-12 justify-end shrink-0 p-0 border-b border-gray-200 dark:border-gray-800 sm:px-4', title: 'text-highlighted flex-1', close: 'relative top-auto end-auto ml-4' }"
+    :ui="{ header: 'flex items-center min-h-12 justify-end shrink-0 p-0 border-b border-gray-100 dark:border-gray-800 sm:px-4', title: 'text-highlighted flex-1', close: 'relative top-auto end-auto ml-4' }"
   >
     <template #body>
       <div class="flex flex-col gap-3">
@@ -105,8 +106,8 @@ function mobileNavigate(to: string) {
             :key="item.id"
             class="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm font-medium transition-colors"
             :class="route.path === item.to
-              ? 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-              : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800'"
+              ? 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100'
+              : 'text-gray-800 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800'"
             :aria-current="route.path === item.to ? 'page' : undefined"
             @click="mobileNavigate(item.to)"
           >
@@ -116,7 +117,7 @@ function mobileNavigate(to: string) {
             </div>
             <UIcon
               name="i-lucide-arrow-up-right"
-              class="size-4 text-gray-400"
+              class="size-4 text-gray-500"
             />
           </button>
         </div>
@@ -124,14 +125,14 @@ function mobileNavigate(to: string) {
         <USeparator />
 
         <!-- Support CTA -->
-        <NuxtLink
+        <UButton
           to="/support"
-          class="flex items-center justify-center gap-2 rounded-md border border-ditherit px-3 py-2 text-sm font-medium text-ditherit transition-colors hover:bg-ditherit hover:text-white"
+          label="❤️ Support Dither it!"
+          color="primary"
+          variant="outline"
+          block
           @click="isMenuOpen = false"
-        >
-          ❤️
-          Support Dither it!
-        </NuxtLink>
+        />
 
         <SidebarFeedback />
 

@@ -620,11 +620,11 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     <!-- Mobile image selector + download bar (hidden during intro — upload button is in the top zone) -->
     <div
       v-if="!isDefaultImage"
-      class="flex lg:hidden shrink-0 items-center justify-between border-b border-gray-200 px-3 py-4 dark:border-gray-800"
+      class="flex lg:hidden shrink-0 items-center justify-between border-b border-gray-100 px-3 py-4 dark:border-gray-800"
     >
       <!-- Upload/add button -->
       <button
-        class="inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-950"
+        class="inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
         @click="triggerFileInput"
       >
         {{ isDefaultImage ? '✨ Select image(s)' : '➕ Add' }}
@@ -632,7 +632,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       <UPopover v-if="!isDefaultImage" class="shrink-0">
         <UButton
           label="💾 Download"
-          color="neutral"
+          color="primary"
           variant="solid"
           size="sm"
           :loading="isDownloadingAll"
@@ -640,9 +640,9 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         />
         <template #content="{ close }">
           <div class="flex flex-col gap-1 p-2">
-            <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('png'); close()" />
-            <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
-            <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('svg'); close()" />
+            <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('png'); close()" />
+            <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
+            <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('svg'); close()" />
           </div>
         </template>
       </UPopover>
@@ -672,13 +672,13 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
     <!-- Sidebar (desktop only) -->
     <aside
-      class="hidden lg:flex w-64 flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950"
+      class="hidden lg:flex w-64 flex-col border-r border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-800"
     >
       <SidebarContent />
 
       <!-- Sidebar Footer -->
       <div
-        class="flex shrink-0 items-center justify-between border-t border-gray-200 p-4 dark:border-gray-800"
+        class="flex shrink-0 items-center justify-between border-t border-gray-100 p-4 dark:border-gray-800"
       >
         <span class="text-sm text-gray-500 dark:text-gray-400">v3</span>
         <UButton
@@ -713,7 +713,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           <!-- Mobile floating image toolbar pill (replaced by inline toolbar in flex-col flow) -->
           <div
             v-if="false"
-            class="absolute bottom-3 left-1/2 z-10 flex lg:hidden -translate-x-1/2 items-center gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+            class="absolute bottom-3 left-1/2 z-10 flex lg:hidden -translate-x-1/2 items-center gap-1 rounded-lg border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-800"
           >
             <UButton
               icon="i-lucide-columns-2"
@@ -734,12 +734,12 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               <template #content="{ close }">
                 <div class="flex flex-col gap-1 p-2">
                   <template v-if="isSelectedGif">
-                    <UButton label="GIF" icon="i-lucide-film" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('gif'); close()" />
+                    <UButton label="GIF" icon="i-lucide-film" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('gif'); close()" />
                   </template>
                   <template v-else>
-                    <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
-                    <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
-                    <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
+                    <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
+                    <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
+                    <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
                   </template>
                 </div>
               </template>
@@ -757,11 +757,11 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           <!-- Drag overlay -->
           <div
             v-if="isDragging"
-            class="pointer-events-none absolute inset-0 z-50 flex items-center justify-center bg-red-500/10 ring-4 ring-inset ring-red-500"
+            class="pointer-events-none absolute inset-0 z-50 flex items-center justify-center bg-ditherit/10 ring-4 ring-inset ring-ditherit"
           >
-            <div class="rounded-xl bg-white/90 px-8 py-6 text-center shadow-lg dark:bg-gray-900/90">
-              <UIcon name="i-lucide-image-plus" class="mx-auto size-12 text-red-500" />
-              <p class="mt-2 text-lg font-medium text-gray-700 dark:text-gray-200">
+            <div class="rounded-xl bg-white/90 px-8 py-6 text-center shadow-lg dark:bg-gray-800/90">
+              <UIcon name="i-lucide-image-plus" class="mx-auto size-12 text-ditherit" />
+              <p class="mt-2 text-lg font-medium text-gray-800 dark:text-gray-100">
                 Drop images to add
               </p>
             </div>
@@ -770,7 +770,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           <!-- Preview Area -->
           <div
             class="flex flex-1 flex-col items-center overflow-hidden p-2 lg:p-8"
-            :class="isIntro ? 'lg:border-2 lg:border-dashed lg:border-gray-300 lg:m-4 dark:lg:border-gray-600' : ''"
+            :class="isIntro ? 'lg:border-2 lg:border-dashed lg:border-gray-100 lg:m-4 dark:lg:border-gray-500' : ''"
           >
             <div
               v-if="selectedImage"
@@ -780,12 +780,12 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               <div class="flex flex-1 min-h-0 w-full items-center justify-center">
                 <template v-if="isIntro">
                   <!-- Desktop: drop/paste hint -->
-                  <div class="hidden lg:flex items-center gap-3 rounded-lg bg-white px-4 py-2.5 text-sm text-red-700 ring-1 ring-red-200 dark:bg-gray-900 dark:text-red-300 dark:ring-red-800">
+                  <div class="hidden lg:flex items-center gap-3 rounded-lg bg-white px-4 py-2.5 text-sm text-red-700 ring-1 ring-red-200 dark:bg-gray-800 dark:text-red-300 dark:ring-red-800">
                     <span>✨ Drop or paste images here, or</span>
                     <UButton
                       icon="i-lucide-upload"
                       label="Select"
-                      size="xs"
+                      size="sm"
                       color="error"
                       variant="subtle"
                       @click="triggerFileInput"
@@ -793,7 +793,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   </div>
                   <!-- Mobile: button centered between top bar and image -->
                   <button
-                    class="lg:hidden inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-950"
+                    class="lg:hidden inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
                     @click="triggerFileInput"
                   >
                     ✨ Select image(s)
@@ -840,7 +840,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   v-if="selectedImage.isProcessing"
                   class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/30"
                 >
-                  <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-red-500" />
+                  <UIcon name="i-lucide-loader-2" class="size-8 animate-spin text-ditherit" />
                   <span
                     v-if="selectedImage.processingProgress !== null"
                     class="text-sm font-medium text-white"
@@ -850,14 +850,14 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
               <!-- Image toolbar — snug beneath the image -->
               <div
-                class="shrink-0 flex flex-wrap items-center gap-1 rounded-lg border border-gray-200 bg-white p-1 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+                class="shrink-0 flex flex-wrap items-center gap-1 rounded-lg border border-gray-100 bg-white p-1 shadow-sm dark:border-gray-800 dark:bg-gray-800"
               >
                 <div class="flex-1" />
                 <UButton
                   icon="i-lucide-columns-2"
                   :color="showCompare ? 'primary' : 'neutral'"
                   :variant="showCompare ? 'soft' : 'ghost'"
-                  size="xs"
+                  size="sm"
                   :disabled="!selectedImage.ditheredDataUrl"
                   @click="showCompare = !showCompare"
                 >
@@ -868,7 +868,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     icon="i-lucide-download"
                     color="neutral"
                     variant="ghost"
-                    size="xs"
+                    size="sm"
                     :disabled="!selectedImage.ditheredDataUrl"
                   >
                     <span class="hidden lg:inline">Download</span>
@@ -876,12 +876,12 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   <template #content="{ close }">
                     <div class="flex flex-col gap-1 p-2">
                       <template v-if="isSelectedGif">
-                        <UButton label="GIF" icon="i-lucide-film" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('gif'); close()" />
+                        <UButton label="GIF" icon="i-lucide-film" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('gif'); close()" />
                       </template>
                       <template v-else>
-                        <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
-                        <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
-                        <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
+                        <UButton :label="pngSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('png'); close()" />
+                        <UButton :label="jpgSizeLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('jpg'); close()" />
+                        <UButton label="SVG" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="downloadSingleImage('svg'); close()" />
                       </template>
                     </div>
                   </template>
@@ -890,7 +890,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   icon="i-lucide-bar-chart-2"
                   color="neutral"
                   variant="ghost"
-                  size="xs"
+                  size="sm"
                   :disabled="!selectedImage.ditheredDataUrl"
                   class="lg:hidden"
                   @click="showReportCard = true"
@@ -900,7 +900,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   icon="i-lucide-trash-2"
                   color="error"
                   variant="ghost"
-                  size="xs"
+                  size="sm"
                   @click="removeImage(selectedImage.id)"
                 >
                   <span class="hidden lg:inline">Remove</span>
@@ -926,7 +926,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               <!-- Resize prompt modal -->
               <UModal v-model:open="showResizeModal" title="Large image detected">
                 <template #body>
-                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
                     This image is {{ resizeModalImage?.naturalWidth }} &times; {{ resizeModalImage?.naturalHeight }}px.
                     Processing at full resolution may be slow on mobile.
                   </p>
@@ -962,7 +962,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         <aside class="hidden lg:block w-48 shrink-0 overflow-y-auto pl-0 pr-4 pt-4 pb-4">
           <div
             v-if="selectedImage"
-            class="rounded-xl border border-gray-200 bg-white/90 p-4 shadow-lg backdrop-blur-sm dark:border-gray-700 dark:bg-gray-950/90"
+            class="rounded-xl border border-gray-100 bg-white/90 p-4 shadow-lg backdrop-blur-sm dark:border-gray-800 dark:bg-gray-800/90"
           >
             <FileSizeReport
               :original-size="selectedImage.originalFileSize"
@@ -980,7 +980,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
       <!-- Bottom Bar (thumbnails + actions) -->
       <footer
-        class="hidden lg:flex relative shrink-0 flex-col lg:flex-row items-stretch lg:items-center justify-center gap-2 border-t border-gray-200 bg-white px-3 py-3 lg:px-4 lg:py-2 dark:border-gray-800 dark:bg-gray-950"
+        class="hidden lg:flex relative shrink-0 flex-col lg:flex-row items-stretch lg:items-center justify-center gap-2 border-t border-gray-100 bg-white px-3 py-3 lg:px-4 lg:py-2 dark:border-gray-800 dark:bg-gray-800"
       >
         <!-- Image Thumbnails + mobile download -->
         <div v-if="hasImages" class="flex min-w-0 items-center justify-between gap-2">
@@ -992,7 +992,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             @add="triggerFileInput"
           />
           <button
-            class="size-10 shrink-0 flex items-center justify-center rounded-full border-2 border-dashed border-gray-300 text-gray-400 transition-colors hover:border-gray-400 hover:text-gray-500 dark:border-gray-600 dark:hover:border-gray-500"
+            class="size-10 shrink-0 flex items-center justify-center rounded-full border-2 border-dashed border-gray-100 text-gray-500 transition-colors hover:border-gray-500 hover:text-gray-500 dark:border-gray-500 dark:hover:border-gray-500"
             aria-label="Add image"
             @click="triggerFileInput"
           >
@@ -1009,9 +1009,9 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             />
             <template #content="{ close }">
               <div class="flex flex-col gap-1 p-2">
-                <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('png'); close()" />
-                <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
-                <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('svg'); close()" />
+                <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('png'); close()" />
+                <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
+                <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('svg'); close()" />
               </div>
             </template>
           </UPopover>
@@ -1041,9 +1041,9 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             </UButton>
             <template #content="{ close }">
               <div class="flex flex-col gap-1 p-2">
-                <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('png'); close()" />
-                <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
-                <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-900 dark:text-gray-100" @click="handleDownload('svg'); close()" />
+                <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('png'); close()" />
+                <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
+                <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('svg'); close()" />
               </div>
             </template>
           </UPopover>
@@ -1053,7 +1053,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       <!-- Mobile Thumbnail Strip (multiple images) -->
       <div
         v-if="images.length > 1"
-        class="flex lg:hidden shrink-0 items-center gap-2 border-t border-gray-200 bg-white px-2 py-2 dark:border-gray-800 dark:bg-gray-950"
+        class="flex lg:hidden shrink-0 items-center gap-2 border-t border-gray-100 bg-white px-2 py-2 dark:border-gray-800 dark:bg-gray-800"
       >
         <ImageThumbnailStrip
           :images="images"
@@ -1066,16 +1066,16 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       </div>
 
       <!-- Mobile Bottom Toolbar -->
-      <div class="flex lg:hidden shrink-0 items-center justify-around border-t border-gray-200 bg-white pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] dark:border-gray-800 dark:bg-gray-950">
-        <button class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400" @click="drawerMode = true">
+      <div class="flex lg:hidden shrink-0 items-center justify-around border-t border-gray-100 bg-white pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] dark:border-gray-800 dark:bg-gray-800">
+        <button class="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400" @click="drawerMode = true">
           <span class="text-2xl leading-none">🏁</span>
           <span class="uppercase tracking-wide" style="font-size: 12px">Mode</span>
         </button>
-        <button class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400" @click="drawerPalette = true">
+        <button class="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400" @click="drawerPalette = true">
           <span class="text-2xl leading-none">🎨</span>
           <span class="uppercase tracking-wide" style="font-size: 12px">Palette</span>
         </button>
-        <button class="flex flex-col items-center gap-1 text-gray-600 dark:text-gray-400" @click="drawerScale = true">
+        <button class="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400" @click="drawerScale = true">
           <span class="text-2xl leading-none">🖼️</span>
           <span class="uppercase tracking-wide" style="font-size: 12px">Image</span>
         </button>

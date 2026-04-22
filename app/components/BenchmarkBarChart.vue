@@ -79,7 +79,7 @@ function formatValue(v: number): string {
 
     <div
       v-if="groups.length === 0"
-      class="py-8 text-center text-sm text-gray-400"
+      class="py-8 text-center text-sm text-gray-500"
     >
       No results yet. Run a benchmark to see data.
     </div>
@@ -103,7 +103,7 @@ function formatValue(v: number): string {
             :x="LABEL_WIDTH - 8"
             :y="BAR_HEIGHT / 2 + 4"
             text-anchor="end"
-            class="fill-gray-600 dark:fill-gray-300"
+            class="fill-gray-500 dark:fill-gray-100"
             style="font-size: 11px; font-family: ui-monospace, monospace;"
           >{{ group.key }}</text>
 
@@ -133,7 +133,7 @@ function formatValue(v: number): string {
             :x="LABEL_WIDTH + CHART_WIDTH + 8"
             :y="BAR_HEIGHT / 2 + 4"
             text-anchor="start"
-            class="fill-gray-700 dark:fill-gray-300"
+            class="fill-gray-800 dark:fill-gray-100"
             style="font-size: 11px; font-family: ui-monospace, monospace;"
           >{{ formatValue(group.avg) }}</text>
         </g>

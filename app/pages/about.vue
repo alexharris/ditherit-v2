@@ -39,52 +39,47 @@ const featureCards = [
 <template>
   <div class="space-y-10">
     <!-- Intro -->
-    <p class="text-base leading-relaxed text-gray-600 dark:text-gray-400">
+    <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
       Dither it! is a free website for dithering images, an image processing technique that reduces the number of colors used to render an image.
     </p>
 
     <!-- Features Grid -->
     <section class="space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
         Features
       </h2>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <UCard
           v-for="card in featureCards"
           :key="card.title"
+          :ui="{ body: 'p-3 sm:p-3' }"
         >
-          <div class="flex items-start gap-3">
-            <span v-if="card.icon.startsWith('i-')" class="mt-0.5 shrink-0">
-              <UIcon :name="card.icon" class="size-5 text-[--ui-primary]" />
-            </span>
-            <span v-else class="mt-0.5 shrink-0 text-lg leading-none">{{ card.icon }}</span>
-            <div>
-              <p class="font-semibold text-gray-900 dark:text-gray-100">
-                {{ card.title }}
-              </p>
-              <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {{ card.description }}
-              </p>
-            </div>
-          </div>
+          <p class="mb-1 text-sm font-medium text-highlighted">
+            <span v-if="card.icon.startsWith('i-')"><UIcon :name="card.icon" class="size-4 text-[--ui-primary]" /></span>
+            <span v-else>{{ card.icon }}</span>
+            {{ card.title }}
+          </p>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            {{ card.description }}
+          </p>
         </UCard>
       </div>
     </section>
 
     <!-- What is Dithering -->
     <section class="space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
         What is Dithering?
       </h2>
-      <p class="text-base leading-relaxed text-gray-600 dark:text-gray-400">
+      <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
         Dithering is a method for trying to make an image look good while reducing the number of colors it uses, or as Wikipedia puts it:
       </p>
-      <blockquote class="border-l-4 border-gray-200 pl-4 dark:border-gray-700">
+      <blockquote class="border-l-4 border-gray-100 pl-4 dark:border-gray-800">
         <p class="italic leading-relaxed text-gray-500 dark:text-gray-400">
           Dithering is used in computer graphics to create the illusion of "color depth" in images with a limited color palette — a technique also known as color quantization. In a dithered image, colors that are not available in the palette are approximated by a diffusion of colored pixels from within the available palette. The human eye perceives the diffusion as a mixture of the colors within it. Dithered images, particularly those with relatively few colors, can often be distinguished by a characteristic graininess or speckled appearance.
         </p>
       </blockquote>
-      <p class="text-base text-gray-600 dark:text-gray-400">
+      <p class="text-base text-gray-500 dark:text-gray-400">
         For more information, see this
         <NuxtLink to="/resources" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">
           list of dithering resources
@@ -97,10 +92,10 @@ const featureCards = [
 
     <!-- About this site -->
     <section class="space-y-4">
-      <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
         About this site
       </h2>
-      <div class="space-y-3 text-base leading-relaxed text-gray-600 dark:text-gray-400">
+      <div class="space-y-3 text-base leading-relaxed text-gray-500 dark:text-gray-400">
         <p>
           Dither it! is built by Alex Harris.
         </p>

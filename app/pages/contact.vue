@@ -48,7 +48,7 @@ async function handleSubmit(event: Event) {
         <UIcon name="i-lucide-check" class="size-6 text-green-500" />
       </div>
       <div>
-        <p class="text-base font-medium text-gray-800 dark:text-gray-200">
+        <p class="text-base font-medium text-gray-800 dark:text-gray-100">
           Message sent!
         </p>
         <p class="mt-1 text-sm text-gray-500">
@@ -65,7 +65,7 @@ async function handleSubmit(event: Event) {
     </div>
 
     <template v-else>
-      <p class="text-base text-gray-600 dark:text-gray-400">
+      <p class="text-base text-gray-500 dark:text-gray-400">
         Have a feature request, found a bug, or just want to say hi?
       </p>
 
@@ -83,35 +83,35 @@ async function handleSubmit(event: Event) {
         </p>
 
         <div class="space-y-2">
-          <label for="contact-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Name</label>
+          <label for="contact-name" class="block text-sm font-medium text-gray-800 dark:text-gray-100">Name</label>
           <input
             id="contact-name"
             type="text"
             name="name"
             required
-            class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-ditherit"
+            class="w-full rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-800 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-ditherit"
           />
         </div>
 
         <div class="space-y-2">
-          <label for="contact-email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+          <label for="contact-email" class="block text-sm font-medium text-gray-800 dark:text-gray-100">Email</label>
           <input
             id="contact-email"
             type="email"
             name="email"
             required
-            class="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-ditherit"
+            class="w-full rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-800 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-ditherit"
           />
         </div>
 
         <div class="space-y-2">
-          <label for="contact-message" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+          <label for="contact-message" class="block text-sm font-medium text-gray-800 dark:text-gray-100">Message</label>
           <textarea
             id="contact-message"
             name="message"
             rows="5"
             required
-            class="w-full resize-none rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:focus:ring-ditherit"
+            class="w-full resize-none rounded-md border border-gray-100 bg-white px-3 py-2 text-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-ditherit dark:border-gray-800 dark:bg-gray-800 dark:text-gray-100 dark:focus:ring-ditherit"
           ></textarea>
         </div>
 
