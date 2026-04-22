@@ -194,7 +194,7 @@ const columns: Array<{ key: SortKey, label: string, align?: string }> = [
     <Teleport to="body">
       <div
         v-if="hoveredResult"
-        class="pointer-events-none fixed z-50 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-800"
+        class="pointer-events-none fixed z-50 overflow-hidden rounded-lg border border-gray-100 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-800"
         :style="thumbStyle"
       >
         <img

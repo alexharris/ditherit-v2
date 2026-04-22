@@ -624,7 +624,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     >
       <!-- Upload/add button -->
       <button
-        class="inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
         @click="triggerFileInput"
       >
         {{ isDefaultImage ? '✨ Select image(s)' : '➕ Add' }}
@@ -759,7 +759,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             v-if="isDragging"
             class="pointer-events-none absolute inset-0 z-50 flex items-center justify-center bg-ditherit/10 ring-4 ring-inset ring-ditherit"
           >
-            <div class="rounded-xl bg-white/90 px-8 py-6 text-center shadow-lg dark:bg-gray-800/90">
+            <div class="rounded-lg bg-white/90 px-8 py-6 text-center shadow-lg dark:bg-gray-800/90">
               <UIcon name="i-lucide-image-plus" class="mx-auto size-12 text-ditherit" />
               <p class="mt-2 text-lg font-medium text-gray-800 dark:text-gray-100">
                 Drop images to add
@@ -793,7 +793,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   </div>
                   <!-- Mobile: button centered between top bar and image -->
                   <button
-                    class="lg:hidden inline-flex items-center gap-1.5 rounded-md border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
+                    class="lg:hidden inline-flex items-center gap-1.5 rounded-lg border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
                     @click="triggerFileInput"
                   >
                     ✨ Select image(s)
@@ -962,7 +962,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         <aside class="hidden lg:block w-48 shrink-0 overflow-y-auto pl-0 pr-4 pt-4 pb-4">
           <div
             v-if="selectedImage"
-            class="rounded-xl border border-gray-100 bg-white/90 p-4 shadow-lg backdrop-blur-sm dark:border-gray-800 dark:bg-gray-800/90"
+            class="rounded-lg border border-gray-100 bg-white/90 p-4 shadow-lg backdrop-blur-sm dark:border-gray-800 dark:bg-gray-800/90"
           >
             <FileSizeReport
               :original-size="selectedImage.originalFileSize"

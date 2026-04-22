@@ -143,11 +143,11 @@ function formatValue(v: number): string {
     <!-- Legend -->
     <div class="mt-3 flex items-center gap-4">
       <div class="flex items-center gap-1.5">
-        <div class="h-2.5 w-4 rounded-sm bg-blue-500" />
+        <div class="h-2.5 w-4 rounded-lg bg-blue-500" />
         <span class="text-xs text-gray-500 dark:text-gray-400">Diffusion</span>
       </div>
       <div class="flex items-center gap-1.5">
-        <div class="h-2.5 w-4 rounded-sm bg-amber-500" />
+        <div class="h-2.5 w-4 rounded-lg bg-amber-500" />
         <span class="text-xs text-gray-500 dark:text-gray-400">Bayer</span>
       </div>
     </div>

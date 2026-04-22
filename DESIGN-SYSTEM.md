@@ -124,17 +124,15 @@ Common patterns:
 
 | Use | Border class |
 |-----|-------------|
-| Layout dividers | `border-gray-200 dark:border-gray-800` |
-| Form inputs (raw HTML) | `border-gray-300 dark:border-gray-700` |
+| All borders | `border-gray-100 dark:border-gray-800` |
 | Active swatch / focus | `border-[#C53030]` or `ring-2 ring-[#C53030]` |
 
 | Element | Radius |
 |---------|--------|
-| Badges, small labels | `rounded-sm` |
-| Inputs, buttons | `rounded-md` (NuxtUI default) |
-| Cards, panels | `rounded-lg` |
-
+| All panels, cards, custom elements | `rounded-lg` |
 | Swatches, circles | `rounded-full` |
+
+`rounded-lg` is the single corner radius for all custom elements. NuxtUI components (UButton, UInput) use `rounded-md` internally — don't override them. Netlify raw form inputs use `rounded-md` to visually match NuxtUI inputs.
 
 **Shadows:** None except NuxtUI component defaults. Do not add custom box shadows.
 

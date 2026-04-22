@@ -325,11 +325,7 @@ const inputNumberValue = ref(16)
           <div class="space-y-2">
             <div class="flex items-center gap-3">
               <div class="h-8 w-32 rounded border border-gray-100 dark:border-gray-800" />
-              <code class="text-xs text-gray-500">border-gray-100 dark:border-gray-800 — layout dividers</code>
-            </div>
-            <div class="flex items-center gap-3">
-              <div class="h-8 w-32 rounded border border-gray-100 dark:border-gray-800" />
-              <code class="text-xs text-gray-500">border-gray-100 dark:border-gray-800 — raw HTML inputs</code>
+              <code class="text-xs text-gray-500">border-gray-100 dark:border-gray-800 — all borders</code>
             </div>
             <div class="flex items-center gap-3">
               <div class="h-8 w-32 rounded border-2 border-[#C53030]" />
@@ -344,26 +340,17 @@ const inputNumberValue = ref(16)
           </p>
           <div class="flex flex-wrap items-end gap-4">
             <div class="flex flex-col items-center gap-2">
-              <div class="h-12 w-12 rounded-sm bg-gray-100 dark:bg-gray-800" />
-              <code class="text-xs text-gray-500">rounded-sm</code>
-              <span class="text-xs text-gray-500">badges</span>
-            </div>
-            <div class="flex flex-col items-center gap-2">
-              <div class="h-12 w-12 rounded-md bg-gray-100 dark:bg-gray-800" />
-              <code class="text-xs text-gray-500">rounded-md</code>
-              <span class="text-xs text-gray-500">inputs, buttons</span>
-            </div>
-            <div class="flex flex-col items-center gap-2">
               <div class="h-12 w-12 rounded-lg bg-gray-100 dark:bg-gray-800" />
               <code class="text-xs text-gray-500">rounded-lg</code>
-              <span class="text-xs text-gray-500">cards, panels</span>
+              <span class="text-xs text-gray-500">everything</span>
             </div>
             <div class="flex flex-col items-center gap-2">
               <div class="h-12 w-12 rounded-full bg-gray-100 dark:bg-gray-800" />
               <code class="text-xs text-gray-500">rounded-full</code>
-              <span class="text-xs text-gray-500">swatches</span>
+              <span class="text-xs text-gray-500">swatches, circles</span>
             </div>
           </div>
+          <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">NuxtUI components (UButton, UInput) use <code class="rounded bg-gray-100 px-1 dark:bg-gray-800">rounded-md</code> internally — don't override them.</p>
         </div>
       </div>
     </section>
