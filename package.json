@@ -36,6 +36,13 @@
   "pnpm": {
     "approvedBuilds": [
       "better-sqlite3"
+    ],
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "better-sqlite3",
+      "esbuild",
+      "unrs-resolver",
+      "vue-demi"
     ]
   }
 }
