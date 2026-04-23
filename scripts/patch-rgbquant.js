@@ -11,17 +11,7 @@ if (fs.existsSync(filePath)) {
   let content = fs.readFileSync(filePath, 'utf8')
   let changed = false
 
-  // Fix 1: undeclared variable
-  if (content.includes('transparentPixels = []') && !content.includes('var transparentPixels = []')) {
-    content = content.replace(
-      'transparentPixels = []',
-      'var transparentPixels = []'
-    )
-    changed = true
-    console.log('Patched rgbquant.js: added var declaration for transparentPixels')
-  }
-
-  // Fix 2: error diffusion clamping bias
+  // Fix: error diffusion clamping bias
   // RgbQuant writes accumulated error back into the pixel buffer (buf32) with clamping,
   // which silently discards overflow. Errors that push channels above 255 get lost,
   // causing a bias toward darker output on bright/white backgrounds.
