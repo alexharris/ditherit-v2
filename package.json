@@ -7,7 +7,7 @@
     "dev": "nuxt dev",
     "preview": "nuxt preview",
     "generate": "nuxt generate",
-    "postinstall": "node scripts/patch-rgbquant.js && nuxt prepare",
+    "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck"
   },
