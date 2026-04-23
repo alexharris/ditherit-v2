@@ -42,7 +42,9 @@ export default defineNuxtConfig({
       include: ['rgbquant', 'gifuct-js'],
       force: true
     },
-
+    server: {
+      allowedHosts: 'all'
+    }
   },
 
   vue: {
