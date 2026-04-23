@@ -11,7 +11,9 @@ async function getRgbQuant(): Promise<RgbQuantConstructor> {
   }
   return _RgbQuant
 }
-import { addPixelation, bayerDither, blueNoiseDither, riemersmaDither, simple2DDither } from '~/utils/dithering'
+import { addPixelation, bayerDither, blueNoiseDither, kernelDiffusionDither, riemersmaDither, simple2DDither } from '~/utils/dithering'
+
+export type ColorSpace = 'rgb' | 'oklab'
 
 export interface GifFrame {
   imageData: ImageData
@@ -103,6 +105,7 @@ const pixelScale = ref(1)
 const bayerSize = ref<BayerSize>(4)
 const smoothPixels = ref(false)
 const palette = ref<number[][]>([])
+const colorSpace = ref<ColorSpace>('rgb')
 const originalWidth = ref(0)
 const originalHeight = ref(0)
 const sizeWidth = ref<number | undefined>(undefined)
@@ -216,7 +219,8 @@ export function useDithering() {
               width: ditherWidth,
               height: ditherHeight,
               palette: paletteToUse,
-              blockSize: pixeliness.value
+              blockSize: pixeliness.value,
+              colorSpace: colorSpace.value
             }
             if (ditherMode.value === 'bayer') msg.bayerSize = bayerSize.value
             w.postMessage(msg, [imageData.data.buffer])
@@ -245,16 +249,21 @@ export function useDithering() {
           } else if (ditherMode.value === 'blue-noise') {
             blueNoiseDither(ctx, freshImageData, paletteToUse, pixeliness.value, smoothPixels.value)
           } else {
-            riemersmaDither(ctx, freshImageData, paletteToUse, pixeliness.value, smoothPixels.value)
+            riemersmaDither(ctx, freshImageData, paletteToUse, pixeliness.value, colorSpace.value, smoothPixels.value)
           }
         }
       } else if (algorithm.value === 'Simple2D') {
         // --- Simple 2D: custom implementation (not supported by RgbQuant) ---
         const paletteToUse = palette.value.length > 0 ? palette.value : await analyzePalette(sourceImage)
         const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
-        simple2DDither(ctx, imageData, paletteToUse, pixeliness.value, smoothPixels.value)
+        simple2DDither(ctx, imageData, paletteToUse, pixeliness.value, colorSpace.value, smoothPixels.value)
+      } else if (colorSpace.value === 'oklab') {
+        // --- OKLab error diffusion: bypass RgbQuant, use kernelDiffusionDither ---
+        const paletteToUse = palette.value.length > 0 ? palette.value : await analyzePalette(sourceImage)
+        const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+        kernelDiffusionDither(ctx, imageData, paletteToUse, pixeliness.value, algorithm.value, serpentine.value, 'oklab', smoothPixels.value)
       } else {
-        // --- Error diffusion path: cache RgbQuant instance ---
+        // --- RGB error diffusion path: cache RgbQuant instance ---
         const palKey = getPaletteKey(palette.value)
 
         let q: any
@@ -359,9 +368,9 @@ export function useDithering() {
       sourceCtx.putImageData(firstFrame.imageData, 0, 0)
       ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
 
-      // Build palette from first frame for diffusion mode (skip for Simple2D — uses its own path)
+      // Build palette from first frame for diffusion mode (skip for Simple2D and OKLab — they use their own path)
       let q: any = null
-      if (ditherMode.value === 'diffusion' && algorithm.value !== 'Simple2D') {
+      if (ditherMode.value === 'diffusion' && algorithm.value !== 'Simple2D' && colorSpace.value === 'rgb') {
         const palKey = getPaletteKey(palette.value)
         if (cachedQuant && cachedPaletteKey === palKey) {
           q = cachedQuant
@@ -374,9 +383,9 @@ export function useDithering() {
         }
       }
 
-      // For ordered/noise modes and Simple2D, use configured palette (or derive from first frame if empty)
+      // For ordered/noise modes, Simple2D, and OKLab, use configured palette (or derive from first frame if empty)
       let paletteToUse = palette.value
-      if ((ditherMode.value !== 'diffusion' || algorithm.value === 'Simple2D') && paletteToUse.length === 0) {
+      if ((ditherMode.value !== 'diffusion' || algorithm.value === 'Simple2D' || colorSpace.value === 'oklab') && paletteToUse.length === 0) {
         const RgbQuantClass = await getRgbQuant()
         const qTemp = new RgbQuantClass({ ...rgbQuantOptions.value, colors: 8, palette: [] })
         qTemp.sample(scratchCanvas)
@@ -409,7 +418,7 @@ export function useDithering() {
                 resolve(e.data)
               }
               w.onerror = (e: ErrorEvent) => { clearTimeout(timeoutId); reject(e) }
-              const msg: Record<string, unknown> = { mode: ditherMode.value, pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value }
+              const msg: Record<string, unknown> = { mode: ditherMode.value, pixels: buf, width: ditherWidth, height: ditherHeight, palette: paletteToUse, blockSize: pixeliness.value, colorSpace: colorSpace.value }
               if (ditherMode.value === 'bayer') msg.bayerSize = bayerSize.value
               w.postMessage(msg, [buf])
             })
@@ -424,12 +433,15 @@ export function useDithering() {
             } else if (ditherMode.value === 'blue-noise') {
               blueNoiseDither(ctx, freshImageData, paletteToUse, 1, smoothPixels.value)
             } else {
-              riemersmaDither(ctx, freshImageData, paletteToUse, 1, smoothPixels.value)
+              riemersmaDither(ctx, freshImageData, paletteToUse, 1, colorSpace.value, smoothPixels.value)
             }
           }
         } else if (algorithm.value === 'Simple2D') {
           const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
-          simple2DDither(ctx, id, paletteToUse, 1, smoothPixels.value)
+          simple2DDither(ctx, id, paletteToUse, 1, colorSpace.value, smoothPixels.value)
+        } else if (colorSpace.value === 'oklab') {
+          const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+          kernelDiffusionDither(ctx, id, paletteToUse, 1, algorithm.value, serpentine.value, 'oklab', smoothPixels.value)
         } else {
           const ditherResult = q.reduce(scratchCanvas, 1, algorithm.value, serpentine.value)
           const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
@@ -474,6 +486,7 @@ export function useDithering() {
     bayerSize,
     smoothPixels,
     palette,
+    colorSpace,
     originalWidth,
     originalHeight,
     sizeWidth,

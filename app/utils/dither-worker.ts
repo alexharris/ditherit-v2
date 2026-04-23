@@ -3,6 +3,24 @@
 
 type BayerSize = 2 | 4 | 8 | 16
 type WorkerMode = 'bayer' | 'blue-noise' | 'riemersma'
+type ColorSpace = 'rgb' | 'oklab'
+
+// Inlined OKLab math (Björn Ottosson, 2020) — no imports in workers
+function srgbToLinear(c: number): number {
+  const v = c / 255
+  return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
+}
+function rgbToOklab(r: number, g: number, b: number): [number, number, number] {
+  const rl = srgbToLinear(r), gl = srgbToLinear(g), bl = srgbToLinear(b)
+  const l = Math.cbrt(0.4122214708 * rl + 0.5363325363 * gl + 0.0514459929 * bl)
+  const m = Math.cbrt(0.2119034982 * rl + 0.6806995451 * gl + 0.1073969566 * bl)
+  const s = Math.cbrt(0.0883024619 * rl + 0.2817188376 * gl + 0.6299787005 * bl)
+  return [
+    0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s
+  ]
+}
 
 function generateBayerIndex(size: number): number[][] {
   if (size === 2) return [[0, 2], [3, 1]]
@@ -135,7 +153,7 @@ function runBlueNoise(data: Uint8ClampedArray, width: number, height: number, in
   }
 }
 
-function runRiemersma(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][], onProgress?: (v: number) => void) {
+function runRiemersma(data: Uint8ClampedArray, width: number, height: number, indexedPalette: number[][], colorSpace: ColorSpace = 'rgb', onProgress?: (v: number) => void) {
   const N = 32
   const r = 1 / 8
   const weights: number[] = []
@@ -150,40 +168,80 @@ function runRiemersma(data: Uint8ClampedArray, width: number, height: number, in
   const total = side * side
   const reportEvery = Math.max(1, Math.floor(total / 10))
 
+  // palette entries are [index, r, g, b]
+  const rawPalette = indexedPalette.map(c => [c[1]!, c[2]!, c[3]!] as [number, number, number])
+  const paletteOklab = colorSpace === 'oklab' ? rawPalette.map(([pr, pg, pb]) => rgbToOklab(pr, pg, pb)) : null
+
   for (let d = 0; d < total; d++) {
     const [x, y] = hilbertD2XY(side, d)
     if (x >= width || y >= height) continue
 
     const i = (y * width + x) * 4
 
-    let eR = 0, eG = 0, eB = 0
+    let e0 = 0, e1 = 0, e2 = 0
     for (let k = 0; k < N; k++) {
       const slot = ((bufHead - 1 - k) % N + N) % N
-      eR += weights[k]! * errorBuf[slot * 3]!
-      eG += weights[k]! * errorBuf[slot * 3 + 1]!
-      eB += weights[k]! * errorBuf[slot * 3 + 2]!
+      e0 += weights[k]! * errorBuf[slot * 3]!
+      e1 += weights[k]! * errorBuf[slot * 3 + 1]!
+      e2 += weights[k]! * errorBuf[slot * 3 + 2]!
     }
 
-    const origR = data[i]!
-    const origG = data[i + 1]!
-    const origB = data[i + 2]!
+    if (colorSpace === 'oklab' && paletteOklab) {
+      const [pixL, pixA, pixB] = rgbToOklab(data[i]!, data[i + 1]!, data[i + 2]!)
+      const rawL = pixL + e0
+      const rawA = pixA + e1
+      const rawB = pixB + e2
 
-    const adjR = Math.max(0, Math.min(255, origR + eR))
-    const adjG = Math.max(0, Math.min(255, origG + eG))
-    const adjB = Math.max(0, Math.min(255, origB + eB))
+      let minDist = Infinity
+      let closestIdx = 0
+      for (let p = 0; p < paletteOklab.length; p++) {
+        const [pL, pA, pB] = paletteOklab[p]!
+        const dL = rawL - pL!
+        const dA = rawA - pA!
+        const dB = rawB - pB!
+        const dist = dL * dL + dA * dA + dB * dB
+        if (dist < minDist) {
+          minDist = dist
+          closestIdx = p
+        }
+      }
 
-    const closest = getClosestColor(indexedPalette, adjR, adjG, adjB)
-    const chosenR = closest[1]!
-    const chosenG = closest[2]!
-    const chosenB = closest[3]!
+      const [chosenR, chosenG, chosenB] = rawPalette[closestIdx]!
+      data[i] = chosenR!
+      data[i + 1] = chosenG!
+      data[i + 2] = chosenB!
 
-    data[i] = chosenR
-    data[i + 1] = chosenG
-    data[i + 2] = chosenB
+      // Store orig (not raw) minus chosen — raw includes accumulated error which
+      // would create a feedback loop with w_0 = 1 in the weighted sum
+      const [chosenL, chosenA, chosenBlab] = paletteOklab[closestIdx]!
+      errorBuf[bufHead * 3] = pixL - chosenL!
+      errorBuf[bufHead * 3 + 1] = pixA - chosenA!
+      errorBuf[bufHead * 3 + 2] = pixB - chosenBlab!
+    } else {
+      const origR = data[i]!
+      const origG = data[i + 1]!
+      const origB = data[i + 2]!
 
-    errorBuf[bufHead * 3] = origR - chosenR
-    errorBuf[bufHead * 3 + 1] = origG - chosenG
-    errorBuf[bufHead * 3 + 2] = origB - chosenB
+      const adjR = Math.max(0, Math.min(255, origR + e0))
+      const adjG = Math.max(0, Math.min(255, origG + e1))
+      const adjB = Math.max(0, Math.min(255, origB + e2))
+
+      const closest = getClosestColor(indexedPalette, adjR, adjG, adjB)
+      const chosenR = closest[1]!
+      const chosenG = closest[2]!
+      const chosenB = closest[3]!
+
+      data[i] = chosenR
+      data[i + 1] = chosenG
+      data[i + 2] = chosenB
+
+      // Store orig (not adjusted) minus chosen — including accumulated error in
+      // the stored value would create a feedback loop with w_0 = 1
+      errorBuf[bufHead * 3] = origR - chosenR
+      errorBuf[bufHead * 3 + 1] = origG - chosenG
+      errorBuf[bufHead * 3 + 2] = origB - chosenB
+    }
+
     bufHead = (bufHead + 1) % N
 
     if (onProgress && d % reportEvery === 0) {
@@ -200,10 +258,11 @@ interface DitherMessage {
   palette: number[][]
   blockSize: number
   bayerSize?: BayerSize
+  colorSpace?: ColorSpace
 }
 
 self.onmessage = function (e: MessageEvent<DitherMessage>) {
-  const { mode, pixels, width, height, palette, bayerSize } = e.data
+  const { mode, pixels, width, height, palette, bayerSize, colorSpace } = e.data
   const data = new Uint8ClampedArray(pixels)
   const indexedPalette = palette.map((color: number[], id: number) => [id, ...color])
   const onProgress = (v: number) => self.postMessage({ type: 'progress', value: v })
@@ -213,7 +272,7 @@ self.onmessage = function (e: MessageEvent<DitherMessage>) {
   } else if (mode === 'blue-noise') {
     runBlueNoise(data, width, height, indexedPalette, onProgress)
   } else if (mode === 'riemersma') {
-    runRiemersma(data, width, height, indexedPalette, onProgress)
+    runRiemersma(data, width, height, indexedPalette, colorSpace ?? 'rgb', onProgress)
   }
 
   const transfer: Transferable[] = [data.buffer]

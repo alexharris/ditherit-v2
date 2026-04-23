@@ -17,6 +17,7 @@ const {
   bayerSize,
   smoothPixels,
   palette,
+  colorSpace,
   originalWidth,
   originalHeight,
   sizeWidth,
@@ -580,7 +581,7 @@ watch(paletteAsRgb, (newPalette) => {
 }, { deep: true, immediate: true })
 
 // Auto-dither selected image when any setting changes
-watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb, sizeWidth], () => {
+watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb, sizeWidth, colorSpace], () => {
   if (selectedImage.value && sizeValid.value) {
     if (skipNextDither) { skipNextDither = false; return }
     debouncedDither()
@@ -589,7 +590,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
 // Mark non-selected images as stale when settings change so they re-dither on next select
 // but keep their ditheredDataUrl so the old result stays visible during recalculation
-watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb], () => {
+watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb, colorSpace], () => {
   // Note: width changes only affect the selected image, so we don't include it here
   images.value.forEach((img) => {
     if (img.id !== selectedImage.value?.id && img.ditheredDataUrl) {

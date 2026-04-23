@@ -7,7 +7,8 @@ const {
   ditherMode,
   algorithm,
   serpentine,
-  bayerSize
+  bayerSize,
+  colorSpace
 } = useDithering()
 
 const ditherModes: Array<{ label: string; value: DitherMode }> = [
@@ -65,6 +66,23 @@ const ditherModes: Array<{ label: string; value: DitherMode }> = [
         This determines if the dithering just goes left to right, top to
         bottom, or does a snake wiggle.
       </template>
+    </HelpTooltip>
+
+    <!-- Color Space (for diffusion and riemersma modes) -->
+    <HelpTooltip v-if="ditherMode === 'diffusion' || ditherMode === 'riemersma'">
+      <template #label>
+        <span class="text-sm font-medium text-highlighted">Color Space</span>
+      </template>
+      <template #help>
+        OKLab is a perceptually uniform color space. Dithering in OKLab
+        produces better hue fidelity on colorful images.
+      </template>
+      <USelect
+        v-model="colorSpace"
+        :items="[{ label: 'RGB', value: 'rgb' }, { label: 'OKLab', value: 'oklab' }]"
+        class="mt-2 w-full"
+        :ui="{ base: 'text-left' }"
+      />
     </HelpTooltip>
   </div>
 </template>
