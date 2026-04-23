@@ -43,7 +43,7 @@ export default defineNuxtConfig({
       force: true
     },
     server: {
-      allowedHosts: 'all'
+      allowedHosts: true
     }
   },
 
