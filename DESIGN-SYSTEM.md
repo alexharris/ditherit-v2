@@ -66,7 +66,7 @@ Always use `UButton`. Never use raw `<button>` except in Netlify forms.
 | Primary CTA (download, apply) | `primary` | `solid` |
 | Secondary action / nav | `neutral` | `ghost` (active route: `soft`) |
 | Destructive | `error` | `ghost` or `soft` |
-| Standard outlined | `primary` | `outline` |
+| Standard outlined | `primary` | `outline` + `class="bg-white dark:bg-gray-800"` |
 
 **Sizes:** `size="sm"` for all toolbar, nav, and secondary buttons. Default (`md`) for standalone CTAs (Download, Subscribe, etc.).
 

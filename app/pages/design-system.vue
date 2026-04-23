@@ -179,10 +179,10 @@ const inputNumberValue = ref(16)
             Outline
           </p>
           <div class="flex flex-wrap items-center gap-3">
-            <UButton label="❤️ Support" color="primary" variant="outline" />
-            <UButton label="Learn more" color="primary" variant="outline" />
+            <UButton label="❤️ Support" color="primary" variant="outline" class="bg-white dark:bg-gray-800" />
+            <UButton label="Learn more" color="primary" variant="outline" class="bg-white dark:bg-gray-800" />
           </div>
-          <code class="mt-2 block text-xs text-gray-500">color="primary" variant="outline" — emoji prefix in label is a standard option for any button</code>
+          <code class="mt-2 block text-xs text-gray-500">color="primary" variant="outline" class="bg-white dark:bg-gray-800" — white bg is standard for outline buttons</code>
         </div>
 
         <div>

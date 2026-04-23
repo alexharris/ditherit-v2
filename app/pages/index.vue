@@ -623,12 +623,14 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       class="flex lg:hidden shrink-0 items-center justify-between border-b border-gray-100 px-3 py-4 dark:border-gray-800"
     >
       <!-- Upload/add button -->
-      <button
-        class="inline-flex items-center gap-1.5 rounded-lg border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
+      <UButton
+        :label="isDefaultImage ? '✨ Select image(s)' : '➕ Add'"
+        color="primary"
+        variant="outline"
+        size="sm"
+        class="bg-white dark:bg-gray-800"
         @click="triggerFileInput"
-      >
-        {{ isDefaultImage ? '✨ Select image(s)' : '➕ Add' }}
-      </button>
+      />
       <UPopover v-if="!isDefaultImage" class="shrink-0">
         <UButton
           label="💾 Download"
@@ -792,12 +794,14 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     />
                   </div>
                   <!-- Mobile: button centered between top bar and image -->
-                  <button
-                    class="lg:hidden inline-flex items-center gap-1.5 rounded-lg border border-ditherit bg-white px-3 py-1.5 text-sm font-medium text-ditherit shadow-sm transition-colors hover:bg-ditherit hover:text-white dark:bg-gray-800"
+                  <UButton
+                    label="✨ Select image(s)"
+                    color="primary"
+                    variant="outline"
+                    size="sm"
+                    class="lg:hidden bg-white dark:bg-gray-800"
                     @click="triggerFileInput"
-                  >
-                    ✨ Select image(s)
-                  </button>
+                  />
                 </template>
               </div>
 

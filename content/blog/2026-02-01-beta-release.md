@@ -1,6 +1,6 @@
 ---
 title: Dither it! Version 3
-date: 2026-02-01
+date: 2026-04-21
 description: Welcome to the new Dither it!
 ---
 

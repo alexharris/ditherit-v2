@@ -67,7 +67,7 @@ function mobileNavigate(to: string) {
       color="primary"
       variant="outline"
       size="sm"
-      class="hidden lg:flex"
+      class="hidden lg:flex bg-white dark:bg-gray-800"
     />
 
     <!-- Mobile dark mode toggle + menu button -->
@@ -131,6 +131,7 @@ function mobileNavigate(to: string) {
           color="primary"
           variant="outline"
           block
+          class="bg-white dark:bg-gray-800"
           @click="isMenuOpen = false"
         />
 
