@@ -67,6 +67,14 @@ CI runs lint and typecheck on every push (Node 22, pnpm).
 
 Do not mention Claude or Anthropic in commit messages. Omit the `Co-Authored-By` trailer.
 
+## Design System
+
+`DESIGN-SYSTEM.md` documents the visual language for this project — colors, typography, buttons, cards, spacing, borders, and more. The live reference is at `/design-system`.
+
+**When implementing new UI features:** check `DESIGN-SYSTEM.md` first and follow established patterns (button variants, card structure, gray scale, radius, etc.).
+
+**When introducing new patterns:** update both `DESIGN-SYSTEM.md` and `app/pages/design-system.vue` to keep the reference current.
+
 ## Feature Tracking
 
 See `MISSING-FEATURES.md` for the checklist of features from the original version that still need implementation (examples gallery, help tooltips, resources page, etc.).
