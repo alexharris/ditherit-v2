@@ -54,6 +54,12 @@ export default defineNuxtConfig({
     }
   },
 
+  nitro: {
+    prerender: {
+      routes: ['/blog-latest.json']
+    }
+  },
+
   compatibilityDate: '2025-01-15',
 
   eslint: {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import quantfrogUrl from '~/assets/examples/quantfrog.png'
+const quantfrogUrl = '/examples/quantfrog.png'
 import { DIFFUSION_ALGORITHMS } from '~/composables/useDithering'
 import { BAYER_SIZES } from '~/utils/dithering'
 import type { BayerSize } from '~/utils/dithering'

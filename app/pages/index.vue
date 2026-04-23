@@ -3,9 +3,9 @@ definePageMeta({ keepalive: true })
 
 import { loadImage } from '~/composables/useDithering'
 import type { GalleryImage } from '~/composables/useImageGallery'
-import defaultImageUrl from '~/assets/examples/quantfrog.png'
-import defaultImageUrl2 from '~/assets/examples/earth.jpg'
-import defaultImageUrl3 from '~/assets/examples/coat.gif'
+const defaultImageUrl = '/examples/quantfrog.png'
+const defaultImageUrl2 = '/examples/earth.jpg'
+const defaultImageUrl3 = '/examples/coat.gif'
 
 const {
   isProcessing,
@@ -541,7 +541,7 @@ watch(selectedImage, async (newImage) => {
     const img = await loadImage(newImage.originalSrc)
 
     invalidateQuantCache()
-    const colors = analyzePalette(img)
+    const colors = await analyzePalette(img)
 
     // Always store the analyzed palette so "Original" reflects this image
     updateOriginalPalette(colors)
@@ -565,7 +565,7 @@ watch(selectedImage, async (newImage) => {
 watch(analyzeColorCount, async () => {
   if (selectedPreset.value === 'original' && selectedImage.value) {
     const img = await loadImage(selectedImage.value.originalSrc)
-    const colors = analyzePalette(img)
+    const colors = await analyzePalette(img)
     updateOriginalPalette(colors)
     palette.value = colors
     setPaletteFromRgb(colors)

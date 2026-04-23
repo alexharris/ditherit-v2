@@ -1,5 +1,16 @@
-import RgbQuant from 'rgbquant'
 import type { BayerSize } from '~/utils/dithering'
+
+// Lazily loaded — defers 393KB parse cost until first dither operation
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type RgbQuantConstructor = new (opts: any) => any
+let _RgbQuant: RgbQuantConstructor | null = null
+async function getRgbQuant(): Promise<RgbQuantConstructor> {
+  if (!_RgbQuant) {
+    const mod = await import('rgbquant')
+    _RgbQuant = (mod.default ?? mod) as RgbQuantConstructor
+  }
+  return _RgbQuant
+}
 import { addPixelation, bayerDither, blueNoiseDither, riemersmaDither, simple2DDither } from '~/utils/dithering'
 
 export interface GifFrame {
@@ -139,7 +150,8 @@ export function useDithering() {
     colorDist: 'euclidean'
   }))
 
-  function analyzePalette(image: HTMLImageElement): number[][] {
+  async function analyzePalette(image: HTMLImageElement): Promise<number[][]> {
+    const RgbQuant = await getRgbQuant()
     const q = new RgbQuant({
       ...rgbQuantOptions.value,
       colors: analyzeColorCount.value,
@@ -179,7 +191,7 @@ export function useDithering() {
 
       if (ditherMode.value !== 'diffusion') {
         // --- Ordered/noise path: offload to Web Worker with main-thread fallback ---
-        const paletteToUse = palette.value.length > 0 ? palette.value : analyzePalette(sourceImage)
+        const paletteToUse = palette.value.length > 0 ? palette.value : await analyzePalette(sourceImage)
 
         try {
           const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
@@ -238,7 +250,7 @@ export function useDithering() {
         }
       } else if (algorithm.value === 'Simple2D') {
         // --- Simple 2D: custom implementation (not supported by RgbQuant) ---
-        const paletteToUse = palette.value.length > 0 ? palette.value : analyzePalette(sourceImage)
+        const paletteToUse = palette.value.length > 0 ? palette.value : await analyzePalette(sourceImage)
         const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
         simple2DDither(ctx, imageData, paletteToUse, pixeliness.value, smoothPixels.value)
       } else {
@@ -252,6 +264,7 @@ export function useDithering() {
           q = cachedQuant
         } else {
           // Palette changed — need fresh instance
+          const RgbQuant = await getRgbQuant()
           q = new RgbQuant(rgbQuantOptions.value)
           q.sample(sourceImage)
           cachedQuant = q
@@ -353,6 +366,7 @@ export function useDithering() {
         if (cachedQuant && cachedPaletteKey === palKey) {
           q = cachedQuant
         } else {
+          const RgbQuant = await getRgbQuant()
           q = new RgbQuant(rgbQuantOptions.value)
           q.sample(scratchCanvas)
           cachedQuant = q
@@ -363,7 +377,8 @@ export function useDithering() {
       // For ordered/noise modes and Simple2D, use configured palette (or derive from first frame if empty)
       let paletteToUse = palette.value
       if ((ditherMode.value !== 'diffusion' || algorithm.value === 'Simple2D') && paletteToUse.length === 0) {
-        const qTemp = new RgbQuant({ ...rgbQuantOptions.value, colors: 8, palette: [] })
+        const RgbQuantClass = await getRgbQuant()
+        const qTemp = new RgbQuantClass({ ...rgbQuantOptions.value, colors: 8, palette: [] })
         qTemp.sample(scratchCanvas)
         paletteToUse = qTemp.palette(true)
       }
