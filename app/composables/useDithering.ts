@@ -259,6 +259,10 @@ export function useDithering() {
         simple2DDither(ctx, imageData, paletteToUse, pixeliness.value, colorSpace.value, smoothPixels.value)
       } else if (colorSpace.value === 'oklab') {
         // --- OKLab error diffusion: bypass RgbQuant, use kernelDiffusionDither ---
+        // RGB mode keeps using q.reduce() (RgbQuant) because the clamping fix lives
+        // in patch-rgbquant.js and RgbQuant's Rec. 709 color distance is well-tested.
+        // Extending the patch script with OKLab math would be fragile, so OKLab
+        // diffusion is handled entirely in our own kernelDiffusionDither instead.
         const paletteToUse = palette.value.length > 0 ? palette.value : await analyzePalette(sourceImage)
         const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
         kernelDiffusionDither(ctx, imageData, paletteToUse, pixeliness.value, algorithm.value, serpentine.value, 'oklab', smoothPixels.value)
