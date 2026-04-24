@@ -215,6 +215,7 @@ function toggleTab(tab: 'save' | 'export' | 'import') {
     </div>
 
     <!-- Preset Selector -->
+    <span class="text-xs font-medium uppercase tracking-wide text-muted">Presets</span>
     <USelect
       :model-value="selectedPreset"
       :items="presetOptions"

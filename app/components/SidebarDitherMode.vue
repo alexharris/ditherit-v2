@@ -39,20 +39,24 @@ const ditherModes: Array<{ label: string; value: DitherMode }> = [
     </HelpTooltip>
 
     <!-- Algorithm (for diffusion mode) -->
-    <USelect
-      v-if="ditherMode === 'diffusion'"
-      v-model="algorithm"
-      :items="DIFFUSION_ALGORITHMS"
-      class="w-full"
-    />
+    <div v-if="ditherMode === 'diffusion'" class="space-y-1.5">
+      <span class="text-xs font-medium uppercase tracking-wide text-muted">Algorithm</span>
+      <USelect
+        v-model="algorithm"
+        :items="DIFFUSION_ALGORITHMS"
+        class="w-full"
+      />
+    </div>
 
     <!-- Matrix Size (for bayer mode) -->
-    <USelect
-      v-if="ditherMode === 'bayer'"
-      v-model="bayerSize"
-      :items="BAYER_SIZES"
-      class="w-full"
-    />
+    <div v-if="ditherMode === 'bayer'" class="space-y-1.5">
+      <span class="text-xs font-medium uppercase tracking-wide text-muted">Matrix Size</span>
+      <USelect
+        v-model="bayerSize"
+        :items="BAYER_SIZES"
+        class="w-full"
+      />
+    </div>
 
     <!-- Serpentine (for diffusion mode) -->
     <HelpTooltip v-if="ditherMode === 'diffusion'">
@@ -71,7 +75,7 @@ const ditherModes: Array<{ label: string; value: DitherMode }> = [
     <!-- Color Space (for diffusion and riemersma modes) -->
     <HelpTooltip v-if="ditherMode === 'diffusion' || ditherMode === 'riemersma'">
       <template #label>
-        <span class="text-sm font-medium text-highlighted">Color Space</span>
+        <span class="text-xs font-medium uppercase tracking-wide text-muted">Color Space</span>
       </template>
       <template #help>
         OKLab is a perceptually uniform color space. Dithering in OKLab

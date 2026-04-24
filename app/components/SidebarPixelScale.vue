@@ -68,7 +68,7 @@ const advancedOpen = ref(false)
   <div v-if="advancedOpen" class="space-y-4 px-4 pb-4">
     <HelpTooltip>
       <template #label>
-        <span class="text-sm font-medium text-highlighted">Pixeliness</span>
+        <span class="text-xs font-medium uppercase tracking-wide text-muted">Pixeliness</span>
       </template>
       <template #help>
         Like pixel scale but more chaotic.
