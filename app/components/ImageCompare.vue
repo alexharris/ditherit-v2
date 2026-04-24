@@ -6,6 +6,7 @@ defineProps<{
   originalSrc: string
   ditheredSrc: string
   alt?: string
+  imageStyle?: Record<string, string>
 }>()
 </script>
 
@@ -17,12 +18,14 @@ defineProps<{
         :src="originalSrc"
         :alt="alt ? `Original: ${alt}` : 'Original image'"
         class="compare-image"
+        :style="imageStyle"
       />
       <img
         slot="second"
         :src="ditheredSrc"
         :alt="alt ? `Dithered: ${alt}` : 'Dithered image'"
         class="compare-image"
+        :style="imageStyle"
       />
     </img-comparison-slider>
   </div>
@@ -42,6 +45,7 @@ defineProps<{
   --divider-width: 3px;
   overflow: hidden;
   max-width: 100%;
+  touch-action: none;
 }
 
 .image-compare-slider:focus {
@@ -53,6 +57,7 @@ defineProps<{
   display: block;
   width: 100%;
   height: auto;
+  image-rendering: pixelated;
   object-fit: contain;
 }
 

@@ -67,6 +67,58 @@ const isDragging = ref(false)
 const isIntro = ref(true)
 const showCompare = ref(true)
 const showReportCard = ref(false)
+const imageContainerRef = ref<HTMLElement | null>(null)
+
+const { scale, isZoomed, transformStyle, attachListeners, detachListeners, reset: resetZoom, zoomIn, zoomOut } = useZoom({
+  containerRef: imageContainerRef
+})
+
+// ── Compare overlay: slider drag vs pan when zoomed ───────────────────────────
+const isSliderDragging = ref(false)
+const isNearDivider = ref(false)
+let _sliderEl: (HTMLElement & { value?: number }) | null = null
+
+const DIVIDER_THRESHOLD = 35 // px — handle is 50px wide + wiggle room
+
+function getSliderEl() {
+  _sliderEl = _sliderEl ?? (imageContainerRef.value?.querySelector('img-comparison-slider') as HTMLElement & { value?: number } | null ?? null)
+  return _sliderEl
+}
+
+function getDividerX(sliderEl: HTMLElement & { value?: number }) {
+  const rect = sliderEl.getBoundingClientRect()
+  return { rect, dividerX: rect.left + ((sliderEl.value ?? 50) / 100) * rect.width }
+}
+
+function onCompareOverlayDown(e: PointerEvent) {
+  if (e.button !== 0) return
+  const sliderEl = getSliderEl()
+  if (!sliderEl) return
+  const { dividerX } = getDividerX(sliderEl)
+  if (Math.abs(e.clientX - dividerX) <= DIVIDER_THRESHOLD) {
+    isSliderDragging.value = true
+    e.stopPropagation() // prevent useZoom from starting a pan
+    ;(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId)
+  }
+  // far from divider: bubble up to imageContainerRef → useZoom pans
+}
+
+function onCompareOverlayMove(e: PointerEvent) {
+  const sliderEl = getSliderEl()
+  if (!sliderEl) return
+  const { rect, dividerX } = getDividerX(sliderEl)
+  isNearDivider.value = Math.abs(e.clientX - dividerX) <= DIVIDER_THRESHOLD
+  if (isSliderDragging.value) {
+    sliderEl.value = Math.min(100, Math.max(0, ((e.clientX - rect.left) / rect.width) * 100))
+  }
+}
+
+function onCompareOverlayUp() {
+  isSliderDragging.value = false
+}
+
+// Reset cached slider el when compare is toggled (element may re-mount)
+watch(showCompare, () => { _sliderEl = null })
 const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
@@ -514,6 +566,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('paste', handlePaste)
+  if (imageContainerRef.value) detachListeners(imageContainerRef.value)
 })
 
 // Reload the frog when the last image is removed
@@ -530,6 +583,13 @@ watch(hasImages, (has) => {
 watch(isDefaultImage, (isDefault) => {
   if (!isDefault) showCompare.value = false
 })
+
+// Attach zoom listeners once the container is mounted
+watch(imageContainerRef, (el, oldEl) => {
+  if (oldEl) detachListeners(oldEl)
+  if (el) attachListeners(el)
+})
+
 
 // Update palette and dimensions when selected image changes
 watch(selectedImage, async (newImage) => {
@@ -810,7 +870,8 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               <div class="flex min-h-0 w-full flex-col items-center justify-center gap-2" style="flex: 0 0 70%">
               <!-- Image wrapper -->
               <div
-                class="relative min-h-0 max-h-full max-w-full"
+                ref="imageContainerRef"
+                class="relative min-h-0 max-h-full max-w-full overflow-hidden"
                 :style="originalWidth && originalHeight ? { aspectRatio: `${originalWidth}/${originalHeight}` } : {}"
               >
                 <template v-if="selectedImage.ditheredDataUrl">
@@ -821,6 +882,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     :dithered-src="selectedImage.ditheredDataUrl"
                     :alt="selectedImage.fileName"
                     class="h-full w-full max-h-full max-w-full"
+                    :image-style="isZoomed ? transformStyle : undefined"
                   />
 
                   <!-- Dithered only -->
@@ -829,6 +891,8 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     :src="selectedImage.ditheredDataUrl"
                     :alt="selectedImage.fileName"
                     class="h-full w-full max-h-full max-w-full no-touch-callout"
+                    :style="isZoomed ? { ...transformStyle, imageRendering: 'pixelated' } : { imageRendering: 'pixelated' }"
+                    draggable="false"
                   />
                 </template>
 
@@ -838,6 +902,20 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   :src="selectedImage.originalSrc"
                   :alt="selectedImage.fileName"
                   class="h-full w-full max-h-full max-w-full no-touch-callout"
+                  :style="isZoomed ? { ...transformStyle, imageRendering: 'pixelated' } : { imageRendering: 'pixelated' }"
+                  draggable="false"
+                />
+
+                <!-- Compare overlay: sits on top of the slider when zoomed so we
+                     can decide per-click whether to slide the divider or pan -->
+                <div
+                  v-if="showCompare && isZoomed && selectedImage.ditheredDataUrl"
+                  class="absolute inset-0"
+                  :style="{ cursor: isSliderDragging || isNearDivider ? 'col-resize' : 'grab', touchAction: 'none' }"
+                  @pointerdown="onCompareOverlayDown"
+                  @pointermove="onCompareOverlayMove"
+                  @pointerup="onCompareOverlayUp"
+                  @pointercancel="onCompareOverlayUp"
                 />
 
                 <!-- Processing overlay covers exactly the image -->
@@ -868,6 +946,25 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                 >
                   <span class="hidden lg:inline">Compare</span>
                 </UButton>
+                <div class="flex items-center rounded-md border border-gray-200 dark:border-gray-700">
+                  <UButton
+                    icon="i-lucide-minus"
+                    color="neutral"
+                    variant="ghost"
+                    size="sm"
+                    :disabled="!isZoomed"
+                    @click="zoomOut()"
+                  />
+                  <span class="min-w-10 text-center text-xs tabular-nums text-gray-500 dark:text-gray-400 select-none">{{ Math.round(scale * 100) }}%</span>
+                  <UButton
+                    icon="i-lucide-plus"
+                    color="neutral"
+                    variant="ghost"
+                    size="sm"
+                    :disabled="!selectedImage.ditheredDataUrl"
+                    @click="zoomIn()"
+                  />
+                </div>
                 <UPopover>
                   <UButton
                     icon="i-lucide-download"
