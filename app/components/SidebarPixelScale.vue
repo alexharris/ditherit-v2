@@ -67,26 +67,28 @@ const advancedOpen = ref(false)
   </div>
 
   <div v-if="advancedOpen" class="space-y-4 px-4 pb-4">
-    <HelpTooltip>
-      <template #label>
-        <span class="text-xs font-medium uppercase tracking-wide text-muted">Pixeliness</span>
-      </template>
-      <template #help>
-        Like pixel scale but more chaotic.
-      </template>
-      <div class="mt-2">
-        <USlider v-model="pixeliness" :min="1" :max="25" :step="1" />
-        <span class="text-xs text-gray-500">{{ pixeliness }}x</span>
-      </div>
-    </HelpTooltip>
-    <HelpTooltip>
-      <template #label>
-        <UCheckbox v-model="smoothPixels" label="Smooth pixels" />
-      </template>
-      <template #help>
-        Blend colors when pixelating instead of using strict nearest-neighbor. Produces softer results but may introduce colors outside the palette.
-      </template>
-    </HelpTooltip>
+    <div class="rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-3">
+      <HelpTooltip>
+        <template #label>
+          <span class="text-xs font-medium uppercase tracking-wide text-muted">Pixeliness</span>
+        </template>
+        <template #help>
+          Dither at full size, then reduce and re-enlarge to create larger pixels. Can be messy.
+        </template>
+        <div class="mt-2">
+          <USlider v-model="pixeliness" :min="1" :max="25" :step="1" />
+          <span class="text-xs text-gray-500">{{ pixeliness }}x</span>
+        </div>
+      </HelpTooltip>
+      <HelpTooltip>
+        <template #label>
+          <UCheckbox v-model="smoothPixels" label="Smooth pixels" />
+        </template>
+        <template #help>
+          Pixeliness will make "softer" images, but may introduce colors outside of the selected palette.
+        </template>
+      </HelpTooltip>
+    </div>
     <HelpTooltip>
       <template #label>
         <UCheckbox v-model="pixelatedRendering" label="Pixelated rendering" />
