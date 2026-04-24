@@ -3,6 +3,7 @@ const {
   pixeliness,
   pixelScale,
   smoothPixels,
+  pixelatedRendering,
   originalWidth,
   originalHeight,
   sizeWidth,
@@ -84,6 +85,14 @@ const advancedOpen = ref(false)
       </template>
       <template #help>
         Blend colors when pixelating instead of using strict nearest-neighbor. Produces softer results but may introduce colors outside the palette.
+      </template>
+    </HelpTooltip>
+    <HelpTooltip>
+      <template #label>
+        <UCheckbox v-model="pixelatedRendering" label="Pixelated rendering" />
+      </template>
+      <template #help>
+        Forces the browser to display pixels as sharp squares with no anti-aliasing. Useful when the image is displayed at a non-native size.
       </template>
     </HelpTooltip>
   </div>

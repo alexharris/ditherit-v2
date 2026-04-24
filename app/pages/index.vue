@@ -16,6 +16,7 @@ const {
   pixelScale,
   bayerSize,
   smoothPixels,
+  pixelatedRendering,
   palette,
   colorSpace,
   originalWidth,
@@ -882,7 +883,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     :dithered-src="selectedImage.ditheredDataUrl"
                     :alt="selectedImage.fileName"
                     class="h-full w-full max-h-full max-w-full"
-                    :image-style="isZoomed ? transformStyle : undefined"
+                    :image-style="isZoomed || pixelatedRendering ? { ...(isZoomed ? transformStyle : {}), ...(pixelatedRendering ? { imageRendering: 'pixelated' } : {}) } : undefined"
                   />
 
                   <!-- Dithered only -->
@@ -891,7 +892,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     :src="selectedImage.ditheredDataUrl"
                     :alt="selectedImage.fileName"
                     class="h-full w-full max-h-full max-w-full no-touch-callout"
-                    :style="isZoomed ? { ...transformStyle, imageRendering: 'pixelated' } : { imageRendering: 'pixelated' }"
+                    :style="isZoomed ? { ...transformStyle, ...(pixelatedRendering ? { imageRendering: 'pixelated' } : {}) } : (pixelatedRendering ? { imageRendering: 'pixelated' } : {})"
                     draggable="false"
                   />
                 </template>
@@ -902,7 +903,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                   :src="selectedImage.originalSrc"
                   :alt="selectedImage.fileName"
                   class="h-full w-full max-h-full max-w-full no-touch-callout"
-                  :style="isZoomed ? { ...transformStyle, imageRendering: 'pixelated' } : { imageRendering: 'pixelated' }"
+                  :style="isZoomed ? { ...transformStyle, ...(pixelatedRendering ? { imageRendering: 'pixelated' } : {}) } : (pixelatedRendering ? { imageRendering: 'pixelated' } : {})"
                   draggable="false"
                 />
 

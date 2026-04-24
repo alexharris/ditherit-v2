@@ -104,6 +104,7 @@ const pixeliness = ref(1)
 const pixelScale = ref(1)
 const bayerSize = ref<BayerSize>(4)
 const smoothPixels = ref(false)
+const pixelatedRendering = ref(false)
 const palette = ref<number[][]>([])
 const colorSpace = ref<ColorSpace>('rgb')
 const originalWidth = ref(0)
@@ -489,6 +490,7 @@ export function useDithering() {
     pixelScale,
     bayerSize,
     smoothPixels,
+    pixelatedRendering,
     palette,
     colorSpace,
     originalWidth,

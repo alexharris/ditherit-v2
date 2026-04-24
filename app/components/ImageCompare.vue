@@ -57,7 +57,6 @@ defineProps<{
   display: block;
   width: 100%;
   height: auto;
-  image-rendering: pixelated;
   object-fit: contain;
 }
 
