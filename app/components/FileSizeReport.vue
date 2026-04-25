@@ -104,16 +104,16 @@ const inputFormat = computed(() => {
     </div>
 
     <!-- File name -->
-    <p v-if="fileName" class="mt-1 w-full truncate text-center text-xs text-gray-500 dark:text-gray-400">{{ fileName }}</p>
+    <p v-if="fileName" class="mt-1 w-full truncate text-center text-xs text-gray-800 dark:text-gray-100">{{ fileName }}</p>
 
     <!-- Size details -->
     <div class="mt-3 w-full space-y-1.5 text-xs">
       <div class="flex justify-between">
-        <span class="text-gray-500 dark:text-gray-400">Original</span>
+        <span class="text-gray-800 dark:text-gray-100">Original</span>
         <span class="font-medium text-gray-800 dark:text-gray-100">{{ originalKb }} KB</span>
       </div>
       <div class="flex justify-between">
-        <span class="text-gray-500 dark:text-gray-400">Dithered</span>
+        <span class="text-gray-800 dark:text-gray-100">Dithered</span>
         <span
           class="font-medium"
           :class="ditheredFileSize
@@ -124,7 +124,7 @@ const inputFormat = computed(() => {
         </span>
       </div>
       <div class="flex justify-between border-t border-gray-100 pt-1.5 dark:border-gray-800">
-        <span class="text-gray-500 dark:text-gray-400">Saved</span>
+        <span class="text-gray-800 dark:text-gray-100">Saved</span>
         <span
           class="font-medium"
           :class="ditheredFileSize && isSmaller ? 'text-green-600 dark:text-green-400' : 'text-gray-100 dark:text-gray-400'"
@@ -133,19 +133,19 @@ const inputFormat = computed(() => {
         </span>
       </div>
       <div v-if="dimensions" class="flex justify-between border-t border-gray-100 pt-1.5 dark:border-gray-800">
-        <span class="text-gray-500 dark:text-gray-400">Dimensions</span>
+        <span class="text-gray-800 dark:text-gray-100">Dimensions</span>
         <span class="font-medium text-gray-800 dark:text-gray-100">{{ dimensions }}</span>
       </div>
       <div v-if="megapixels" class="flex justify-between">
-        <span class="text-gray-500 dark:text-gray-400">Megapixels</span>
+        <span class="text-gray-800 dark:text-gray-100">Megapixels</span>
         <span class="font-medium text-gray-800 dark:text-gray-100">{{ megapixels }} MP</span>
       </div>
       <div v-if="inputFormat" class="flex justify-between">
-        <span class="text-gray-500 dark:text-gray-400">Format</span>
+        <span class="text-gray-800 dark:text-gray-100">Format</span>
         <span class="font-medium text-gray-800 dark:text-gray-100">{{ inputFormat }} → PNG</span>
       </div>
       <div v-if="gifFrameCount" class="flex justify-between">
-        <span class="text-gray-500 dark:text-gray-400">Frames</span>
+        <span class="text-gray-800 dark:text-gray-100">Frames</span>
         <span class="font-medium text-gray-800 dark:text-gray-100">{{ gifFrameCount }}</span>
       </div>
     </div>

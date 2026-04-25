@@ -146,7 +146,7 @@ Always use `UCard`. Two variants:
 ```vue
 <UCard :ui="{ body: 'p-3 sm:p-3' }">
   <p class="mb-1 text-sm font-medium text-highlighted">🔒 Title</p>
-  <p class="text-sm text-gray-500 dark:text-gray-400">Description</p>
+  <p class="text-sm text-gray-800 dark:text-gray-100">Description</p>
 </UCard>
 ```
 
@@ -154,7 +154,7 @@ Always use `UCard`. Two variants:
 ```vue
 <UCard variant="soft" :ui="{ root: 'bg-red-50 dark:bg-red-950', body: 'p-4 sm:p-4' }">
   <p class="text-sm font-medium text-highlighted">📋 Title with emoji</p>
-  <p class="text-sm text-gray-500 dark:text-gray-400">Body text</p>
+  <p class="text-sm text-gray-800 dark:text-gray-100">Body text</p>
 </UCard>
 ```
 
@@ -162,7 +162,7 @@ Always use `UCard`. Two variants:
 |----------|-------|
 | Border | `variant="soft"` has no ring — background alone provides grouping |
 | Title | `text-sm font-medium text-highlighted` + emoji prefix (required on colored cards) |
-| Body text | `text-sm text-gray-500 dark:text-gray-400` |
+| Body text | `text-sm text-gray-800 dark:text-gray-100` (full contrast — not muted) |
 
 The emoji is the primary visual differentiator between a colored card title and a plain section label — keep it.
 

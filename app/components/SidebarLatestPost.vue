@@ -18,7 +18,7 @@ const { data: post } = await useFetch('/blog-latest.json')
       <p class="text-sm font-medium text-gray-800 dark:text-gray-100">
         {{ post.title }}
       </p>
-      <p class="mt-0.5 line-clamp-2 text-xs text-gray-500 dark:text-gray-400">
+      <p class="mt-0.5 line-clamp-2 text-xs text-gray-800 dark:text-gray-100">
         {{ post.description }}
       </p>
     </UCard>

@@ -1068,7 +1068,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           <SidebarFeedback />
           <UCard
             v-if="selectedImage"
-            :ui="{ body: 'p-4 sm:p-4' }"
+            :ui="{ root: 'ring-0 shadow-none', body: 'p-4 sm:p-4' }"
           >
             <FileSizeReport
               :original-size="selectedImage.originalFileSize"

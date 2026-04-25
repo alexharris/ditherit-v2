@@ -5,7 +5,7 @@
         <h2 class="mb-1 text-sm font-medium text-highlighted">
           📬 Stay Updated
         </h2>
-        <p class="text-sm text-gray-500 dark:text-gray-400">
+        <p class="text-sm text-gray-800 dark:text-gray-100">
           Subscribe for occasional updates about new features.
         </p>
       </div>

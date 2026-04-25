@@ -17,6 +17,8 @@ const ditherModes: Array<{ label: string; value: DitherMode }> = [
   { label: 'Blue Noise', value: 'blue-noise' },
   { label: 'Riemersma', value: 'riemersma' }
 ]
+
+const advancedOpen = ref(false)
 </script>
 
 <template>
@@ -58,35 +60,58 @@ const ditherModes: Array<{ label: string; value: DitherMode }> = [
       />
     </div>
 
-    <!-- Serpentine (for diffusion mode) -->
-    <HelpTooltip v-if="ditherMode === 'diffusion'">
-      <template #label>
-        <UCheckbox
-          v-model="serpentine"
-          label="Serpentine"
-        />
-      </template>
-      <template #help>
-        This determines if the dithering just goes left to right, top to
-        bottom, or does a snake wiggle.
-      </template>
-    </HelpTooltip>
+    <!-- Advanced (serpentine + color space) -->
+    <UCollapsible
+      v-if="ditherMode === 'diffusion' || ditherMode === 'riemersma'"
+      v-model:open="advancedOpen"
+    >
+      <UButton
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        label="Advanced"
+        class="-mx-1 text-xs font-medium uppercase tracking-wide text-muted"
+      >
+        <template #trailing>
+          <UIcon
+            name="i-lucide-chevron-right"
+            class="size-3 transition-transform duration-200"
+            :class="advancedOpen ? 'rotate-90' : ''"
+          />
+        </template>
+      </UButton>
+      <template #content>
+        <div class="space-y-3 pt-3">
+          <HelpTooltip v-if="ditherMode === 'diffusion'">
+            <template #label>
+              <UCheckbox
+                v-model="serpentine"
+                label="Serpentine"
+              />
+            </template>
+            <template #help>
+              This determines if the dithering just goes left to right, top to
+              bottom, or does a snake wiggle.
+            </template>
+          </HelpTooltip>
 
-    <!-- Color Space (for diffusion and riemersma modes) -->
-    <HelpTooltip v-if="ditherMode === 'diffusion' || ditherMode === 'riemersma'">
-      <template #label>
-        <span class="text-xs font-medium uppercase tracking-wide text-muted">Color Space</span>
+          <HelpTooltip>
+            <template #label>
+              <span class="text-xs font-medium uppercase tracking-wide text-muted">Color Space</span>
+            </template>
+            <template #help>
+              OKLab is a perceptually uniform color space. Dithering in OKLab
+              produces better hue fidelity on colorful images.
+            </template>
+            <USelect
+              v-model="colorSpace"
+              :items="[{ label: 'RGB', value: 'rgb' }, { label: 'OKLab', value: 'oklab' }]"
+              class="mt-2 w-full"
+              :ui="{ base: 'text-left' }"
+            />
+          </HelpTooltip>
+        </div>
       </template>
-      <template #help>
-        OKLab is a perceptually uniform color space. Dithering in OKLab
-        produces better hue fidelity on colorful images.
-      </template>
-      <USelect
-        v-model="colorSpace"
-        :items="[{ label: 'RGB', value: 'rgb' }, { label: 'OKLab', value: 'oklab' }]"
-        class="mt-2 w-full"
-        :ui="{ base: 'text-left' }"
-      />
-    </HelpTooltip>
+    </UCollapsible>
   </div>
 </template>
