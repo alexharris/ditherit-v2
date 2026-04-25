@@ -7,6 +7,8 @@ const props = defineProps<{
   originalHeight?: number
   ditheredWidth?: number
   ditheredHeight?: number
+  originalMimeType?: string
+  gifFrameCount?: number
 }>()
 
 const originalKb = computed(() => (props.originalSize / 1024).toFixed(1))
@@ -39,15 +41,30 @@ const savedKb = computed(() => {
   const saved = (props.originalSize - (props.ditheredFileSize || 0)) / 1024
   return saved > 0 ? saved.toFixed(1) : '0'
 })
+
+const megapixels = computed(() => {
+  if (!props.originalWidth || !props.originalHeight) return null
+  return ((props.originalWidth * props.originalHeight) / 1_000_000).toFixed(1)
+})
+
+const dimensions = computed(() => {
+  if (!props.originalWidth || !props.originalHeight) return null
+  return `${props.originalWidth} × ${props.originalHeight}`
+})
+
+const inputFormat = computed(() => {
+  if (!props.originalMimeType) return null
+  return props.originalMimeType.split('/')[1]?.toUpperCase().replace('JPEG', 'JPG') ?? null
+})
 </script>
 
 <template>
   <div class="flex flex-col items-center">
     <!-- Card title -->
-    <p class="mb-3 w-full text-center text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">File Size</p>
+    <p class="mb-2 w-full text-sm font-medium text-highlighted">📊 File Size</p>
 
     <!-- Donut Chart -->
-    <div class="-mx-4 w-[calc(100%+2rem)]">
+    <div class="w-20">
       <svg viewBox="0 0 42 42" class="w-full">
         <!-- Background ring -->
         <circle
@@ -81,16 +98,16 @@ const savedKb = computed(() => {
           class="fill-current"
           :class="ditheredFileSize ? 'text-gray-800 dark:text-gray-100' : 'text-gray-100 dark:text-gray-400'"
         >
-          <tspan x="21" font-size="6" font-weight="bold">{{ ditheredFileSize ? `${percentage}%` : '—' }}</tspan>
+          <tspan x="21" font-size="5" font-weight="bold">{{ ditheredFileSize ? `${percentage}%` : '—' }}</tspan>
         </text>
       </svg>
     </div>
 
     <!-- File name -->
-    <p v-if="fileName" class="mt-2 w-full truncate text-center text-xs text-gray-500 dark:text-gray-400">{{ fileName }}</p>
+    <p v-if="fileName" class="mt-1 w-full truncate text-center text-xs text-gray-500 dark:text-gray-400">{{ fileName }}</p>
 
     <!-- Size details -->
-    <div class="mt-4 w-full space-y-2 text-sm">
+    <div class="mt-3 w-full space-y-1.5 text-xs">
       <div class="flex justify-between">
         <span class="text-gray-500 dark:text-gray-400">Original</span>
         <span class="font-medium text-gray-800 dark:text-gray-100">{{ originalKb }} KB</span>
@@ -106,7 +123,7 @@ const savedKb = computed(() => {
           {{ ditheredFileSize ? `${ditheredKb} KB` : '— KB' }}
         </span>
       </div>
-      <div class="flex justify-between border-t border-gray-100 pt-2 dark:border-gray-800">
+      <div class="flex justify-between border-t border-gray-100 pt-1.5 dark:border-gray-800">
         <span class="text-gray-500 dark:text-gray-400">Saved</span>
         <span
           class="font-medium"
@@ -114,6 +131,22 @@ const savedKb = computed(() => {
         >
           {{ ditheredFileSize && isSmaller ? `${savedKb} KB` : '— KB' }}
         </span>
+      </div>
+      <div v-if="dimensions" class="flex justify-between border-t border-gray-100 pt-1.5 dark:border-gray-800">
+        <span class="text-gray-500 dark:text-gray-400">Dimensions</span>
+        <span class="font-medium text-gray-800 dark:text-gray-100">{{ dimensions }}</span>
+      </div>
+      <div v-if="megapixels" class="flex justify-between">
+        <span class="text-gray-500 dark:text-gray-400">Megapixels</span>
+        <span class="font-medium text-gray-800 dark:text-gray-100">{{ megapixels }} MP</span>
+      </div>
+      <div v-if="inputFormat" class="flex justify-between">
+        <span class="text-gray-500 dark:text-gray-400">Format</span>
+        <span class="font-medium text-gray-800 dark:text-gray-100">{{ inputFormat }} → PNG</span>
+      </div>
+      <div v-if="gifFrameCount" class="flex justify-between">
+        <span class="text-gray-500 dark:text-gray-400">Frames</span>
+        <span class="font-medium text-gray-800 dark:text-gray-100">{{ gifFrameCount }}</span>
       </div>
     </div>
 

@@ -6,8 +6,8 @@
     <USeparator />
     <SidebarPixelScale />
     <div class="m-4 space-y-3">
-      <SidebarFeedback />
       <SidebarLatestPost />
+      <NewsletterSignup />
     </div>
   </div>
 </template>

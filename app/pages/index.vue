@@ -1021,6 +1021,8 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
                     :original-height="originalHeight || undefined"
                     :dithered-width="scorecardDitheredWidth"
                     :dithered-height="scorecardDitheredHeight"
+                    :original-mime-type="selectedImage.originalMimeType"
+                    :gif-frame-count="selectedImage.gifFrameCount || undefined"
                     class="w-full"
                   />
                 </template>
@@ -1062,10 +1064,11 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         </main>
 
         <!-- Right Sidebar (desktop only) -->
-        <aside class="hidden lg:block w-48 shrink-0 overflow-y-auto pl-0 pr-4 pt-4 pb-4">
-          <div
+        <aside class="hidden lg:flex w-64 shrink-0 flex-col gap-3 overflow-y-auto pl-0 pr-4 pt-4 pb-4">
+          <SidebarFeedback />
+          <UCard
             v-if="selectedImage"
-            class="rounded-lg border border-gray-100 bg-white/90 p-4 shadow-lg backdrop-blur-sm dark:border-gray-800 dark:bg-gray-800/90"
+            :ui="{ body: 'p-4 sm:p-4' }"
           >
             <FileSizeReport
               :original-size="selectedImage.originalFileSize"
@@ -1075,9 +1078,11 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               :original-height="originalHeight || undefined"
               :dithered-width="scorecardDitheredWidth"
               :dithered-height="scorecardDitheredHeight"
+              :original-mime-type="selectedImage.originalMimeType"
+              :gif-frame-count="selectedImage.gifFrameCount || undefined"
               class="w-full"
             />
-          </div>
+          </UCard>
         </aside>
       </div>
 
