@@ -7,8 +7,7 @@ useSeoMeta({ title: 'Support — Dither it!' })
   <div class="space-y-8">
     <div class="space-y-4">
       <p class="text-base leading-relaxed text-gray-500 dark:text-gray-400">
-        Dither it! is a free, open-source, ad-free tool built and maintained in my spare time.
-        If you find it useful, any support is genuinely appreciated — it helps keep the project alive and motivated.
+        Dither it! is a free, open-source, ad-free tool built and maintained in my spare time. If you find it useful, please consider supporting its development. Thank you.
       </p>
 
       <div class="pt-2">
