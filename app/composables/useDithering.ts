@@ -13,6 +13,19 @@ async function getRgbQuant(): Promise<RgbQuantConstructor> {
 }
 import { addPixelation, bayerDither, blueNoiseDither, kernelDiffusionDither, riemersmaDither, simple2DDither } from '~/utils/dithering'
 
+// Returns a 24-bit RGB color (0xRRGGBB) guaranteed not to appear in the given palette.
+// Used to designate the GIF transparent color index without conflicting with dithered pixels.
+function findTransparentColor(palette: number[][]): number {
+  const used = new Set(palette.map(c => ((c[0] ?? 0) << 16) | ((c[1] ?? 0) << 8) | (c[2] ?? 0)))
+  for (const candidate of [0x00FF00, 0xFF00FF, 0x00FFFF, 0x010203, 0xFEFDFC, 0xABCDEF]) {
+    if (!used.has(candidate)) return candidate
+  }
+  for (let c = 1; c <= 0xFFFFFF; c++) {
+    if (!used.has(c)) return c
+  }
+  return 0
+}
+
 export type ColorSpace = 'rgb' | 'oklab'
 
 export interface GifFrame {
@@ -397,6 +410,15 @@ export function useDithering() {
         paletteToUse = qTemp.palette(true)
       }
 
+      // Pick a transparent color index not present in the palette so gif.js can encode alpha=0 pixels correctly.
+      // gif.js uses a designated RGB color (not alpha channel) to represent GIF transparency.
+      const paletteRef = paletteToUse.length > 0 ? paletteToUse : (q ? q.palette(true) : [])
+      const transparentColor = findTransparentColor(paletteRef)
+      gif.setOption('transparent', transparentColor)
+      const tR = (transparentColor >> 16) & 0xFF
+      const tG = (transparentColor >> 8) & 0xFF
+      const tB = transparentColor & 0xFF
+
       // Output canvas — upscaled to finalWidth/finalHeight when pixelScale > 1
       const outputCanvas = document.createElement('canvas')
       outputCanvas.width = finalWidth
@@ -461,6 +483,16 @@ export function useDithering() {
         outputCtx.drawImage(scratchCanvas, 0, 0, finalWidth, finalHeight)
 
         const ditheredData = outputCtx.getImageData(0, 0, finalWidth, finalHeight)
+
+        // Replace transparent pixels (alpha=0) with the designated transparent color.
+        // gif.js doesn't read alpha — it uses a specific RGB color to indicate transparency.
+        const d = ditheredData.data
+        for (let px = 0; px < d.length; px += 4) {
+          if (d[px + 3] === 0) {
+            d[px] = tR; d[px + 1] = tG; d[px + 2] = tB; d[px + 3] = 255
+          }
+        }
+
         gif.addFrame(ditheredData, { delay })
 
         onProgress?.((i + 1) / frames.length)
