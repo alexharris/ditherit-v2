@@ -79,6 +79,12 @@ export function useImageGallery() {
       const fullWidth = gif.lsd.width
       const fullHeight = gif.lsd.height
 
+      // Resolve the GIF's background color for disposal-type-2 restoration.
+      // GIFs use a color-index-based transparent color per frame; if the background
+      // color index is NOT the transparent index for a given frame, it's a real color.
+      const gct = (gif as any).gct as [number, number, number][] | undefined
+      const bgColorIndex = (gif as any).lsd?.backgroundColorIndex as number | undefined
+
       // Compositing canvas — accumulates frames respecting disposal methods
       const canvas = document.createElement('canvas')
       canvas.width = fullWidth
@@ -110,9 +116,20 @@ export function useImageGallery() {
 
         // Apply disposal method for the next frame
         switch (frame.disposalType) {
-          case 2:
-            ctx.clearRect(frame.dims.left, frame.dims.top, frame.dims.width, frame.dims.height)
+          case 2: {
+            // Restore to background: use the GIF's declared background color if it isn't
+            // the transparent color index for this frame — otherwise clear to transparent.
+            const frameTransIdx = (frame as any).transparentIndex as number | undefined
+            const bgIsTransparent = frameTransIdx != null && frameTransIdx === bgColorIndex
+            const bgRgb = (!bgIsTransparent && gct && bgColorIndex != null) ? gct[bgColorIndex] : null
+            if (bgRgb) {
+              ctx.fillStyle = `rgb(${bgRgb[0]},${bgRgb[1]},${bgRgb[2]})`
+              ctx.fillRect(frame.dims.left, frame.dims.top, frame.dims.width, frame.dims.height)
+            } else {
+              ctx.clearRect(frame.dims.left, frame.dims.top, frame.dims.width, frame.dims.height)
+            }
             break
+          }
           case 3:
             if (previousSnapshot) ctx.putImageData(previousSnapshot, 0, 0)
             break

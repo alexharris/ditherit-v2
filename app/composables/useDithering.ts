@@ -410,14 +410,23 @@ export function useDithering() {
         paletteToUse = qTemp.palette(true)
       }
 
-      // Pick a transparent color index not present in the palette so gif.js can encode alpha=0 pixels correctly.
-      // gif.js uses a designated RGB color (not alpha channel) to represent GIF transparency.
-      const paletteRef = paletteToUse.length > 0 ? paletteToUse : (q ? q.palette(true) : [])
-      const transparentColor = findTransparentColor(paletteRef)
-      gif.setOption('transparent', transparentColor)
-      const tR = (transparentColor >> 16) & 0xFF
-      const tG = (transparentColor >> 8) & 0xFF
-      const tB = transparentColor & 0xFF
+      // Only enable transparency encoding if the GIF actually has transparent pixels.
+      // gif.js designates its closest palette entry to the transparent color — so setting it
+      // unconditionally would corrupt fully-opaque GIFs by making some palette color transparent.
+      const hasTransparency = frames.some(({ imageData }) => {
+        const d = imageData.data
+        for (let i = 3; i < d.length; i += 4) { if (d[i] === 0) return true }
+        return false
+      })
+      let tR = 0, tG = 0, tB = 0
+      if (hasTransparency) {
+        const paletteRef = paletteToUse.length > 0 ? paletteToUse : (q ? q.palette(true) : [])
+        const transparentColor = findTransparentColor(paletteRef)
+        gif.setOption('transparent', transparentColor)
+        tR = (transparentColor >> 16) & 0xFF
+        tG = (transparentColor >> 8) & 0xFF
+        tB = transparentColor & 0xFF
+      }
 
       // Output canvas — upscaled to finalWidth/finalHeight when pixelScale > 1
       const outputCanvas = document.createElement('canvas')
@@ -484,12 +493,13 @@ export function useDithering() {
 
         const ditheredData = outputCtx.getImageData(0, 0, finalWidth, finalHeight)
 
-        // Replace transparent pixels (alpha=0) with the designated transparent color.
-        // gif.js doesn't read alpha — it uses a specific RGB color to indicate transparency.
-        const d = ditheredData.data
-        for (let px = 0; px < d.length; px += 4) {
-          if (d[px + 3] === 0) {
-            d[px] = tR; d[px + 1] = tG; d[px + 2] = tB; d[px + 3] = 255
+        // Replace transparent pixels with the designated transparent color (only when the GIF has transparency).
+        if (hasTransparency) {
+          const d = ditheredData.data
+          for (let px = 0; px < d.length; px += 4) {
+            if (d[px + 3] === 0) {
+              d[px] = tR; d[px + 1] = tG; d[px + 2] = tB; d[px + 3] = 255
+            }
           }
         }
 
