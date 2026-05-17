@@ -406,7 +406,8 @@ export function useDithering() {
       for (let i = 0; i < frames.length; i++) {
         const { imageData, delay } = frames[i]!
 
-        // Scale frame to dither dimensions
+        // Scale frame to dither dimensions — clear first so transparent pixels don't bleed from previous frames
+        ctx.clearRect(0, 0, ditherWidth, ditherHeight)
         sourceCtx.putImageData(imageData, 0, 0)
         ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
 
@@ -455,6 +456,7 @@ export function useDithering() {
         }
 
         // Upscale dithered result to final dimensions with nearest-neighbor interpolation
+        outputCtx.clearRect(0, 0, finalWidth, finalHeight)
         outputCtx.imageSmoothingEnabled = false
         outputCtx.drawImage(scratchCanvas, 0, 0, finalWidth, finalHeight)
 
