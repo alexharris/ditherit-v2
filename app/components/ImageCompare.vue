@@ -13,20 +13,22 @@ defineProps<{
 <template>
   <div class="image-compare-wrapper">
     <img-comparison-slider class="image-compare-slider">
-      <img
-        slot="first"
-        :src="originalSrc"
-        :alt="alt ? `Original: ${alt}` : 'Original image'"
-        class="compare-image"
-        :style="imageStyle"
-      />
-      <img
-        slot="second"
-        :src="ditheredSrc"
-        :alt="alt ? `Dithered: ${alt}` : 'Dithered image'"
-        class="compare-image"
-        :style="imageStyle"
-      />
+      <div slot="first" class="compare-slot">
+        <img
+          :src="originalSrc"
+          :alt="alt ? `Original: ${alt}` : 'Original image'"
+          class="compare-image"
+          :style="imageStyle"
+        />
+      </div>
+      <div slot="second" class="compare-slot">
+        <img
+          :src="ditheredSrc"
+          :alt="alt ? `Dithered: ${alt}` : 'Dithered image'"
+          class="compare-image"
+          :style="imageStyle"
+        />
+      </div>
     </img-comparison-slider>
   </div>
 </template>
@@ -46,6 +48,9 @@ defineProps<{
   overflow: hidden;
   max-width: 100%;
   touch-action: none;
+}
+
+.compare-slot {
   background-color: #fff;
   background-image:
     linear-gradient(45deg, #e5e5e5 25%, transparent 25%),
@@ -54,6 +59,7 @@ defineProps<{
     linear-gradient(-45deg, transparent 75%, #e5e5e5 75%);
   background-size: 16px 16px;
   background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+  line-height: 0;
 }
 
 .image-compare-slider:focus {
