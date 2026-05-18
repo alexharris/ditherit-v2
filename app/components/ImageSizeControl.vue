@@ -3,6 +3,7 @@ const props = defineProps<{
   originalWidth: number
   originalHeight: number
   initialWidth?: number
+  autoApply?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -65,6 +66,14 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
     valid: isWidthValid.value
   })
 }, { immediate: true })
+
+// In manual mode: skip the two-phase commit — apply valid input immediately
+watch(() => props.autoApply, (val) => {
+  if (!val && isWidthValid.value && isDirty.value) applySize()
+})
+watch(customWidthInput, () => {
+  if (!props.autoApply && isWidthValid.value) applySize()
+})
 </script>
 
 <template>
@@ -91,6 +100,7 @@ watch([() => useCustomSize.value, customWidth, isWidthValid], () => {
       disabled
     />
     <UButton
+      v-if="autoApply !== false"
       icon="i-lucide-check"
       :color="isDirty && isWidthValid ? 'primary' : 'neutral'"
       :variant="isDirty && isWidthValid ? 'solid' : 'soft'"

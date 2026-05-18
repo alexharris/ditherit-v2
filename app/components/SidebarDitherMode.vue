@@ -7,8 +7,7 @@ const {
   ditherMode,
   algorithm,
   serpentine,
-  bayerSize,
-  colorSpace
+  bayerSize
 } = useDithering()
 
 const ditherModes: Array<{ label: string; value: DitherMode }> = [
@@ -60,9 +59,9 @@ const advancedOpen = ref(false)
       />
     </div>
 
-    <!-- Advanced (serpentine + color space) -->
+    <!-- Advanced (serpentine — diffusion only) -->
     <UCollapsible
-      v-if="ditherMode === 'diffusion' || ditherMode === 'riemersma'"
+      v-if="ditherMode === 'diffusion'"
       v-model:open="advancedOpen"
     >
       <UButton
@@ -82,7 +81,7 @@ const advancedOpen = ref(false)
       </UButton>
       <template #content>
         <div class="space-y-3 pt-3">
-          <HelpTooltip v-if="ditherMode === 'diffusion'">
+          <HelpTooltip>
             <template #label>
               <UCheckbox
                 v-model="serpentine"
@@ -93,22 +92,6 @@ const advancedOpen = ref(false)
               This determines if the dithering just goes left to right, top to
               bottom, or does a snake wiggle.
             </template>
-          </HelpTooltip>
-
-          <HelpTooltip>
-            <template #label>
-              <span class="text-xs font-medium uppercase tracking-wide text-muted">Color Space</span>
-            </template>
-            <template #help>
-              OKLab is a perceptually uniform color space. Dithering in OKLab
-              produces better hue fidelity on colorful images.
-            </template>
-            <USelect
-              v-model="colorSpace"
-              :items="[{ label: 'RGB', value: 'rgb' }, { label: 'OKLab', value: 'oklab' }]"
-              class="mt-2 w-full"
-              :ui="{ base: 'text-left' }"
-            />
           </HelpTooltip>
         </div>
       </template>

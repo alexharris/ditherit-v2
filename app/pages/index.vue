@@ -23,6 +23,7 @@ const {
   originalHeight,
   sizeWidth,
   sizeValid,
+  autoApply,
   analyzeColorCount,
   analyzePalette,
   dither,
@@ -123,6 +124,7 @@ watch(showCompare, () => { _sliderEl = null })
 const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
+const drawerSettings = ref(false)
 const showResizeModal = ref(false)
 const resizeModalImage = ref<GalleryImage | null>(null)
 
@@ -563,6 +565,13 @@ onMounted(() => {
     addImageFromUrl(defaultImageUrl3, 'coat.gif')
   }
   document.addEventListener('paste', handlePaste)
+  const stored = localStorage.getItem('ditherit_auto_apply')
+  if (stored !== null) autoApply.value = stored !== 'false'
+})
+
+watch(autoApply, (val) => {
+  localStorage.setItem('ditherit_auto_apply', String(val))
+  if (val && selectedImage.value && sizeValid.value) debouncedDither()
 })
 
 onUnmounted(() => {
@@ -641,8 +650,14 @@ watch(paletteAsRgb, (newPalette) => {
   }
 }, { deep: true, immediate: true })
 
+const hasPendingChanges = ref(false)
+
 // Auto-dither selected image when any setting changes
 watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smoothPixels, paletteAsRgb, sizeWidth, colorSpace], () => {
+  if (!autoApply.value) {
+    if (selectedImage.value) hasPendingChanges.value = true
+    return
+  }
   if (selectedImage.value && sizeValid.value) {
     if (skipNextDither) { skipNextDither = false; return }
     debouncedDither()
@@ -731,6 +746,13 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       </template>
     </UDrawer>
 
+    <!-- Settings Drawer (mobile: bottom, desktop: left) -->
+    <UDrawer v-model:open="drawerSettings" direction="left" :overlay="false" :ui="{ content: 'w-64', handle: 'hidden' }">
+      <template #body>
+        <SidebarSettings @close="drawerSettings = false" />
+      </template>
+    </UDrawer>
+
     <!-- Body below top bar -->
     <div class="flex flex-1 flex-col lg:flex-row overflow-hidden">
 
@@ -740,8 +762,29 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         class="flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mt-3 mx-3"
       >
         <SidebarContent />
-
+        <USeparator />
+        <button
+          class="flex w-full items-center gap-2 px-4 py-3 text-left text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/50"
+          @click="drawerSettings = true"
+        >
+          <UIcon name="i-lucide-settings" class="size-4 shrink-0" />
+          <span class="font-medium">Settings</span>
+          <UIcon name="i-lucide-chevron-right" class="ml-auto size-3.5 text-gray-400" />
+        </button>
       </aside>
+      <div v-if="!autoApply" class="relative mx-3 mt-4">
+        <span v-if="hasPendingChanges" class="glint absolute -top-3 -right-2 z-10 text-2xl leading-none pointer-events-none">✨</span>
+        <UButton
+          label="🏁 Dither It!"
+          color="primary"
+          variant="solid"
+          size="xl"
+          class="w-full shadow-sm justify-center cursor-pointer"
+          :ui="{ base: 'text-lg' }"
+          :disabled="!selectedImage || !sizeValid"
+          @click="hasPendingChanges = false; handleDither()"
+        />
+      </div>
 
     </div>
 
@@ -1147,6 +1190,10 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           <span class="text-2xl leading-none">🖼️</span>
           <span class="uppercase tracking-wide" style="font-size: 12px">Image</span>
         </button>
+        <button class="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400" @click="drawerSettings = true">
+          <span class="text-2xl leading-none">⚙️</span>
+          <span class="uppercase tracking-wide" style="font-size: 12px">Settings</span>
+        </button>
       </div>
     </div>
 
@@ -1190,3 +1237,14 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     </div>
   </div>
 </template>
+
+<style scoped>
+.glint {
+  animation: glint-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes glint-pulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(253, 224, 71, 0.6)); }
+  50%       { filter: drop-shadow(0 0 12px rgba(253, 224, 71, 1)) drop-shadow(0 0 24px rgba(253, 186, 0, 0.8)); }
+}
+</style>

@@ -3,11 +3,11 @@ const {
   pixeliness,
   pixelScale,
   smoothPixels,
-  pixelatedRendering,
   originalWidth,
   originalHeight,
   sizeWidth,
-  sizeValid
+  sizeValid,
+  autoApply
 } = useDithering()
 
 function handleSizeChange(payload: { width: number | undefined; valid: boolean }) {
@@ -26,6 +26,7 @@ const advancedOpen = ref(false)
         :original-width="originalWidth"
         :original-height="originalHeight"
         :initial-width="sizeWidth"
+        :auto-apply="autoApply"
         @change="handleSizeChange"
       />
     </div>
@@ -33,7 +34,7 @@ const advancedOpen = ref(false)
 
   <USeparator v-if="originalWidth > 0" />
 
-  <div class="px-4 py-4">
+  <div class="px-4 py-4 space-y-3">
     <HelpTooltip>
       <template #label>
         <span class="text-sm font-medium text-highlighted">Pixel Scale</span>
@@ -46,10 +47,7 @@ const advancedOpen = ref(false)
         <span class="text-xs text-gray-500">{{ pixelScale }}x</span>
       </div>
     </HelpTooltip>
-  </div>
 
-  <USeparator />
-  <div class="px-4 py-4">
     <UButton
       color="neutral"
       variant="ghost"
@@ -57,17 +55,15 @@ const advancedOpen = ref(false)
       class="-mx-2"
       @click="advancedOpen = !advancedOpen"
     >
-      <span class="text-sm font-medium text-highlighted">Advanced</span>
+      <span class="text-xs font-medium uppercase tracking-wide text-muted">Advanced</span>
       <UIcon
         name="i-lucide-chevron-right"
-        class="size-4 transition-transform duration-200"
+        class="size-3 transition-transform duration-200"
         :class="{ 'rotate-90': advancedOpen }"
       />
     </UButton>
-  </div>
 
-  <div v-if="advancedOpen" class="space-y-4 px-4 pb-4">
-    <div class="rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-3">
+    <div v-if="advancedOpen" class="rounded-md border border-gray-200 dark:border-gray-700 p-3 space-y-3">
       <HelpTooltip>
         <template #label>
           <span class="text-xs font-medium uppercase tracking-wide text-muted">Pixeliness</span>
@@ -89,14 +85,6 @@ const advancedOpen = ref(false)
         </template>
       </HelpTooltip>
     </div>
-    <HelpTooltip>
-      <template #label>
-        <UCheckbox v-model="pixelatedRendering" label="Pixelated rendering" />
-      </template>
-      <template #help>
-        Forces the browser to display pixels as sharp squares with no anti-aliasing. Useful when the image is displayed at a non-native size.
-      </template>
-    </HelpTooltip>
   </div>
 
   <USeparator />

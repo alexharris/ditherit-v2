@@ -125,6 +125,7 @@ const originalHeight = ref(0)
 const sizeWidth = ref<number | undefined>(undefined)
 const sizeValid = ref(true)
 const analyzeColorCount = ref(8)
+const autoApply = ref(true)
 
 // RgbQuant instance cache — reused when only algorithm/serpentine changes
 let cachedQuant: any = null
@@ -541,6 +542,7 @@ export function useDithering() {
     originalHeight,
     sizeWidth,
     sizeValid,
+    autoApply,
 
     // Computed
     rgbQuantOptions,
