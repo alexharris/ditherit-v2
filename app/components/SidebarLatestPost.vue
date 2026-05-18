@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { data: post } = await useFetch('/blog-latest.json')
+const { data: post } = await useAsyncData('sidebar-latest-post', () =>
+  queryCollection('blog').order('date', 'DESC').first()
+)
 </script>
 
 <template>

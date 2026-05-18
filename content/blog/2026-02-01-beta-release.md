@@ -19,7 +19,7 @@ The new version includes some cool new features, and some new features that are 
 
 Please kick the tires, let me know what bugs you find or what potential improvements you notice, and feel free to share what you are working on with me. I have an idea for a community showcase, which might be the next thing I work on.
 
-Thanks,
+Thanks,  
 Alex
 
 

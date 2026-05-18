@@ -626,7 +626,11 @@ watch(selectedImage, async (newImage) => {
     } else {
       // Keep current preset/custom palette, re-dither only if not already cached (or stale)
       if (!newImage.ditheredDataUrl || newImage.isStale) {
-        debouncedDither()
+        if (autoApply.value) {
+          debouncedDither()
+        } else {
+          hasPendingChanges.value = true
+        }
       }
     }
   }
@@ -783,13 +787,13 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         <span v-if="hasPendingChanges" class="glint absolute -top-3 -right-2 z-10 text-2xl leading-none pointer-events-none">✨</span>
         <UButton
           label="🏁 Dither It!"
-          color="primary"
+          :color="hasPendingChanges ? 'primary' : 'neutral'"
           variant="solid"
           size="xl"
           class="w-full shadow-sm justify-center cursor-pointer transition-opacity"
-          :class="{ 'opacity-40': !hasPendingChanges }"
+          :class="{ 'opacity-50': !hasPendingChanges }"
           :ui="{ base: 'text-lg' }"
-          :disabled="!selectedImage || !sizeValid"
+          :disabled="!selectedImage || !sizeValid || !hasPendingChanges"
           @click="hasPendingChanges = false; handleDither()"
         />
       </div>
@@ -1099,10 +1103,10 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
 
       <!-- Bottom Bar (thumbnails + actions) -->
       <footer
-        class="hidden lg:flex relative shrink-0 flex-col lg:flex-row items-stretch lg:items-center justify-center gap-2 bg-white rounded-xl shadow-sm mx-3 mb-6 mt-1 px-3 py-2 dark:bg-gray-800"
+        class="hidden lg:flex shrink-0 items-center gap-2 bg-white rounded-xl shadow-sm mx-3 mb-6 mt-1 px-3 py-2 dark:bg-gray-800"
       >
-        <!-- Image Thumbnails + mobile download -->
-        <div v-if="hasImages" class="flex min-w-0 items-center justify-between gap-2">
+        <!-- Image Thumbnails -->
+        <div v-if="hasImages" class="flex-1 min-w-0 overflow-x-auto flex items-center gap-2">
           <ImageThumbnailStrip
             :images="images"
             :selected-id="selectedImage?.id"
@@ -1117,26 +1121,9 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           >
             <UIcon name="i-lucide-plus" class="size-5" />
           </button>
-          <UPopover class="lg:hidden shrink-0">
-            <UButton
-              icon="i-lucide-download"
-              color="primary"
-              variant="solid"
-              size="md"
-              :loading="isDownloadingAll"
-              :disabled="!selectedImage?.ditheredDataUrl"
-            />
-            <template #content="{ close }">
-              <div class="flex flex-col gap-1 p-2">
-                <UButton :label="footerPngLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('png'); close()" />
-                <UButton :label="footerJpgLabel" icon="i-lucide-image" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('jpg'); close()" />
-                <UButton :label="footerSvgLabel" icon="i-lucide-file-code" color="neutral" variant="ghost" size="sm" class="text-gray-800 dark:text-gray-100" @click="handleDownload('svg'); close()" />
-              </div>
-            </template>
-          </UPopover>
         </div>
         <!-- Action buttons (desktop only) -->
-        <div class="hidden lg:flex absolute right-4 shrink-0 items-center gap-2">
+        <div class="hidden lg:flex shrink-0 items-center gap-2">
           <UButton
             v-if="images.length > 0 && !isDefaultImage"
             icon="i-lucide-trash-2"
@@ -1200,7 +1187,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
               class="w-full shadow-sm justify-center cursor-pointer transition-opacity"
               :class="{ 'opacity-40': !hasPendingChanges }"
               :ui="{ base: 'text-lg' }"
-              :disabled="!selectedImage || !sizeValid"
+              :disabled="!selectedImage || !sizeValid || !hasPendingChanges"
               @click="hasPendingChanges = false; handleDither()"
             />
           </div>
