@@ -735,33 +735,15 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     <div class="flex flex-1 flex-col lg:flex-row overflow-hidden">
 
     <!-- Sidebar (desktop only) -->
-    <aside
-      class="hidden lg:flex w-64 flex-col border-r border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-800"
-    >
-      <SidebarContent />
-
-      <!-- Sidebar Footer -->
-      <div
-        class="flex shrink-0 items-center justify-between border-t border-gray-100 p-4 dark:border-gray-800"
+    <div class="hidden lg:flex w-64 shrink-0 flex-col">
+      <aside
+        class="flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mt-3 mx-3"
       >
-        <span class="text-sm text-gray-500 dark:text-gray-400">v3</span>
-        <UButton
-          icon="i-simple-icons-github"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          to="https://github.com/alexharris/ditherit-v3"
-          target="_blank"
-        />
-        <UButton
-          :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          @click="colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'"
-        />
-      </div>
-    </aside>
+        <SidebarContent />
+
+      </aside>
+
+    </div>
 
     <!-- Main Content -->
     <div class="flex flex-1 flex-col overflow-hidden">
@@ -1062,33 +1044,11 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
             </div>
           </div>
         </main>
-
-        <!-- Right Sidebar (desktop only) -->
-        <aside class="hidden lg:flex w-64 shrink-0 flex-col gap-3 overflow-y-auto pl-0 pr-4 pt-4 pb-4">
-          <SidebarFeedback />
-          <UCard
-            v-if="selectedImage"
-            :ui="{ root: 'ring-0 shadow-none', body: 'p-4 sm:p-4' }"
-          >
-            <FileSizeReport
-              :original-size="selectedImage.originalFileSize"
-              :dithered-file-size="scorecardDitheredSize"
-              :file-name="selectedImage.fileName"
-              :original-width="originalWidth || undefined"
-              :original-height="originalHeight || undefined"
-              :dithered-width="scorecardDitheredWidth"
-              :dithered-height="scorecardDitheredHeight"
-              :original-mime-type="selectedImage.originalMimeType"
-              :gif-frame-count="selectedImage.gifFrameCount || undefined"
-              class="w-full"
-            />
-          </UCard>
-        </aside>
       </div>
 
       <!-- Bottom Bar (thumbnails + actions) -->
       <footer
-        class="hidden lg:flex relative shrink-0 flex-col lg:flex-row items-stretch lg:items-center justify-center gap-2 border-t border-gray-100 bg-white px-3 py-3 lg:px-4 lg:py-2 dark:border-gray-800 dark:bg-gray-800"
+        class="hidden lg:flex relative shrink-0 flex-col lg:flex-row items-stretch lg:items-center justify-center gap-2 bg-white rounded-xl shadow-sm mx-3 mb-6 mt-1 px-3 py-2 dark:bg-gray-800"
       >
         <!-- Image Thumbnails + mobile download -->
         <div v-if="hasImages" class="flex min-w-0 items-center justify-between gap-2">
@@ -1189,6 +1149,43 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         </button>
       </div>
     </div>
+
+    <!-- Right Sidebar (desktop only) -->
+    <aside class="hidden lg:flex w-64 shrink-0 flex-col gap-3 overflow-y-auto mt-3 mx-3 mb-3">
+      <div
+        v-if="selectedImage"
+        class="rounded-xl shadow-sm bg-white dark:bg-gray-800 overflow-hidden p-4"
+      >
+        <FileSizeReport
+          :original-size="selectedImage.originalFileSize"
+          :dithered-file-size="scorecardDitheredSize"
+          :file-name="selectedImage.fileName"
+          :original-width="originalWidth || undefined"
+          :original-height="originalHeight || undefined"
+          :dithered-width="scorecardDitheredWidth"
+          :dithered-height="scorecardDitheredHeight"
+          :original-mime-type="selectedImage.originalMimeType"
+          :gif-frame-count="selectedImage.gifFrameCount || undefined"
+          class="w-full"
+        />
+      </div>
+      <SidebarFeedback />
+      <SidebarLatestPost />
+      <NewsletterSignup />
+      <a href="https://v2.ditherit.com" target="_blank" rel="noopener" class="block">
+        <UCard
+          variant="soft"
+          :ui="{ root: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm', body: 'p-3 sm:p-3' }"
+        >
+          <p class="mb-1 text-sm font-medium text-highlighted">
+            🏁 Looking for the old version?
+          </p>
+          <p class="text-sm text-gray-800 dark:text-gray-100">
+            Version 2 is still available at v2.ditherit.com.
+          </p>
+        </UCard>
+      </a>
+    </aside>
 
     </div>
   </div>

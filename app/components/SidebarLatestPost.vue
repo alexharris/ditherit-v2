@@ -10,7 +10,7 @@ const { data: post } = await useFetch('/blog-latest.json')
   >
     <UCard
       variant="soft"
-      :ui="{ root: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer', body: 'p-3 sm:p-3' }"
+      :ui="{ root: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm', body: 'p-3 sm:p-3' }"
     >
       <p class="mb-1 text-sm font-medium text-highlighted">
         ✏️ From the blog

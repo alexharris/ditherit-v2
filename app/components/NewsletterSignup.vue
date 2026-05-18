@@ -1,5 +1,5 @@
 <template>
-  <UCard variant="soft" :ui="{ root: 'bg-gray-100 dark:bg-gray-800', body: 'p-4 sm:p-4' }">
+  <UCard variant="soft" :ui="{ root: 'bg-gray-100 dark:bg-gray-800 shadow-sm', body: 'p-4 sm:p-4' }">
     <div class="space-y-3">
       <div>
         <h2 class="mb-1 text-sm font-medium text-highlighted">
