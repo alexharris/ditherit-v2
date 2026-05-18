@@ -746,8 +746,15 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       </template>
     </UDrawer>
 
-    <!-- Settings Drawer (mobile: bottom, desktop: left) -->
-    <UDrawer v-model:open="drawerSettings" direction="left" :overlay="false" :ui="{ content: 'w-64', handle: 'hidden' }">
+    <!-- Settings Drawer — bottom on mobile -->
+    <UDrawer v-model:open="drawerSettings" :overlay="false" class="lg:hidden">
+      <template #body>
+        <SidebarSettings @close="drawerSettings = false" />
+      </template>
+    </UDrawer>
+
+    <!-- Settings Drawer — left on desktop -->
+    <UDrawer v-model:open="drawerSettings" direction="left" :overlay="false" :ui="{ content: 'w-64', handle: '!hidden' }" class="hidden lg:block">
       <template #body>
         <SidebarSettings @close="drawerSettings = false" />
       </template>
@@ -779,7 +786,8 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
           color="primary"
           variant="solid"
           size="xl"
-          class="w-full shadow-sm justify-center cursor-pointer"
+          class="w-full shadow-sm justify-center cursor-pointer transition-opacity"
+          :class="{ 'opacity-40': !hasPendingChanges }"
           :ui="{ base: 'text-lg' }"
           :disabled="!selectedImage || !sizeValid"
           @click="hasPendingChanges = false; handleDither()"
@@ -1176,6 +1184,29 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
         />
       </div>
 
+      <!-- Mobile Dither It button (manual mode only) -->
+      <Transition name="fab">
+        <div
+          v-if="!autoApply"
+          class="lg:hidden shrink-0 flex items-center justify-center px-4 py-2 border-t border-gray-100 bg-white dark:border-gray-800 dark:bg-gray-800"
+        >
+          <div class="relative w-full max-w-xs">
+            <span v-if="hasPendingChanges" class="glint absolute -top-3 -right-2 z-10 text-2xl leading-none pointer-events-none">✨</span>
+            <UButton
+              label="🏁 Dither It!"
+              color="primary"
+              variant="solid"
+              size="xl"
+              class="w-full shadow-sm justify-center cursor-pointer transition-opacity"
+              :class="{ 'opacity-40': !hasPendingChanges }"
+              :ui="{ base: 'text-lg' }"
+              :disabled="!selectedImage || !sizeValid"
+              @click="hasPendingChanges = false; handleDither()"
+            />
+          </div>
+        </div>
+      </Transition>
+
       <!-- Mobile Bottom Toolbar -->
       <div class="flex lg:hidden shrink-0 items-center justify-around border-t border-gray-100 bg-white pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] dark:border-gray-800 dark:bg-gray-800">
         <button class="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400" @click="drawerMode = true">
@@ -1247,4 +1278,7 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
   0%, 100% { filter: drop-shadow(0 0 4px rgba(253, 224, 71, 0.6)); }
   50%       { filter: drop-shadow(0 0 12px rgba(253, 224, 71, 1)) drop-shadow(0 0 24px rgba(253, 186, 0, 0.8)); }
 }
+
+.fab-enter-active, .fab-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.fab-enter-from, .fab-leave-to { opacity: 0; transform: translateX(-50%) translateY(8px); }
 </style>
