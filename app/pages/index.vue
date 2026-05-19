@@ -125,6 +125,12 @@ const drawerMode = ref(false)
 const drawerPalette = ref(false)
 const drawerScale = ref(false)
 const drawerSettings = ref(false)
+const isDesktop = ref(false)
+onMounted(() => {
+  const mq = window.matchMedia('(min-width: 1024px)')
+  isDesktop.value = mq.matches
+  mq.addEventListener('change', (e) => { isDesktop.value = e.matches })
+})
 const showResizeModal = ref(false)
 const resizeModalImage = ref<GalleryImage | null>(null)
 
@@ -754,15 +760,13 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
       </template>
     </UDrawer>
 
-    <!-- Settings Drawer — bottom on mobile -->
-    <UDrawer v-model:open="drawerSettings" :overlay="false" class="lg:hidden">
-      <template #body>
-        <SidebarSettings @close="drawerSettings = false" />
-      </template>
-    </UDrawer>
-
-    <!-- Settings Drawer — left on desktop -->
-    <UDrawer v-model:open="drawerSettings" direction="left" :overlay="false" :ui="{ content: 'w-64', handle: '!hidden' }" class="hidden lg:block">
+    <!-- Settings Drawer — bottom on mobile, left on desktop -->
+    <UDrawer
+      v-model:open="drawerSettings"
+      :overlay="false"
+      :direction="isDesktop ? 'left' : 'bottom'"
+      :ui="isDesktop ? { content: 'w-64', handle: '!hidden' } : {}"
+    >
       <template #body>
         <SidebarSettings @close="drawerSettings = false" />
       </template>
