@@ -182,7 +182,11 @@ function handleResizeChoice(resize: boolean) {
     sizeValid.value = true
   }
   resizeModalImage.value = null
-  debouncedDither()
+  if (autoApply.value) {
+    debouncedDither()
+  } else {
+    hasPendingChanges.value = true
+  }
 }
 
 async function handleDrop(e: DragEvent) {
