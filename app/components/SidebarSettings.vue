@@ -5,7 +5,7 @@ const colorMode = useColorMode()
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4" data-vaul-no-drag>
     <div class="flex items-center justify-between py-4">
       <span class="text-sm font-medium text-highlighted">Settings</span>
       <UButton icon="i-lucide-x" color="neutral" variant="ghost" size="xs" aria-label="Close" @click="emit('close')" />
