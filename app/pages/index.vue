@@ -776,9 +776,9 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     <div class="flex flex-1 flex-col lg:flex-row overflow-hidden">
 
     <!-- Sidebar (desktop only) -->
-    <div class="hidden lg:flex w-64 shrink-0 flex-col">
+    <div class="hidden lg:flex w-64 shrink-0 flex-col overflow-hidden">
       <aside
-        class="flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden mt-3 mx-3"
+        class="flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-y-auto max-h-[calc(100%-1.5rem)] mt-3 mb-3 mx-3"
       >
         <SidebarContent />
         <USeparator />
@@ -1224,40 +1224,42 @@ watch([ditherMode, algorithm, serpentine, pixeliness, pixelScale, bayerSize, smo
     </div>
 
     <!-- Right Sidebar (desktop only) -->
-    <aside class="hidden lg:flex w-64 shrink-0 flex-col gap-3 overflow-y-auto mt-3 mx-3 mb-3">
-      <div
-        v-if="selectedImage"
-        class="rounded-xl shadow-sm bg-white dark:bg-gray-800 overflow-hidden p-4"
-      >
-        <FileSizeReport
-          :original-size="selectedImage.originalFileSize"
-          :dithered-file-size="scorecardDitheredSize"
-          :file-name="selectedImage.fileName"
-          :original-width="originalWidth || undefined"
-          :original-height="originalHeight || undefined"
-          :dithered-width="scorecardDitheredWidth"
-          :dithered-height="scorecardDitheredHeight"
-          :original-mime-type="selectedImage.originalMimeType"
-          :gif-frame-count="selectedImage.gifFrameCount || undefined"
-          class="w-full"
-        />
-      </div>
-      <SidebarFeedback />
-      <SidebarLatestPost />
-      <NewsletterSignup />
-      <a href="https://v2.ditherit.com" target="_blank" rel="noopener" class="block">
-        <UCard
-          variant="soft"
-          :ui="{ root: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm', body: 'p-3 sm:p-3' }"
+    <aside class="hidden lg:block w-64 shrink-0 overflow-y-auto max-h-[calc(100%-1.5rem)] mt-3 mb-3 mx-3">
+      <div class="flex flex-col gap-3">
+        <div
+          v-if="selectedImage"
+          class="rounded-xl shadow-sm bg-white dark:bg-gray-800 overflow-hidden p-4"
         >
-          <p class="mb-1 text-sm font-medium text-highlighted">
-            🏁 Looking for the old version?
-          </p>
-          <p class="text-sm text-gray-800 dark:text-gray-100">
-            Version 2 is still available at v2.ditherit.com.
-          </p>
-        </UCard>
-      </a>
+          <FileSizeReport
+            :original-size="selectedImage.originalFileSize"
+            :dithered-file-size="scorecardDitheredSize"
+            :file-name="selectedImage.fileName"
+            :original-width="originalWidth || undefined"
+            :original-height="originalHeight || undefined"
+            :dithered-width="scorecardDitheredWidth"
+            :dithered-height="scorecardDitheredHeight"
+            :original-mime-type="selectedImage.originalMimeType"
+            :gif-frame-count="selectedImage.gifFrameCount || undefined"
+            class="w-full"
+          />
+        </div>
+        <SidebarFeedback />
+        <SidebarLatestPost />
+        <NewsletterSignup />
+        <a href="https://v2.ditherit.com" target="_blank" rel="noopener" class="block">
+          <UCard
+            variant="soft"
+            :ui="{ root: 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors cursor-pointer shadow-sm', body: 'p-3 sm:p-3' }"
+          >
+            <p class="mb-1 text-sm font-medium text-highlighted">
+              🏁 Looking for the old version?
+            </p>
+            <p class="text-sm text-gray-800 dark:text-gray-100">
+              Version 2 is still available at v2.ditherit.com.
+            </p>
+          </UCard>
+        </a>
+      </div>
     </aside>
 
     </div>
