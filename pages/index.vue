@@ -159,6 +159,13 @@
             >
               📦 Batch Dither — dither multiple images at once
             </nuxt-link>
+            <nuxt-link
+              v-if="!imageUploaded"
+              to="/ai-trainer"
+              class="btn-red-outline inline-block text-center"
+            >
+              🤖 AI Dither Trainer — train a model from your picks
+            </nuxt-link>
           </div>
           <!-- End Toolbar Stuff -->
         </div>
