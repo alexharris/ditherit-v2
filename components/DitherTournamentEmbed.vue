@@ -113,21 +113,44 @@
 
     <!-- Tournament bracket -->
     <div v-if="phase === 'tournament'" class="tournament-wrap">
-      <div class="t-progress-track"><div class="t-progress-fill" :style="{ width: roundProgressPct + '%' }"></div></div>
-      <p class="t-progress-label">Round {{ currentRound }} · match {{ matchIndex + 1 }} of {{ currentPairs.length }}</p>
-      <div v-if="currentMatch" class="match-arena">
-        <div class="match-card" @click="pick(currentMatch[0])">
-          <div class="match-label">{{ showLabels ? currentMatch[0].label : 'Option A' }}</div>
-          <img :src="currentMatch[0].dataUrl" class="match-img" :alt="currentMatch[0].label" />
-          <div class="match-pick-btn">✓ Pick this one</div>
-        </div>
-        <div class="vs-badge">VS</div>
-        <div class="match-card" @click="pick(currentMatch[1])">
-          <div class="match-label">{{ showLabels ? currentMatch[1].label : 'Option B' }}</div>
-          <img :src="currentMatch[1].dataUrl" class="match-img" :alt="currentMatch[1].label" />
-          <div class="match-pick-btn">✓ Pick this one</div>
+      <div class="t-toggle-row" v-if="aiModelAvailable">
+        <button class="ai-toggle" @click="showAiRankedView = !showAiRankedView">
+          {{ showAiRankedView ? '🏆 Back to bracket' : '🤖 View AI ranked list' }}
+        </button>
+      </div>
+
+      <div v-if="showAiRankedView" class="ai-ranked-wrap">
+        <p class="ai-ranked-note">🤖 Sorted by your trained model's predicted score, highest first. This is a suggestion, not a decision — pick whichever one actually looks best to you.</p>
+        <div class="ai-ranked-list">
+          <div v-for="(c, i) in aiRankedContestants" :key="c.id" class="ai-ranked-row" @click="pickWinnerDirect(c)">
+            <div class="ai-rank-num">#{{ i + 1 }}</div>
+            <img :src="c.dataUrl" class="ai-rank-thumb" :alt="c.label" />
+            <div class="ai-rank-info">
+              <div class="ai-rank-label">{{ showLabels ? c.label : 'Option ' + (i + 1) }}</div>
+              <div class="ai-rank-score">score {{ c.aiScore.toFixed(2) }}</div>
+            </div>
+            <div class="ai-rank-pick">✓ Choose this</div>
+          </div>
         </div>
       </div>
+
+      <template v-else>
+        <div class="t-progress-track"><div class="t-progress-fill" :style="{ width: roundProgressPct + '%' }"></div></div>
+        <p class="t-progress-label">Round {{ currentRound }} · match {{ matchIndex + 1 }} of {{ currentPairs.length }}</p>
+        <div v-if="currentMatch" class="match-arena">
+          <div class="match-card" @click="pick(currentMatch[0])">
+            <div class="match-label">{{ showLabels ? currentMatch[0].label : 'Option A' }}</div>
+            <img :src="currentMatch[0].dataUrl" class="match-img" :alt="currentMatch[0].label" />
+            <div class="match-pick-btn">✓ Pick this one</div>
+          </div>
+          <div class="vs-badge">VS</div>
+          <div class="match-card" @click="pick(currentMatch[1])">
+            <div class="match-label">{{ showLabels ? currentMatch[1].label : 'Option B' }}</div>
+            <img :src="currentMatch[1].dataUrl" class="match-img" :alt="currentMatch[1].label" />
+            <div class="match-pick-btn">✓ Pick this one</div>
+          </div>
+        </div>
+      </template>
     </div>
 
     <!-- Winner — emit and show apply button -->
@@ -156,6 +179,9 @@
 <script>
 import RgbQuant from 'rgbquant'
 import { bayerDither } from '~/utils/dithering'
+import { extractImageFeatures, extractCandidateFeatures } from '~/utils/aiFeatures'
+import { addTrainingPair } from '~/utils/aiTrainingStore'
+import { loadModel, predictScores, hasStoredModel } from '~/utils/aiRankerModel'
 
 const ERROR_ALGORITHMS = ['FloydSteinberg','Atkinson','Sierra24A','Fan','ShiauFan','ShiauFan2','JarvisJudiceNinke','Stucki','Burkes','Sierra3','Sierra2']
 const PRESET_PALETTES = [
@@ -199,12 +225,21 @@ export default {
       paletteImportError: '',
       paletteImportSuccess: '',
       variants: [], contestants: [], bracket: [], winners: [], currentPairs: [],
+      aiModelAvailable: false,
+      showAiRankedView: false,
       matchIndex: 0, currentRound: 1, totalRounds: 1,
       doneCount: 0, totalCount: 0, rendering: false,
       winner: null, singleVariant: false,
     }
   },
   computed: {
+    aiRankedContestants() {
+      if (!this.aiModelAvailable) return []
+      return this.contestants
+        .filter(c => c.aiScore !== undefined)
+        .slice()
+        .sort((a, b) => b.aiScore - a.aiScore)
+    },
     paletteOptions() { return PRESET_PALETTES },
     progressPct() { return this.totalCount===0?0:Math.round(this.doneCount/this.totalCount*100) },
     currentMatch() { return this.currentPairs[this.matchIndex]||null },
@@ -232,6 +267,7 @@ export default {
     async renderAll() {
       if(this.rendering) return; this.rendering=true
       const img=this.$refs.sourceImg; const w=img.naturalWidth; const h=img.naturalHeight
+      try { this._aiImageFeatures = extractImageFeatures(img) } catch(e) { this._aiImageFeatures = null }
       let paletteRgb=null
       if(this.options.palette==='custom-gpl'&&this.customGplPalette){paletteRgb=this.customGplPalette.rgb}
       else if(this.options.palette!=='original'){const hx=PALETTE_COLORS[this.options.palette];if(hx)paletteRgb=hx.map(c=>hexToRgb(c)).filter(Boolean)}
@@ -245,7 +281,8 @@ export default {
           if(v.config.mode==='Bayer (Ordered)'){const id=ctx.getImageData(0,0,w,h);const pal=paletteRgb||this.autoSample(img);bayerDither(ctx,id,pal,1)}
           else{const q=new RgbQuant({colors:paletteRgb?paletteRgb.length:8,method:2,boxSize:[8,8],boxPxls:2,initColors:4096,minHueCols:2000,dithKern:v.config.algorithm,dithDelta:0,dithSerp:v.config.serpentine,reIndex:false,useCache:true,cacheFreq:10,colorDist:'euclidean',palette:paletteRgb||[]});q.sample(img);const res=q.reduce(canvas);const id=ctx.getImageData(0,0,w,h);id.data.set(res);ctx.putImageData(id,0,0)}
         }catch(e){}
-        contestants.push({...v,dataUrl:canvas.toDataURL('image/png'),roundsSurvived:0})
+        const configWithPaletteInfo = {...v.config, paletteColorCount: paletteRgb ? paletteRgb.length : 8}
+        contestants.push({...v, config: configWithPaletteInfo, dataUrl:canvas.toDataURL('image/png'),roundsSurvived:0})
         canvas.width=1;canvas.height=1;this.doneCount++
       }
       // If only one variant rendered, skip bracket and go straight to winner
@@ -259,8 +296,42 @@ export default {
         this.phase = 'wizard'
         return
       }
-      this.contestants=shuffle(contestants); this.setupRound(this.contestants)
+      this.contestants=shuffle(contestants)
+      await this.scoreContestantsWithAiModel(this.contestants)
+      this.setupRound(this.contestants)
       this.totalRounds=Math.ceil(Math.log2(this.contestants.length)); this.phase='tournament'
+    },
+    async scoreContestantsWithAiModel(contestants) {
+      this.aiModelAvailable = false
+      if (!this._aiImageFeatures) return
+      try {
+        const available = await hasStoredModel()
+        if (!available) return
+        const model = await loadModel()
+        if (!model) return
+        const candidateFeatureList = contestants.map(c => extractCandidateFeatures(c.config))
+        const scores = predictScores(model, this._aiImageFeatures, candidateFeatureList)
+        contestants.forEach((c, i) => { c.aiScore = scores[i] })
+        this.aiModelAvailable = true
+      } catch (e) {
+        this.aiModelAvailable = false
+      }
+    },
+    pickWinnerDirect(chosen) {
+      if (this._aiImageFeatures) {
+        this.contestants.forEach(other => {
+          if (other === chosen) return
+          try {
+            addTrainingPair({
+              imageFeatures: this._aiImageFeatures,
+              winnerFeatures: extractCandidateFeatures(chosen.config),
+              loserFeatures: extractCandidateFeatures(other.config),
+            }).catch(() => {})
+          } catch (e) { /* non-critical */ }
+        })
+      }
+      this.winner = chosen
+      this.phase = 'winner'
     },
     importJsonPalette() {
       this.paletteImportError = ''; this.paletteImportSuccess = ''
@@ -325,6 +396,15 @@ export default {
     },
     pick(chosen){
       const pair=this.currentPairs[this.matchIndex]; const loser=pair[0]===chosen?pair[1]:pair[0]
+      if (this._aiImageFeatures) {
+        try {
+          addTrainingPair({
+            imageFeatures: this._aiImageFeatures,
+            winnerFeatures: extractCandidateFeatures(chosen.config),
+            loserFeatures: extractCandidateFeatures(loser.config),
+          }).catch(() => {})
+        } catch(e) {}
+      }
       chosen.roundsSurvived++; loser.dataUrl=null
       this.winners.push(chosen); this.matchIndex++
       if(this.matchIndex>=this.currentPairs.length){
@@ -384,6 +464,20 @@ export default {
 .bar-fill { height: 100%; background: #c53030; transition: width 0.3s; }
 
 .tournament-wrap { width: 100%; }
+.t-toggle-row { display: flex; justify-content: flex-end; margin-bottom: 0.75rem; }
+.ai-toggle { font-size: 0.8rem; font-weight: 700; font-family: inherit; border: 2px solid #2a6ebb; color: #2a6ebb; background: #fff; padding: 0.4rem 0.9rem; border-radius: 2px; cursor: pointer; transition: all 0.15s; }
+.ai-toggle:hover { background: #2a6ebb; color: #fff; }
+.ai-ranked-wrap { width: 100%; }
+.ai-ranked-note { font-size: 0.82rem; color: #555; background: #eef4fb; border: 1px solid #cfe0f2; border-radius: 4px; padding: 0.7rem; margin-bottom: 1rem; line-height: 1.4; }
+.ai-ranked-list { display: flex; flex-direction: column; gap: 0.55rem; }
+.ai-ranked-row { display: flex; align-items: center; gap: 0.8rem; border: 2px solid #ddd; border-radius: 4px; padding: 0.55rem; cursor: pointer; transition: all 0.15s; background: #fff; }
+.ai-ranked-row:hover { border-color: #c53030; box-shadow: 3px 3px 0 #c53030; transform: translateY(-2px); }
+.ai-rank-num { font-size: 1rem; font-weight: 900; color: #c53030; width: 2rem; text-align: center; flex-shrink: 0; }
+.ai-rank-thumb { width: 52px; height: 52px; object-fit: cover; border-radius: 3px; image-rendering: pixelated; flex-shrink: 0; }
+.ai-rank-info { flex: 1; min-width: 0; }
+.ai-rank-label { font-weight: 700; font-size: 0.85rem; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-rank-score { font-size: 0.74rem; color: #888; }
+.ai-rank-pick { font-size: 0.76rem; font-weight: 700; color: #c53030; flex-shrink: 0; }
 .t-progress-track { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-bottom: 0.35rem; }
 .t-progress-fill { height: 100%; background: #c53030; transition: width 0.4s; }
 .t-progress-label { font-size: 0.8rem; color: #999; margin: 0 0 1.25rem; }
