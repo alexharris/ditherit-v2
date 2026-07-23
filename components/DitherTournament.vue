@@ -198,10 +198,30 @@
           </p>
         </div>
         <div class="t-header-actions">
+          <button v-if="aiModelAvailable" class="wiz-btn-ghost small ai-toggle" @click="showAiRankedView = !showAiRankedView">
+            {{ showAiRankedView ? '🏆 Back to bracket' : '🤖 View AI ranked list' }}
+          </button>
           <nuxt-link to="/" class="wiz-btn-ghost small">← Main menu</nuxt-link>
           <button class="wiz-btn-ghost small" @click="reset">Start over</button>
         </div>
       </div>
+
+      <div v-if="showAiRankedView" class="ai-ranked-wrap">
+        <p class="ai-ranked-note">🤖 Sorted by your trained model's predicted score, highest first. This is a suggestion, not a decision — pick whichever one actually looks best to you.</p>
+        <div class="ai-ranked-list">
+          <div v-for="(c, i) in aiRankedContestants" :key="c.id" class="ai-ranked-row" @click="pickWinnerDirect(c)">
+            <div class="ai-rank-num">#{{ i + 1 }}</div>
+            <img :src="c.dataUrl" class="ai-rank-thumb" :alt="c.label" />
+            <div class="ai-rank-info">
+              <div class="ai-rank-label">{{ options.showLabels ? c.label : 'Option ' + (i + 1) }}</div>
+              <div class="ai-rank-score">score {{ c.aiScore.toFixed(2) }}</div>
+            </div>
+            <div class="ai-rank-pick">✓ Choose this</div>
+          </div>
+        </div>
+      </div>
+
+      <template v-else>
 
       <div class="t-progress-track">
         <div class="t-progress-fill" :style="{ width: roundProgressPct + '%' }"></div>
@@ -223,6 +243,7 @@
           <div class="match-pick-btn">✓ Pick this one</div>
         </div>
       </div>
+      </template>
     </div>
 
     <!-- ===================== WINNER ===================== -->
@@ -313,6 +334,9 @@
 <script>
 import RgbQuant from 'rgbquant'
 import { bayerDither } from '~/utils/dithering'
+import { extractImageFeatures, extractCandidateFeatures } from '~/utils/aiFeatures'
+import { addTrainingPair } from '~/utils/aiTrainingStore'
+import { loadModel, predictScores, hasStoredModel } from '~/utils/aiRankerModel'
 
 const ERROR_ALGORITHMS = [
   'FloydSteinberg', 'Atkinson', 'Sierra24A', 'Fan', 'ShiauFan',
@@ -416,6 +440,8 @@ export default {
       bracket: [],
       winners: [],
       eliminated: [],
+      aiModelAvailable: false,
+      showAiRankedView: false,
       currentPairs: [],
       matchIndex: 0,
       currentRound: 1,
@@ -425,6 +451,13 @@ export default {
     }
   },
   computed: {
+    aiRankedContestants() {
+      if (!this.aiModelAvailable) return []
+      return this.contestants
+        .filter(c => c.aiScore !== undefined)
+        .slice()
+        .sort((a, b) => b.aiScore - a.aiScore)
+    },
     progressPct() {
       if (this.totalCount === 0) return 0
       return Math.round((this.doneCount / this.totalCount) * 100)
@@ -552,6 +585,13 @@ export default {
       const w = img.naturalWidth
       const h = img.naturalHeight
 
+      // Cache source image features once for this tournament run (used for AI training logging)
+      try {
+        this._aiImageFeatures = extractImageFeatures(img)
+      } catch (e) {
+        this._aiImageFeatures = null
+      }
+
       let paletteRgb = null
       if (this.options.palette === 'custom-gpl' && this.customGplPalette) {
         paletteRgb = this.customGplPalette.rgb
@@ -610,7 +650,8 @@ export default {
         }
 
         const dataUrl = canvas.toDataURL('image/png')
-        contestants.push({ ...v, dataUrl, roundsSurvived: 0 })
+        const configWithPaletteInfo = { ...v.config, paletteColorCount: paletteRgb ? paletteRgb.length : 8 }
+        contestants.push({ ...v, config: configWithPaletteInfo, dataUrl, roundsSurvived: 0 })
 
         canvas.width = 1
         canvas.height = 1
@@ -619,6 +660,10 @@ export default {
 
       this.contestants = shuffle(contestants)
       this.eliminated = []
+
+      // If a trained AI model exists, score every contestant now so the
+      // ranked view is ready the moment the tournament starts.
+      await this.scoreContestantsWithAiModel(this.contestants)
 
       // If only one image was produced, skip tournament and show it directly
       if (this.contestants.length === 1) {
@@ -632,6 +677,23 @@ export default {
       this.totalRounds = Math.ceil(Math.log2(this.contestants.length))
       this.phase = 'tournament'
     },
+    async scoreContestantsWithAiModel(contestants) {
+      this.aiModelAvailable = false
+      if (!this._aiImageFeatures) return
+      try {
+        const available = await hasStoredModel()
+        if (!available) return
+        const model = await loadModel()
+        if (!model) return
+        const candidateFeatureList = contestants.map(c => extractCandidateFeatures(c.config))
+        const scores = predictScores(model, this._aiImageFeatures, candidateFeatureList)
+        contestants.forEach((c, i) => { c.aiScore = scores[i] })
+        this.aiModelAvailable = true
+      } catch (e) {
+        // Non-critical — tournament works fine without AI scores
+        this.aiModelAvailable = false
+      }
+    },
     autoSamplePalette(img) {
       const canvas = document.createElement('canvas')
       canvas.width = 16; canvas.height = 16
@@ -643,6 +705,24 @@ export default {
         colors.push([data[i], data[i + 1], data[i + 2]])
       }
       return colors.slice(0, 16)
+    },
+    pickWinnerDirect(chosen) {
+      // User picked straight from the AI-ranked list instead of playing out the bracket.
+      // Still log this as training data: chosen beats every other contestant shown.
+      if (this._aiImageFeatures) {
+        this.contestants.forEach(other => {
+          if (other === chosen) return
+          try {
+            addTrainingPair({
+              imageFeatures: this._aiImageFeatures,
+              winnerFeatures: extractCandidateFeatures(chosen.config),
+              loserFeatures: extractCandidateFeatures(other.config),
+            }).catch(() => {})
+          } catch (e) { /* non-critical */ }
+        })
+      }
+      this.winner = chosen
+      this.phase = 'winner'
     },
     setupRound(pool) {
       this.bracket = pool.slice()
@@ -668,6 +748,17 @@ export default {
     pick(chosen) {
       const pair = this.currentPairs[this.matchIndex]
       const loser = pair[0] === chosen ? pair[1] : pair[0]
+
+      // Log this head-to-head pick as an AI training pair (fire-and-forget, never blocks UI)
+      if (this._aiImageFeatures) {
+        try {
+          addTrainingPair({
+            imageFeatures: this._aiImageFeatures,
+            winnerFeatures: extractCandidateFeatures(chosen.config),
+            loserFeatures: extractCandidateFeatures(loser.config),
+          }).catch(() => { /* non-critical, ignore storage errors */ })
+        } catch (e) { /* non-critical */ }
+      }
 
       chosen.roundsSurvived++
       this.eliminated.push(loser)
@@ -875,6 +966,19 @@ export default {
 .t-title { font-size: 1.8rem; font-weight: 700; margin: 0; color: #1a1a1a; }
 .t-sub { color: #666; margin: 0.25rem 0 0; font-size: 0.9rem; }
 .t-progress-track { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; margin-bottom: 0.35rem; }
+.ai-toggle { border-color: #2a6ebb !important; color: #2a6ebb !important; }
+.ai-toggle:hover { background: #2a6ebb !important; color: #fff !important; }
+.ai-ranked-wrap { width: 100%; }
+.ai-ranked-note { font-size: 0.85rem; color: #555; background: #eef4fb; border: 1px solid #cfe0f2; border-radius: 4px; padding: 0.75rem; margin-bottom: 1rem; line-height: 1.4; }
+.ai-ranked-list { display: flex; flex-direction: column; gap: 0.6rem; }
+.ai-ranked-row { display: flex; align-items: center; gap: 0.9rem; border: 2px solid #ddd; border-radius: 4px; padding: 0.6rem; cursor: pointer; transition: all 0.15s; background: #fff; }
+.ai-ranked-row:hover { border-color: #c53030; box-shadow: 3px 3px 0 #c53030; transform: translateY(-2px); }
+.ai-rank-num { font-size: 1.1rem; font-weight: 900; color: #c53030; width: 2.2rem; text-align: center; flex-shrink: 0; }
+.ai-rank-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 3px; image-rendering: pixelated; flex-shrink: 0; }
+.ai-rank-info { flex: 1; min-width: 0; }
+.ai-rank-label { font-weight: 700; font-size: 0.9rem; color: #1a1a1a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ai-rank-score { font-size: 0.78rem; color: #888; }
+.ai-rank-pick { font-size: 0.8rem; font-weight: 700; color: #c53030; flex-shrink: 0; }
 .t-progress-fill { height: 100%; background: #c53030; transition: width 0.4s ease; }
 .t-progress-label { font-size: 0.8rem; color: #999; margin: 0 0 1.5rem; }
 
