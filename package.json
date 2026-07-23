@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@nuxtjs/pwa": "^3.0.0-beta.20",
+    "@tensorflow/tfjs": "^4.20.0",
     "autoprefixer": "^10.2.5",
     "dart-sass": "^1.25.0",
     "eslint-plugin-vue": "^9.6.0",
