@@ -24,6 +24,11 @@ export function buildModel() {
 // pair, minimise max(0, margin - (score(winner) - score(loser))).
 // This is implemented manually since tf.js doesn't ship a built-in
 // ranking loss, using a custom training loop with tf.tidy for memory safety.
+//
+// `cancelToken` (optional): a plain object like { cancelled: false }.
+// Set cancelToken.cancelled = true from outside (e.g. a Stop button) to
+// halt training after the current epoch finishes. The model returned/saved
+// will reflect whatever epoch it stopped at.
 export async function trainPairwiseModel(model, pairs, options = {}) {
   const {
     epochs = 30,
@@ -31,6 +36,7 @@ export async function trainPairwiseModel(model, pairs, options = {}) {
     margin = 1.0,
     learningRate = 0.01,
     onEpochEnd = null,
+    cancelToken = null,
   } = options
 
   if (pairs.length === 0) throw new Error('No training pairs provided')
@@ -40,7 +46,15 @@ export async function trainPairwiseModel(model, pairs, options = {}) {
 
   const optimizer = tf.train.adam(learningRate)
 
+  let epochsCompleted = 0
+  let wasCancelled = false
+
   for (let epoch = 0; epoch < epochs; epoch++) {
+    if (cancelToken && cancelToken.cancelled) {
+      wasCancelled = true
+      break
+    }
+
     let epochLoss = 0
     let batches = 0
 
@@ -74,14 +88,17 @@ export async function trainPairwiseModel(model, pairs, options = {}) {
       batches++
     }
 
+    epochsCompleted = epoch + 1
+
     if (onEpochEnd) {
       onEpochEnd(epoch, epochLoss / Math.max(1, batches))
     }
     // Yield to the browser so the UI can update progress
+
     await new Promise(r => setTimeout(r, 0))
   }
 
-  return model
+  return { model, epochsCompleted, wasCancelled }
 }
 
 export function predictScores(model, imageFeatures, candidateFeatureList) {
