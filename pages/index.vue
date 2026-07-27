@@ -166,6 +166,13 @@
             >
               🤖 AI Dither Trainer — train a model from your picks
             </nuxt-link>
+            <nuxt-link
+              v-if="!imageUploaded"
+              to="/ai-ranker"
+              class="btn-red-outline inline-block text-center"
+            >
+              🏅 AI Dither Ranker — let your trained model pick for you
+            </nuxt-link>
           </div>
           <!-- End Toolbar Stuff -->
         </div>
