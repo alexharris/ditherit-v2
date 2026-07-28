@@ -22,7 +22,7 @@
     "gifuct-js": "^2.1.2",
     "img-comparison-slider": "^8.0.7",
     "jszip": "^3.10.1",
-    "nuxt": "^4.3.0",
+    "nuxt": "^4.4.7",
     "rgbquant": "github:alexharris/RgbQuant.js",
     "tailwindcss": "^4.1.18"
   },
