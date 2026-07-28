@@ -50,7 +50,7 @@ const navItems = [
         <UButton
           label="GitHub"
           icon="i-simple-icons-github"
-          to="https://github.com/alexharris/ditherit-v3"
+          to="https://github.com/alexharris/ditherit"
           target="_blank"
           color="neutral"
           variant="ghost"

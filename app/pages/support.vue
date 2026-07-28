@@ -31,11 +31,11 @@ useSeoMeta({ title: 'Support — Dither it!' })
       <ul class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
         <li class="flex items-start gap-2">
           <UIcon name="i-lucide-star" class="mt-0.5 size-4 shrink-0 text-gray-500" />
-          <span>Star or share the <a href="https://github.com/alexharris/ditherit-v3" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">GitHub repo</a></span>
+          <span>Star or share the <a href="https://github.com/alexharris/ditherit" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">GitHub repo</a></span>
         </li>
         <li class="flex items-start gap-2">
           <UIcon name="i-lucide-bug" class="mt-0.5 size-4 shrink-0 text-gray-500" />
-          <span>Report bugs or suggest features on <a href="https://github.com/alexharris/ditherit-v3/issues" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">GitHub Issues</a></span>
+          <span>Report bugs or suggest features on <a href="https://github.com/alexharris/ditherit/issues" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">GitHub Issues</a></span>
         </li>
         <li class="flex items-start gap-2">
           <UIcon name="i-lucide-share-2" class="mt-0.5 size-4 shrink-0 text-gray-500" />

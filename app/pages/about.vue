@@ -107,7 +107,7 @@ const featureCards = [
         </p>
         <p>
           The Dither it! source code is freely available on the
-          <a href="https://github.com/alexharris/ditherit-v3" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">Dither it! Github page</a>.
+          <a href="https://github.com/alexharris/ditherit" target="_blank" rel="noopener noreferrer" class="text-[--ui-primary] underline underline-offset-2 hover:opacity-80">Dither it! Github page</a>.
           Please feel free to contribute, share or pilfer.
         </p>
         <p>
