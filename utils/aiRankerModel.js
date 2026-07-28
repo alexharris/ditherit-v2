@@ -140,9 +140,12 @@ export async function deleteStoredModel() {
   }
 }
 
-// Export the model as downloadable files (model.json + weights.bin)
-export async function exportModelAsDownload(model) {
-  await model.save('downloads://ditherit-ai-ranker')
+// Export the model as downloadable files (model.json + weights.bin).
+// filenameStamp (optional): a filesystem-safe stamp like "20260609123456utc"
+// to append to the filenames so repeated exports don't overwrite each other.
+export async function exportModelAsDownload(model, filenameStamp) {
+  const baseName = filenameStamp ? `ditherit-ai-ranker_${filenameStamp}` : 'ditherit-ai-ranker'
+  await model.save(`downloads://${baseName}`)
 }
 
 // Import a model from user-selected files (model.json + weights.bin)
