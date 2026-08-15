@@ -380,8 +380,13 @@ export function useDithering() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const GIF = ((await import('gif.js')) as any).default
       const workerScript = await getGifWorkerUrl()
+      // globalPalette: true makes gif.js build its color table once (from the first frame) and
+      // reuse it for every subsequent frame. Without this, each frame gets its own independently
+      // computed NeuQuant palette with its own transparent-color index — technically valid GIF89a,
+      // but many real-world decoders only honor the *global* color table + its transparent index
+      // and don't re-read each frame's local table, so only the first frame renders as transparent.
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const gif = new GIF({ workers: 2, quality: 10, workerScript, width: finalWidth, height: finalHeight }) as any
+      const gif = new GIF({ workers: 2, quality: 10, workerScript, width: finalWidth, height: finalHeight, globalPalette: true }) as any
 
       // Scale the first frame into the scratch canvas for palette sampling
       sourceCtx.putImageData(firstFrame.imageData, 0, 0)
