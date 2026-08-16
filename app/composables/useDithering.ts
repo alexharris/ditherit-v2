@@ -299,11 +299,18 @@ export function useDithering() {
           cachedPaletteKey = palKey
         }
 
+        // Capture source alpha before RgbQuant runs — it collapses alpha to
+        // binary (0 or 255), so restore the original partial values after.
+        const sourceAlpha = ctx.getImageData(0, 0, ditherWidth, ditherHeight).data
+
         // Pass algorithm + serpentine explicitly so the cached instance
         // uses the current values even if they differ from construction
         const ditherResult = q.reduce(targetCanvas, 1, algorithm.value, serpentine.value)
         const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
         imageData.data.set(ditherResult)
+        for (let i = 3; i < imageData.data.length; i += 4) {
+          imageData.data[i] = sourceAlpha[i]!
+        }
         ctx.putImageData(imageData, 0, 0)
       }
 
