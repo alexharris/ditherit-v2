@@ -396,6 +396,181 @@ export function simple2DDither(
   }
 }
 
+// Seeded PRNG (mulberry32) — keeps the randomized iteration order reproducible
+// across re-renders of the same image/settings, matching the other dither modes.
+function mulberry32(seed: number): () => number {
+  let a = seed
+  return function () {
+    a = (a + 0x6D2B79F5) | 0
+    let t = Math.imul(a ^ (a >>> 15), 1 | a)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+const DIZZY_SEED = 0x9E3779B9
+
+// [weight, dx, dy] — orthogonal neighbors get 10x the weight of diagonal ones
+const DIZZY_NEIGHBORS: Array<[number, number, number]> = [
+  [10, 1, 0], [10, -1, 0], [10, 0, 1], [10, 0, -1],
+  [1, 1, 1], [1, -1, 1], [1, 1, -1], [1, -1, -1]
+]
+const DIZZY_WEIGHT_SUM = DIZZY_NEIGHBORS.reduce((sum, [w]) => sum + w, 0)
+
+// Dizzy dithering: error diffusion in randomized pixel order instead of a raster
+// scan. Error only propagates to neighbors not yet visited, which — combined with
+// the random order — avoids both Bayer's grid artifacts and Floyd-Steinberg's
+// directional streaking, approaching blue-noise quality without a void-and-cluster
+// texture. See https://liamappelbe.medium.com/dizzy-dithering-2ae76dbceba1
+export function dizzyDither(
+  ctx: CanvasRenderingContext2D,
+  imageData: ImageData,
+  palette: number[][],
+  blockSize: number,
+  colorSpace: 'rgb' | 'oklab' = 'rgb',
+  smoothDownscale = false
+) {
+  const { width, height } = imageData
+  const data = imageData.data
+  const n = width * height
+
+  const rand = mulberry32(DIZZY_SEED)
+  const order = new Uint32Array(n)
+  for (let i = 0; i < n; i++) order[i] = i
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1))
+    const tmp = order[i]!
+    order[i] = order[j]!
+    order[j] = tmp
+  }
+
+  const processed = new Uint8Array(n)
+
+  if (colorSpace === 'oklab') {
+    const paletteOklab = palette.map(([r, g, b]) => rgbToOklab(r!, g!, b!))
+
+    const valL = new Float64Array(n)
+    const valA = new Float64Array(n)
+    const valB = new Float64Array(n)
+    for (let idx = 0; idx < n; idx++) {
+      const i = idx * 4
+      const [l, a, b] = rgbToOklab(data[i]!, data[i + 1]!, data[i + 2]!)
+      valL[idx] = l
+      valA[idx] = a
+      valB[idx] = b
+    }
+
+    for (let k = 0; k < n; k++) {
+      const idx = order[k]!
+      const x = idx % width
+      const y = (idx / width) | 0
+
+      const rawL = valL[idx]!
+      const rawA = valA[idx]!
+      const rawB = valB[idx]!
+
+      let minDist = Infinity
+      let closestIdx = 0
+      for (let p = 0; p < paletteOklab.length; p++) {
+        const [pL, pA, pB] = paletteOklab[p]!
+        const dL = rawL - pL!
+        const dA = rawA - pA!
+        const dB = rawB - pB!
+        const dist = dL * dL + dA * dA + dB * dB
+        if (dist < minDist) {
+          minDist = dist
+          closestIdx = p
+        }
+      }
+
+      const chosen = palette[closestIdx]!
+      const i4 = idx * 4
+      data[i4] = chosen[0]!
+      data[i4 + 1] = chosen[1]!
+      data[i4 + 2] = chosen[2]!
+
+      const [chosenL, chosenA, chosenBlab] = paletteOklab[closestIdx]!
+      const eL = rawL - chosenL!
+      const eA = rawA - chosenA!
+      const eB = rawB - chosenBlab!
+
+      processed[idx] = 1
+
+      for (const [weight, dx, dy] of DIZZY_NEIGHBORS) {
+        const nx = x + dx
+        const ny = y + dy
+        if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue
+        const nidx = ny * width + nx
+        if (processed[nidx]) continue
+        const w = weight / DIZZY_WEIGHT_SUM
+        valL[nidx]! += eL * w
+        valA[nidx]! += eA * w
+        valB[nidx]! += eB * w
+      }
+    }
+  } else {
+    const newPalette = palette.map((color, id) => [id, ...color])
+
+    const valR = new Float64Array(n)
+    const valG = new Float64Array(n)
+    const valB = new Float64Array(n)
+    for (let idx = 0; idx < n; idx++) {
+      const i = idx * 4
+      valR[idx] = data[i]!
+      valG[idx] = data[i + 1]!
+      valB[idx] = data[i + 2]!
+    }
+
+    for (let k = 0; k < n; k++) {
+      const idx = order[k]!
+      const x = idx % width
+      const y = (idx / width) | 0
+
+      const rawR = valR[idx]!
+      const rawG = valG[idx]!
+      const rawB = valB[idx]!
+
+      const adjR = Math.max(0, Math.min(255, rawR))
+      const adjG = Math.max(0, Math.min(255, rawG))
+      const adjB = Math.max(0, Math.min(255, rawB))
+
+      const closest = getClosestColor(newPalette, [adjR, adjG, adjB])
+      const chosenR = closest[1]!
+      const chosenG = closest[2]!
+      const chosenB = closest[3]!
+
+      const i4 = idx * 4
+      data[i4] = chosenR
+      data[i4 + 1] = chosenG
+      data[i4 + 2] = chosenB
+
+      const eR = rawR - chosenR
+      const eG = rawG - chosenG
+      const eB = rawB - chosenB
+
+      processed[idx] = 1
+
+      for (const [weight, dx, dy] of DIZZY_NEIGHBORS) {
+        const nx = x + dx
+        const ny = y + dy
+        if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue
+        const nidx = ny * width + nx
+        if (processed[nidx]) continue
+        const w = weight / DIZZY_WEIGHT_SUM
+        valR[nidx]! += eR * w
+        valG[nidx]! += eG * w
+        valB[nidx]! += eB * w
+      }
+    }
+  }
+
+  ctx.putImageData(imageData, 0, 0)
+
+  if (blockSize > 1) {
+    addPixelation(ctx, ctx.canvas, width, height, blockSize, smoothDownscale)
+  }
+}
+
 function nextPowerOfTwo(n: number): number {
   let p = 1; while (p < n) p <<= 1; return p
 }

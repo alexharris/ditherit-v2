@@ -11,7 +11,7 @@ async function getRgbQuant(): Promise<RgbQuantConstructor> {
   }
   return _RgbQuant
 }
-import { addPixelation, bayerDither, blueNoiseDither, kernelDiffusionDither, riemersmaDither, simple2DDither } from '~/utils/dithering'
+import { addPixelation, bayerDither, blueNoiseDither, dizzyDither, kernelDiffusionDither, riemersmaDither, simple2DDither } from '~/utils/dithering'
 
 // Returns a 24-bit RGB color (0xRRGGBB) guaranteed not to appear in the given palette.
 // Used to designate the GIF transparent color index without conflicting with dithered pixels.
@@ -76,7 +76,8 @@ export const DIFFUSION_ALGORITHMS = [
   { label: 'Fan', value: 'Fan' },
   { label: 'ShiauFan', value: 'ShiauFan' },
   { label: 'ShiauFan2', value: 'ShiauFan2' },
-  { label: 'Simple 2D', value: 'Simple2D' }
+  { label: 'Simple 2D', value: 'Simple2D' },
+  { label: 'Dizzy', value: 'Dizzy' }
 ] as const
 
 export interface DitherResult {
@@ -272,6 +273,11 @@ export function useDithering() {
         const paletteToUse = palette.value.length > 0 ? palette.value : await analyzePalette(sourceImage)
         const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
         simple2DDither(ctx, imageData, paletteToUse, pixeliness.value, colorSpace.value, smoothPixels.value)
+      } else if (algorithm.value === 'Dizzy') {
+        // --- Dizzy: custom implementation (not supported by RgbQuant) ---
+        const paletteToUse = palette.value.length > 0 ? palette.value : await analyzePalette(sourceImage)
+        const imageData = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+        dizzyDither(ctx, imageData, paletteToUse, pixeliness.value, colorSpace.value, smoothPixels.value)
       } else if (colorSpace.value === 'oklab') {
         // --- OKLab error diffusion: bypass RgbQuant, use kernelDiffusionDither ---
         // RGB mode keeps using q.reduce() (RgbQuant) because the clamping fix lives
@@ -399,9 +405,9 @@ export function useDithering() {
       sourceCtx.putImageData(firstFrame.imageData, 0, 0)
       ctx.drawImage(sourceCanvas, 0, 0, ditherWidth, ditherHeight)
 
-      // Build palette from first frame for diffusion mode (skip for Simple2D and OKLab — they use their own path)
+      // Build palette from first frame for diffusion mode (skip for Simple2D, Dizzy and OKLab — they use their own path)
       let q: any = null
-      if (ditherMode.value === 'diffusion' && algorithm.value !== 'Simple2D' && colorSpace.value === 'rgb') {
+      if (ditherMode.value === 'diffusion' && algorithm.value !== 'Simple2D' && algorithm.value !== 'Dizzy' && colorSpace.value === 'rgb') {
         const palKey = getPaletteKey(palette.value)
         if (cachedQuant && cachedPaletteKey === palKey) {
           q = cachedQuant
@@ -414,9 +420,9 @@ export function useDithering() {
         }
       }
 
-      // For ordered/noise modes, Simple2D, and OKLab, use configured palette (or derive from first frame if empty)
+      // For ordered/noise modes, Simple2D, Dizzy, and OKLab, use configured palette (or derive from first frame if empty)
       let paletteToUse = palette.value
-      if ((ditherMode.value !== 'diffusion' || algorithm.value === 'Simple2D' || colorSpace.value === 'oklab') && paletteToUse.length === 0) {
+      if ((ditherMode.value !== 'diffusion' || algorithm.value === 'Simple2D' || algorithm.value === 'Dizzy' || colorSpace.value === 'oklab') && paletteToUse.length === 0) {
         const RgbQuantClass = await getRgbQuant()
         const qTemp = new RgbQuantClass({ ...rgbQuantOptions.value, colors: 8, palette: [] })
         qTemp.sample(scratchCanvas)
@@ -489,6 +495,9 @@ export function useDithering() {
         } else if (algorithm.value === 'Simple2D') {
           const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
           simple2DDither(ctx, id, paletteToUse, 1, colorSpace.value, smoothPixels.value)
+        } else if (algorithm.value === 'Dizzy') {
+          const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
+          dizzyDither(ctx, id, paletteToUse, 1, colorSpace.value, smoothPixels.value)
         } else if (colorSpace.value === 'oklab') {
           const id = ctx.getImageData(0, 0, ditherWidth, ditherHeight)
           kernelDiffusionDither(ctx, id, paletteToUse, 1, algorithm.value, serpentine.value, 'oklab', smoothPixels.value)
