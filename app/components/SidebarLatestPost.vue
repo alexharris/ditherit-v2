@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { data: post } = await useAsyncData('sidebar-latest-post', () =>
-  queryCollection('blog').order('date', 'DESC').first()
+  queryCollection('blog').where('draft', '<>', 'true').order('date', 'DESC').first()
 )
 </script>
 

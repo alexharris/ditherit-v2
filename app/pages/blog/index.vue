@@ -3,7 +3,7 @@ definePageMeta({ layout: 'blog' })
 useSeoMeta({ title: 'Blog — Dither it!' })
 
 const { data: posts } = await useAsyncData('blog', () =>
-  queryCollection('blog').order('date', 'DESC').all()
+  queryCollection('blog').where('draft', '<>', 'true').order('date', 'DESC').all()
 )
 </script>
 

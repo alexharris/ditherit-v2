@@ -80,12 +80,13 @@ export default defineEventHandler(async (event) => {
           const title = fm.match(/title:\s*(.+)/)?.[1]?.trim() ?? ''
           const date = fm.match(/date:\s*(.+)/)?.[1]?.trim() ?? ''
           const description = fm.match(/description:\s*(.+)/)?.[1]?.trim() ?? ''
+          const draft = fm.match(/draft:\s*(.+)/)?.[1]?.trim() === 'true'
           const slug = file.replace(/\.md$/, '')
-          return { title, date, description, body, slug }
+          return { title, date, description, draft, body, slug }
         })
     )
   )
-    .filter(Boolean)
+    .filter((post: { draft: boolean } | null) => post && !post.draft)
     .sort((a, b) => new Date(b!.date).getTime() - new Date(a!.date).getTime())
 
   const siteUrl = 'https://ditherit.com'
