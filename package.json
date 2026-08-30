@@ -15,7 +15,7 @@
     "@iconify-json/lucide": "^1.2.87",
     "@iconify-json/simple-icons": "^1.2.68",
     "@nuxt/content": "^3.13.0",
-    "@nuxt/ui": "^4.4.0",
+    "@nuxt/ui": "^4.8.1",
     "@nuxtjs/mdc": "^0.21.1",
     "better-sqlite3": "^12.9.0",
     "gif.js": "^0.2.0",
