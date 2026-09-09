@@ -41,11 +41,6 @@ export default {
         src: 'https://cdn.usefathom.com/script.js',
         'data-site': 'XLUDNBHI',
         defer: true
-      },
-      {
-        src: '//static.getclicky.com/js',
-        async: true,
-        'data-id': '101479686'
       }
     ]
   },
